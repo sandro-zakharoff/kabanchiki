@@ -1,0 +1,26 @@
+[project]
+name = "kabanchiki-admin"
+version = "2.1.0"
+description = "Kabanchiki — Windows admin app for the family task & reward system."
+requires-python = ">=3.13"
+readme = "README.md"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src"]
+
+[tool.ruff.lint]
+# A focused rule set that catches real problems (unused imports, bugs) without
+# fighting Qt/QML conventions: signals, properties and slots are camelCase by
+# design, so the pep8-naming (N) rules are intentionally left out.
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = [
+    "E501",   # line length is handled by the formatter, not the linter
+    "B008",   # Qt/PySide default-argument patterns are intentional
+    "UP031",  # %-formatting is fine and rewriting it by hand is risky
+    "B905",   # zip(strict=…) would change behavior on mismatched lengths
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
