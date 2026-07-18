@@ -1,0 +1,27 @@
+# Kabanchiki — one consistent style for every editor.
+# https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Web sources follow the 2-space convention they already use consistently.
+[*.{js,ts,css,html,json,yml,yaml}]
+indent_size = 2
+
+# Markdown: trailing spaces can be meaningful (hard line breaks).
+[*.md]
+trim_trailing_whitespace = false
+
+# Windows batch files require CRLF.
+[*.bat]
+end_of_line = crlf
+
+# Gradle wrapper and generated files are left as-is.
+[gradlew.bat]
+end_of_line = crlf

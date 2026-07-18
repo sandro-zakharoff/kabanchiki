@@ -1,0 +1,51 @@
+# Python
+desktop/.venv/
+__pycache__/
+*.pyc
+desktop/build/
+desktop/dist/
+
+# Android / Gradle
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/app/google-services.json
+android/signing/*.keystore
+android/signing/keystore.properties
+
+# Secrets
+*.secret
+.env
+supabase/.temp/
+supabase/deploy/outbox_webhook.sql
+supabase/migrations/20260714130000_outbox_webhook.sql
+supabase/migrations/20260718130000_tg_webhook.sql
+
+# Build artifacts
+*.apk
+# Ignore auto-generated PyInstaller specs, but keep the maintained one (used by CI).
+desktop/*.spec
+!desktop/Kabanchiki.spec
+
+# Logs
+*.log
+
+# IDE / OS
+.idea/
+.vscode/
+Thumbs.db
+desktop/*.spec.bak
+
+desktop/dist_new/
+desktop/build_new/
+desktop/err.log
+desktop/out.log
+
+# Local Supabase CLI state
+supabase/.branches/
+supabase/.temp/
+
+# Local release output; CI/GitHub Releases are the source of distribution artifacts.
+releases/*
+!releases/README.md

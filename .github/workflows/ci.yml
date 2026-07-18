@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  desktop:
+    name: Desktop tests
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install test dependencies
+        run: python -m pip install -r desktop/requirements.txt
+      - name: Lint (ruff)
+        run: python -m ruff check desktop/src desktop/tests
+      - name: Format check (ruff)
+        run: python -m ruff format --check desktop/src desktop/tests
+      - name: Run tests
+        run: python -m pytest desktop/tests -q
+      - name: Build portable executable
+        working-directory: desktop
+        run: python -m PyInstaller Kabanchiki.spec --noconfirm --clean
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kabanchiki-windows-portable
+          path: desktop/dist/Kabanchiki
+
+  android:
+    name: Android release build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build release APK (unsigned — no signing key in CI)
+        working-directory: android
+        env:
+          KABANCHIKI_SUPABASE_URL: ${{ vars.KABANCHIKI_SUPABASE_URL }}
+          KABANCHIKI_SUPABASE_ANON_KEY: ${{ vars.KABANCHIKI_SUPABASE_ANON_KEY }}
+        run: ./gradlew :app:assembleRelease --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kabanchiki-android-compile-check
+          # Unsigned in CI (the release keystore is never committed), so match
+          # both the signed and the -unsigned output names.
+          path: android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+
+  miniapp:
+    name: Mini App static validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate static bundle
+        shell: bash
+        run: |
+          test -f telegram/index.html
+          test -f telegram/config.js
+          test -f telegram/js/app.js
+          test -f telegram/js/api.js
+          ! grep -RInE '(^|[[:space:]"'"'"'=])(service_role|private_key|client_secret|bot_token)([[:space:]"'"'"'=]|$)' telegram
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kabanchiki-miniapp
+          path: telegram

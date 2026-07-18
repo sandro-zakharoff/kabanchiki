@@ -1,0 +1,18 @@
+# Normalize line endings: keep LF in the repository, check out native on Windows.
+* text=auto
+
+# Shell scripts must stay LF even on Windows, or bash chokes on \r.
+*.sh text eol=lf
+gradlew text eol=lf
+
+# Windows batch files need CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets should never be normalized.
+*.png binary
+*.ico binary
+*.webp binary
+*.ogg binary
+*.jar binary
+*.keystore binary

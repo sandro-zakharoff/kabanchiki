@@ -1,0 +1,50 @@
+name: Deploy Telegram Mini App
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'telegram/**'
+      - '.github/workflows/miniapp-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject public Supabase config
+        env:
+          SUPABASE_URL: ${{ vars.KABANCHIKI_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.KABANCHIKI_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
+            cat > telegram/config.js <<EOF
+          // Generated at deploy time from repository Variables. Do not edit by hand.
+          globalThis.__KABANCHIKI_CONFIG__ = {
+            supabaseUrl: "${SUPABASE_URL}",
+            supabaseAnonKey: "${SUPABASE_ANON_KEY}"
+          };
+          EOF
+            echo "config.js written from repository Variables"
+          else
+            echo "::warning::KABANCHIKI_SUPABASE_URL / _ANON_KEY Variables are not set; publishing the committed telegram/config.js as-is"
+          fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: telegram
+      - id: deployment
+        uses: actions/deploy-pages@v4
