@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kabanchiki</string>
+
+    <!-- Login -->
+    <string name="login_welcome">Привіт!</string>
+    <string name="login_subtitle">Увійди зі своїм логіном і паролем</string>
+    <string name="login_username">Логін</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_button">Увійти</string>
+    <string name="login_error">Неправильний логін або пароль</string>
+    <string name="login_not_configured">Застосунок не налаштовано (немає ключів Supabase)</string>
+
+    <!-- Navigation -->
+    <string name="nav_tasks">Завдання</string>
+    <string name="nav_job">Робота</string>
+    <string name="nav_balance">Баланс</string>
+    <string name="nav_profile">Профіль</string>
+
+    <!-- Tasks -->
+    <string name="tasks_title">Мої завдання</string>
+    <string name="tasks_empty">Завдань поки немає. Відпочивай! 🎉</string>
+    <string name="task_status_new">Нове</string>
+    <string name="task_status_in_progress">Виконується</string>
+    <string name="task_status_paused">Пауза</string>
+    <string name="task_status_submitted">На перевірці</string>
+    <string name="task_status_rework">На доробку</string>
+    <string name="task_status_done">Виконано</string>
+    <string name="task_status_declined">Відхилено</string>
+    <string name="pay_paid">Оплачено</string>
+    <string name="pay_awaiting">Очікує оплати</string>
+    <string name="task_rework_note">На доробку: %1$s</string>
+    <string name="task_submitted_hint">Відправлено на перевірку. Зачекай на рішення 🙂</string>
+    <string name="task_declined_note">Відхилено: %1$s</string>
+    <string name="task_reward_fixed">%1$s</string>
+    <string name="task_reward_hourly">%1$s / год</string>
+    <string name="task_difficulty">Складність %1$d з 5</string>
+    <string name="difficulty_1">Дуже легко</string>
+    <string name="difficulty_2">Легко</string>
+    <string name="difficulty_3">Середньо</string>
+    <string name="difficulty_4">Складно</string>
+    <string name="difficulty_5">Дуже складно</string>
+    <string name="task_requirements">Вимоги</string>
+    <string name="task_time_spent">Витрачено часу</string>
+    <string name="task_earned">Зароблено</string>
+    <string name="task_btn_start">Почати</string>
+    <string name="task_btn_pause">Зупинити</string>
+    <string name="task_btn_done">Виконано!</string>
+    <string name="task_btn_decline">Відхилити</string>
+    <string name="task_decline_title">Відхилити завдання?</string>
+    <string name="task_decline_hint">Розкажи чому (не обов\'язково)</string>
+    <string name="task_decline_confirm">Відхилити</string>
+    <string name="task_proof_title">Завершити завдання</string>
+    <string name="task_proof_text_required">Опиши, що зробив(-ла) — обов\'язково</string>
+    <string name="task_proof_text_optional">Опиши, що зробив(-ла) — за бажанням</string>
+    <string name="task_proof_photo_required">Фото результату — обов\'язково</string>
+    <string name="task_proof_photo_optional">Можеш додати фото</string>
+    <string name="task_proof_add_photo">Додати фото</string>
+    <string name="task_proof_change_photo">Змінити фото</string>
+    <string name="task_proof_submit">Надіслати</string>
+    <string name="task_proof_uploading">Завантаження…</string>
+    <string name="task_created_at">Отримано %1$s</string>
+    <string name="task_created_by">Завдання від: %1$s</string>
+    <string name="task_deadline">Дедлайн: %1$s</string>
+    <string name="notif_deadline_title">Скоро дедлайн ⏰</string>
+    <string name="notif_deadline_body">Завдання «%1$s» треба завершити найближчим часом</string>
+    <string name="task_completed_at">Завершено %1$s</string>
+
+    <!-- Job -->
+    <string name="job_title">Погодинна робота</string>
+    <string name="job_empty">Погодинної роботи поки немає</string>
+    <string name="job_rate">%1$s / год</string>
+    <string name="job_min_withdrawal">Мінімум для виведення: %1$s</string>
+    <string name="job_total_time">Загальний час</string>
+    <string name="job_earned_now">Зароблено</string>
+    <string name="job_earned_note">Заробіток автоматично йде на твій баланс.</string>
+    <string name="job_running">Йде робота</string>
+    <string name="job_stopped">Зупинено</string>
+    <string name="job_withdraw">Вивести %1$s</string>
+    <string name="job_withdraw_pending">Чекаємо на підтвердження…</string>
+    <string name="job_withdraw_below_min">Менше мінімуму (%1$s)</string>
+    <string name="job_withdraw_open">Вивести кошти</string>
+    <string name="withdraw_title">Вивід коштів</string>
+    <string name="withdraw_balance">Баланс</string>
+    <string name="withdraw_min">Мінімум</string>
+    <string name="withdraw_amount">Сума виводу (₴)</string>
+    <string name="withdraw_all">Вивести все (%1$s)</string>
+    <string name="withdraw_confirm">Запросити вивід</string>
+    <string name="withdraw_below_min">Не менше мінімуму (%1$s)</string>
+    <string name="withdraw_above_balance">Не більше балансу (%1$s)</string>
+    <string name="job_history">Історія виведень</string>
+    <string name="job_log_approved">Отримано %1$s</string>
+    <string name="job_log_awaiting">Схвалено %1$s (очікує виплати)</string>
+    <string name="job_log_declined">Виведення %1$s відхилено</string>
+    <string name="job_log_pending">Запитано %1$s</string>
+    <string name="job_log_period">за період %1$s — %2$s</string>
+    <string name="job_total_withdrawn">Виведено загалом: %1$s</string>
+    <string name="job_stopped_at">Зупинено о %1$s</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Профіль</string>
+    <string name="profile_earned_total">Зароблено загалом</string>
+    <string name="profile_bonuses_total">з них %1$s бонусами</string>
+    <string name="profile_rewards">Нагороди 🎁</string>
+    <string name="profile_reward_default">Бонус</string>
+    <string name="profile_language">Мова</string>
+    <string name="profile_logout">Вийти</string>
+    <string name="profile_logout_confirm">Вийти з акаунта?</string>
+    <string name="profile_version">Версія %1$s</string>
+    <string name="profile_copyright">© %1$d Zakharoff · Oleksandr Zakharov</string>
+    <string name="profile_location">Геолокація</string>
+    <string name="profile_location_hint">Вимкнено. Якщо увімкнути, телефон ділитиметься локацією з родиною приблизно раз на 15 хвилин.</string>
+    <string name="profile_location_waiting">Увімкнено · чекаємо першу точку…</string>
+    <string name="profile_location_last_sent">Увімкнено · надіслано %1$s</string>
+    <string name="profile_location_tips_open">Не оновлюється у фоні? Відкрити поради</string>
+    <string name="location_tips_title">Фонова геолокація</string>
+    <string name="location_tips_body">Щоб координати надходили кожні ~15 хв навіть із закритим застосунком, деякі телефони треба налаштувати: дозволити роботу без обмежень батареї та автозапуск.</string>
+    <string name="location_tips_battery">Прибрати обмеження батареї</string>
+    <string name="location_tips_autostart">Налаштування автозапуску</string>
+    <string name="profile_notifications_hint">Дозволь сповіщення, щоб не пропустити нове завдання!</string>
+    <string name="profile_notifications_grant">Дозволити сповіщення</string>
+
+    <!-- Common -->
+    <string name="common_cancel">Скасувати</string>
+    <string name="common_ok">Гаразд</string>
+    <string name="common_retry">Спробувати ще</string>
+    <string name="common_loading">Завантаження…</string>
+    <string name="common_error">Щось пішло не так: %1$s</string>
+    <string name="common_offline">Немає з\'єднання. Потягни, щоб оновити.</string>
+
+    <!-- Update -->
+    <string name="update_available_title">Доступна нова версія %1$s</string>
+    <string name="update_action">Оновити</string>
+    <string name="update_downloading">Завантаження…</string>
+    <string name="notif_update_title">Доступне оновлення %1$s 🎉</string>
+    <string name="notif_update_body">Відкрий застосунок і натисни «Оновити»</string>
+    <string name="notif_task_approved_title">Завдання прийнято ✅</string>
+    <string name="notif_task_approved_body">«%1$s» — прийнято!</string>
+    <string name="notif_task_rejected_title">Завдання відхилено ❌</string>
+    <string name="notif_task_rejected_body">«%1$s» відхилено</string>
+    <string name="notif_task_rejected_note">«%1$s»: %2$s</string>
+    <string name="notif_task_rework_title">Завдання на доробку 🔧</string>
+    <string name="notif_task_rework_body">«%1$s» треба доробити</string>
+    <string name="notif_task_rework_note">«%1$s»: %2$s</string>
+    <string name="notif_paid_title">Оплату отримано: %1$s 💰</string>
+    <string name="notif_withdrawal_declined_note">Вивід %1$s відхилено: %2$s</string>
+    <string name="notif_cash_pending_title">Готівка готова 💵</string>
+    <string name="notif_cash_pending_body">Тобі видали %1$s готівкою — підтверди, будь ласка, що отримав.</string>
+    <string name="notif_adjust_title">Зміна балансу: %1$s</string>
+    <string name="notif_adjust_body">%1$s</string>
+    <string name="notif_adjust_body_plain">Твій баланс змінено.</string>
+
+    <!-- Balance screen -->
+    <string name="balance_title">Баланс</string>
+    <string name="balance_available">Доступний баланс</string>
+    <string name="balance_withdraw">Запросити вивід</string>
+    <string name="balance_min_hint">Мінімальний вивід — %1$s</string>
+    <string name="balance_withdrawals_off">Виводи тимчасово вимкнено.</string>
+    <string name="balance_confirm_cash">Ти отримав %1$s готівкою</string>
+    <string name="balance_confirm_received">Підтвердити отримання</string>
+    <string name="balance_your_requests">Твої запити</string>
+    <string name="balance_operations">Операції</string>
+    <string name="balance_no_ops">Ще немає операцій</string>
+    <string name="balance_status_requested">Запитано</string>
+    <string name="balance_status_approved">Схвалено</string>
+    <string name="balance_cancel">Скасувати</string>
+    <string name="ledger_task">Завдання</string>
+    <string name="ledger_job">Робота</string>
+    <string name="ledger_bonus">Бонус</string>
+    <string name="ledger_adjustment">Коригування</string>
+    <string name="ledger_withdrawal">Вивід</string>
+    <string name="ledger_reversal">Повернення</string>
+    <string name="notif_task_paid_body">За завдання «%1$s»</string>
+    <string name="notif_withdrawal_paid_body">Твоє виведення виплачено</string>
+
+    <!-- Notifications -->
+    <string name="channel_tasks">Нові завдання</string>
+    <string name="channel_job">Погодинна робота</string>
+    <string name="channel_decisions">Рішення про виведення</string>
+    <string name="channel_system">З\'єднання</string>
+    <string name="channel_tracking">Таймер завдання</string>
+    <string name="tracking_in_progress">Завдання виконується — таймер іде</string>
+    <string name="offline_lost_title">Немає інтернету 📡</string>
+    <string name="offline_lost_body">Таймер зупинено, чекаємо на з\'єднання. Якщо інтернет не з\'явиться за 10 хвилин, завдання стане на паузу.</string>
+    <string name="offline_back_title">Інтернет повернувся! 🎉</string>
+    <string name="offline_back_body">Таймер продовжує йти. Час без інтернету не зараховано.</string>
+    <string name="offline_paused_title">Завдання на паузі ⏸️</string>
+    <string name="offline_paused_body">Інтернету не було понад 10 хвилин. Відкрий завдання і натисни «Почати», щоб продовжити.</string>
+    <string name="notif_task_created_title">Нове завдання! 🐷</string>
+    <string name="notif_task_created_body">%1$s — %2$s</string>
+    <string name="notif_job_assigned_title">Нова погодинна робота</string>
+    <string name="notif_job_assigned_body">%1$s · %2$s / год</string>
+    <string name="notif_job_started_title">Робота пішла! ▶️</string>
+    <string name="notif_job_started_body">%1$s — таймер запущено, вперед!</string>
+    <string name="notif_job_stopped_title">Роботу зупинено ⏸️</string>
+    <string name="notif_job_stopped_body">%1$s — таймер на паузі</string>
+    <string name="notif_withdrawal_approved_title">Гроші отримано! ✅</string>
+    <string name="notif_withdrawal_approved_body">Виведення %1$s схвалено</string>
+    <string name="notif_withdrawal_declined_title">Виведення відхилено ❌</string>
+    <string name="notif_withdrawal_declined_body">Виведення %1$s відхилено</string>
+    <string name="notif_bonus_title">Бонус %1$s 🎁</string>
+    <string name="notif_bonus_body">%1$s</string>
+    <string name="notif_bonus_body_plain">Тобі нарахували нагороду!</string>
+    <string name="task_proof_photo_hint">До 10 фото — стискаються автоматично</string>
+    <string name="avatar_crop_title">Кадрування фото</string>
+    <string name="avatar_crop_hint">Перетягни, щоб розмістити · масштаб — двома пальцями</string>
+    <string name="common_done">Готово</string>
+    <string name="profile_avatar_add">Додати фото</string>
+    <string name="profile_avatar_change">Змінити фото</string>
+    <string name="profile_avatar_remove">Прибрати</string>
+</resources>

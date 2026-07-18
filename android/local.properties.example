@@ -1,0 +1,6 @@
+# Copy to local.properties and set paths for your machine. Do not commit local.properties.
+sdk.dir=C:\\Android\\Sdk
+
+# Public Supabase settings can be supplied here or as environment variables.
+KABANCHIKI_SUPABASE_URL=https://your-project.supabase.co
+KABANCHIKI_SUPABASE_ANON_KEY=your-publishable-anon-key

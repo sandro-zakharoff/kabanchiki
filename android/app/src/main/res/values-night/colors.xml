@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark scheme for the pre-Compose window background (matches DarkPalette). -->
+    <color name="bg">#17161A</color>
+    <color name="surface">#232228</color>
+    <color name="accent">#9C8FA0</color>
+</resources>

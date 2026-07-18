@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kabanchiki</string>
+
+    <!-- Login -->
+    <string name="login_welcome">Welcome!</string>
+    <string name="login_subtitle">Sign in with your login and password</string>
+    <string name="login_username">Login</string>
+    <string name="login_password">Password</string>
+    <string name="login_button">Sign in</string>
+    <string name="login_error">Wrong login or password</string>
+    <string name="login_not_configured">The app is not configured (missing Supabase keys)</string>
+
+    <!-- Navigation -->
+    <string name="nav_tasks">Tasks</string>
+    <string name="nav_job">Work</string>
+    <string name="nav_balance">Balance</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Tasks -->
+    <string name="tasks_title">My tasks</string>
+    <string name="tasks_empty">No tasks yet. Enjoy your free time! 🎉</string>
+    <string name="task_status_new">New</string>
+    <string name="task_status_in_progress">In progress</string>
+    <string name="task_status_paused">Paused</string>
+    <string name="task_status_submitted">Under review</string>
+    <string name="task_status_rework">Rework</string>
+    <string name="task_status_done">Done</string>
+    <string name="task_status_declined">Declined</string>
+    <string name="pay_paid">Paid</string>
+    <string name="pay_awaiting">Awaiting payment</string>
+    <string name="task_rework_note">Sent for rework: %1$s</string>
+    <string name="task_submitted_hint">Sent for review. Wait for the decision 🙂</string>
+    <string name="task_declined_note">Rejected: %1$s</string>
+    <string name="task_reward_fixed">%1$s</string>
+    <string name="task_reward_hourly">%1$s / hour</string>
+    <string name="task_difficulty">Difficulty %1$d of 5</string>
+    <string name="difficulty_1">Very easy</string>
+    <string name="difficulty_2">Easy</string>
+    <string name="difficulty_3">Medium</string>
+    <string name="difficulty_4">Hard</string>
+    <string name="difficulty_5">Very hard</string>
+    <string name="task_requirements">Requirements</string>
+    <string name="task_time_spent">Time spent</string>
+    <string name="task_earned">Earned</string>
+    <string name="task_btn_start">Start</string>
+    <string name="task_btn_pause">Pause</string>
+    <string name="task_btn_done">Done!</string>
+    <string name="task_btn_decline">Decline</string>
+    <string name="task_decline_title">Decline the task?</string>
+    <string name="task_decline_hint">Tell why (optional)</string>
+    <string name="task_decline_confirm">Decline</string>
+    <string name="task_proof_title">Finish the task</string>
+    <string name="task_proof_text_required">Describe what you did (required)</string>
+    <string name="task_proof_text_optional">Describe what you did (optional)</string>
+    <string name="task_proof_photo_required">Photo of the result is required</string>
+    <string name="task_proof_photo_optional">You can attach a photo</string>
+    <string name="task_proof_add_photo">Add photo</string>
+    <string name="task_proof_change_photo">Change photo</string>
+    <string name="task_proof_submit">Submit</string>
+    <string name="task_proof_uploading">Uploading…</string>
+    <string name="task_created_at">Assigned %1$s</string>
+    <string name="task_created_by">Task from: %1$s</string>
+    <string name="task_deadline">Deadline: %1$s</string>
+    <string name="notif_deadline_title">Deadline soon ⏰</string>
+    <string name="notif_deadline_body">Task \"%1$s\" is due soon</string>
+    <string name="task_completed_at">Finished %1$s</string>
+
+    <!-- Job -->
+    <string name="job_title">Hourly work</string>
+    <string name="job_empty">No hourly work assigned yet</string>
+    <string name="job_rate">%1$s / hour</string>
+    <string name="job_min_withdrawal">Minimum to withdraw: %1$s</string>
+    <string name="job_total_time">Total time</string>
+    <string name="job_earned_now">Earned</string>
+    <string name="job_earned_note">Earnings go to your balance automatically.</string>
+    <string name="job_running">Running</string>
+    <string name="job_stopped">Stopped</string>
+    <string name="job_withdraw">Withdraw %1$s</string>
+    <string name="job_withdraw_pending">Waiting for approval…</string>
+    <string name="job_withdraw_below_min">Below the minimum (%1$s)</string>
+    <string name="job_withdraw_open">Withdraw funds</string>
+    <string name="withdraw_title">Withdraw funds</string>
+    <string name="withdraw_balance">Balance</string>
+    <string name="withdraw_min">Minimum</string>
+    <string name="withdraw_amount">Amount (₴)</string>
+    <string name="withdraw_all">Withdraw all (%1$s)</string>
+    <string name="withdraw_confirm">Request withdrawal</string>
+    <string name="withdraw_below_min">At least the minimum (%1$s)</string>
+    <string name="withdraw_above_balance">No more than the balance (%1$s)</string>
+    <string name="job_history">Withdrawal history</string>
+    <string name="job_log_approved">Received %1$s</string>
+    <string name="job_log_awaiting">Approved %1$s (awaiting payout)</string>
+    <string name="job_log_declined">Withdrawal of %1$s declined</string>
+    <string name="job_log_pending">Requested %1$s</string>
+    <string name="job_log_period">for the period %1$s — %2$s</string>
+    <string name="job_total_withdrawn">Withdrawn in total: %1$s</string>
+    <string name="job_stopped_at">Stopped at %1$s</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_earned_total">Earned in total</string>
+    <string name="profile_bonuses_total">including %1$s in bonuses</string>
+    <string name="profile_rewards">Rewards 🎁</string>
+    <string name="profile_reward_default">Bonus</string>
+    <string name="profile_language">Language</string>
+    <string name="profile_logout">Sign out</string>
+    <string name="profile_logout_confirm">Sign out of the account?</string>
+    <string name="profile_version">Version %1$s</string>
+    <string name="profile_copyright">© %1$d Zakharoff · Oleksandr Zakharov</string>
+    <string name="profile_location">Geolocation</string>
+    <string name="profile_location_hint">Off. When enabled, the phone shares its location with the family about every 15 minutes.</string>
+    <string name="profile_location_waiting">On · waiting for the first point…</string>
+    <string name="profile_location_last_sent">On · last sent %1$s</string>
+    <string name="profile_location_tips_open">Not updating in the background? Open tips</string>
+    <string name="location_tips_title">Background geolocation</string>
+    <string name="location_tips_body">So coordinates arrive every ~15 min even with the app closed, some phones need setup: allow running without battery limits and enable autostart.</string>
+    <string name="location_tips_battery">Remove battery limits</string>
+    <string name="location_tips_autostart">Autostart settings</string>
+    <string name="profile_notifications_hint">Allow notifications so you never miss a new task!</string>
+    <string name="profile_notifications_grant">Allow notifications</string>
+
+    <!-- Common -->
+    <string name="common_cancel">Cancel</string>
+    <string name="common_ok">OK</string>
+    <string name="common_retry">Retry</string>
+    <string name="common_loading">Loading…</string>
+    <string name="common_error">Something went wrong: %1$s</string>
+    <string name="common_offline">No connection. Pull to refresh.</string>
+
+    <!-- Update -->
+    <string name="update_available_title">New version %1$s available</string>
+    <string name="update_action">Update</string>
+    <string name="update_downloading">Downloading…</string>
+    <string name="notif_update_title">Update %1$s available 🎉</string>
+    <string name="notif_update_body">Open the app and tap Update</string>
+    <string name="notif_task_approved_title">Task accepted ✅</string>
+    <string name="notif_task_approved_body">“%1$s” — accepted!</string>
+    <string name="notif_task_rejected_title">Task rejected ❌</string>
+    <string name="notif_task_rejected_body">“%1$s” was rejected</string>
+    <string name="notif_task_rejected_note">“%1$s”: %2$s</string>
+    <string name="notif_task_rework_title">Task to redo 🔧</string>
+    <string name="notif_task_rework_body">“%1$s” needs some rework</string>
+    <string name="notif_task_rework_note">“%1$s”: %2$s</string>
+    <string name="notif_paid_title">Payment received: %1$s 💰</string>
+    <string name="notif_withdrawal_declined_note">Withdrawal of %1$s was declined: %2$s</string>
+    <string name="notif_cash_pending_title">Cash ready 💵</string>
+    <string name="notif_cash_pending_body">%1$s was handed to you in cash — please confirm you received it.</string>
+    <string name="notif_adjust_title">Balance change: %1$s</string>
+    <string name="notif_adjust_body">%1$s</string>
+    <string name="notif_adjust_body_plain">Your balance was adjusted.</string>
+
+    <!-- Balance screen -->
+    <string name="balance_title">Balance</string>
+    <string name="balance_available">Available balance</string>
+    <string name="balance_withdraw">Request a withdrawal</string>
+    <string name="balance_min_hint">Minimum withdrawal is %1$s</string>
+    <string name="balance_withdrawals_off">Withdrawals are temporarily disabled.</string>
+    <string name="balance_confirm_cash">You received %1$s in cash</string>
+    <string name="balance_confirm_received">Confirm receipt</string>
+    <string name="balance_your_requests">Your requests</string>
+    <string name="balance_operations">Operations</string>
+    <string name="balance_no_ops">No operations yet</string>
+    <string name="balance_status_requested">Requested</string>
+    <string name="balance_status_approved">Approved</string>
+    <string name="balance_cancel">Cancel</string>
+    <string name="ledger_task">Task</string>
+    <string name="ledger_job">Work</string>
+    <string name="ledger_bonus">Bonus</string>
+    <string name="ledger_adjustment">Adjustment</string>
+    <string name="ledger_withdrawal">Withdrawal</string>
+    <string name="ledger_reversal">Refund</string>
+    <string name="notif_task_paid_body">For the task “%1$s”</string>
+    <string name="notif_withdrawal_paid_body">Your withdrawal has been paid out</string>
+
+    <!-- Notifications -->
+    <string name="channel_tasks">New tasks</string>
+    <string name="channel_job">Hourly work</string>
+    <string name="channel_decisions">Withdrawal decisions</string>
+    <string name="channel_system">Connection</string>
+    <string name="channel_tracking">Task timer</string>
+    <string name="tracking_in_progress">Task in progress — the timer is running</string>
+    <string name="offline_lost_title">No internet 📡</string>
+    <string name="offline_lost_body">The timer is stopped and waiting for the connection. If it does not return within 10 minutes, the task will be paused.</string>
+    <string name="offline_back_title">Internet is back! 🎉</string>
+    <string name="offline_back_body">The timer continues. Offline time did not count.</string>
+    <string name="offline_paused_title">Task paused ⏸️</string>
+    <string name="offline_paused_body">No internet for more than 10 minutes. Open the task and press Start to continue.</string>
+    <string name="notif_task_created_title">New task! 🐷</string>
+    <string name="notif_task_created_body">%1$s — %2$s</string>
+    <string name="notif_job_assigned_title">New hourly work</string>
+    <string name="notif_job_assigned_body">%1$s · %2$s / hour</string>
+    <string name="notif_job_started_title">Work started! ▶️</string>
+    <string name="notif_job_started_body">%1$s — the timer is running, go-go-go!</string>
+    <string name="notif_job_stopped_title">Work stopped ⏸️</string>
+    <string name="notif_job_stopped_body">%1$s — the timer is paused</string>
+    <string name="notif_withdrawal_approved_title">Money received! ✅</string>
+    <string name="notif_withdrawal_approved_body">The withdrawal of %1$s was approved</string>
+    <string name="notif_withdrawal_declined_title">Withdrawal declined ❌</string>
+    <string name="notif_withdrawal_declined_body">The withdrawal of %1$s was declined</string>
+    <string name="notif_bonus_title">Bonus %1$s 🎁</string>
+    <string name="notif_bonus_body">%1$s</string>
+    <string name="notif_bonus_body_plain">You got a reward!</string>
+    <string name="task_proof_photo_hint">Up to 10 photos — compressed automatically</string>
+    <string name="avatar_crop_title">Crop the photo</string>
+    <string name="avatar_crop_hint">Drag to position · pinch to zoom</string>
+    <string name="common_done">Done</string>
+    <string name="profile_avatar_add">Add photo</string>
+    <string name="profile_avatar_change">Change photo</string>
+    <string name="profile_avatar_remove">Remove</string>
+</resources>
