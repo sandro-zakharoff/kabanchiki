@@ -1,0 +1,14 @@
+# Supabase CLI project config for Kabanchiki.
+# The webhook calls send-push with a shared secret header instead of a JWT.
+project_id = "kabanchiki"
+
+[functions.send-push]
+verify_jwt = false
+
+# The admin function does its own parent verification (reads the JWT itself).
+[functions.admin]
+verify_jwt = false
+
+# tg-auth authenticates the caller via Telegram initData, not a Supabase JWT.
+[functions.tg-auth]
+verify_jwt = false

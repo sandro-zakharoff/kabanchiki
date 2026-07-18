@@ -1,0 +1,36 @@
+-- Kabanchiki: Database Webhook outbox -> send-push Edge Function.
+-- Applied at deploy time with real values substituted:
+--   {{PROJECT_REF}}     e.g. abcdefghijklmnop (from the project URL)
+--   {{WEBHOOK_SECRET}}  the same value as the WEBHOOK_SECRET function secret
+-- Requires the pg_net extension (enabled by default on Supabase).
+
+create extension if not exists pg_net;
+
+drop trigger if exists outbox_send_push on public.notifications_outbox;
+
+create or replace function public.trg_outbox_send_push()
+returns trigger
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+begin
+    perform net.http_post(
+        url := 'https://{{PROJECT_REF}}.supabase.co/functions/v1/send-push',
+        headers := jsonb_build_object(
+            'Content-Type', 'application/json',
+            'X-Webhook-Secret', '{{WEBHOOK_SECRET}}'
+        ),
+        body := jsonb_build_object(
+            'type', 'INSERT',
+            'table', 'notifications_outbox',
+            'record', to_jsonb(new)
+        ),
+        timeout_milliseconds := 5000
+    );
+    return new;
+end;
+$$;
+
+create trigger outbox_send_push after insert on public.notifications_outbox
+for each row execute function public.trg_outbox_send_push();
