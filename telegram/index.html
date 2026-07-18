@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="author" content="Oleksandr Zakharov">
+  <meta name="copyright" content="© 2026 Zakharoff · Oleksandr Zakharov">
+  <meta name="application-name" content="Kabanchiki">
+  <title>Kabanchiki</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Paint the correct scheme BEFORE the stylesheet loads: no white flash
+       in a dark Telegram client (and no black flash in a light one). -->
+  <script>
+    (function () {
+      try {
+        var tp = window.Telegram && Telegram.WebApp;
+        var dark = tp && tp.colorScheme === "dark";
+        document.documentElement.style.background =
+          (tp && tp.themeParams && tp.themeParams.secondary_bg_color) ||
+          (dark ? "#17161A" : "#ECE6E3");
+        document.addEventListener("DOMContentLoaded", function () {
+          document.body.dataset.scheme = dark ? "dark" : "light";
+        });
+      } catch (e) { /* defaults apply */ }
+    })();
+  </script>
+  <link rel="stylesheet" href="./styles.css?v=212">
+</head>
+<body data-scheme="light">
+  <div class="gate" id="loading">
+    <img class="gate-logo" src="./assets/logo.png" alt="Kabanchiki">
+    <div class="spinner"></div>
+    <p>Завантаження…</p>
+  </div>
+  <!-- ?v= busts the Pages/WebView HTTP cache; bump it together with the JS imports on release -->
+  <script src="./config.js?v=212"></script>
+  <script type="module" src="./js/app.js?v=212"></script>
+</body>
+</html>
