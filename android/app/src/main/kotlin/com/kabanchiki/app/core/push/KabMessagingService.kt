@@ -41,9 +41,9 @@ class KabMessagingService : FirebaseMessagingService() {
         val event = data["event_type"] ?: return
         NotificationChannels.ensure(this)
 
-        val (channel, title, body) = when (event) {
+        val (category, title, body) = when (event) {
             "task_created" -> Triple(
-                NotificationChannels.TASKS,
+                NotificationCategory.TASKS,
                 getString(R.string.notif_task_created_title),
                 getString(
                     R.string.notif_task_created_body,
@@ -52,7 +52,7 @@ class KabMessagingService : FirebaseMessagingService() {
                 ),
             )
             "job_assigned" -> Triple(
-                NotificationChannels.JOB,
+                NotificationCategory.JOBS,
                 getString(R.string.notif_job_assigned_title),
                 getString(
                     R.string.notif_job_assigned_body,
@@ -61,19 +61,19 @@ class KabMessagingService : FirebaseMessagingService() {
                 ),
             )
             "job_started" -> Triple(
-                NotificationChannels.JOB,
+                NotificationCategory.JOBS,
                 getString(R.string.notif_job_started_title),
                 getString(R.string.notif_job_started_body, data["title"].orEmpty()),
             )
             "job_stopped" -> Triple(
-                NotificationChannels.JOB,
+                NotificationCategory.JOBS,
                 getString(R.string.notif_job_stopped_title),
                 getString(R.string.notif_job_stopped_body, data["title"].orEmpty()),
             )
             "withdrawal_approved" -> {
                 val amount = formatMoney(data["amount"]?.toDoubleOrNull() ?: 0.0)
                 Triple(
-                    NotificationChannels.DECISIONS,
+                    NotificationCategory.PAYOUTS,
                     getString(R.string.notif_withdrawal_approved_title),
                     getString(R.string.notif_withdrawal_approved_body, amount),
                 )
@@ -82,7 +82,7 @@ class KabMessagingService : FirebaseMessagingService() {
                 val amount = formatMoney(data["amount"]?.toDoubleOrNull() ?: 0.0)
                 val reason = data["reason"].orEmpty()
                 Triple(
-                    NotificationChannels.DECISIONS,
+                    NotificationCategory.PAYOUTS,
                     getString(R.string.notif_withdrawal_declined_title),
                     if (reason.isBlank()) getString(R.string.notif_withdrawal_declined_body, amount)
                     else getString(R.string.notif_withdrawal_declined_note, amount, reason),
@@ -91,7 +91,7 @@ class KabMessagingService : FirebaseMessagingService() {
             "withdrawal_cash_pending" -> {
                 val amount = formatMoney(data["amount"]?.toDoubleOrNull() ?: 0.0)
                 Triple(
-                    NotificationChannels.DECISIONS,
+                    NotificationCategory.PAYOUTS,
                     getString(R.string.notif_cash_pending_title),
                     getString(R.string.notif_cash_pending_body, amount),
                 )
@@ -101,7 +101,7 @@ class KabMessagingService : FirebaseMessagingService() {
                 val note = data["note"].orEmpty()
                 val signed = (if (amount >= 0) "+" else "") + formatMoney(amount)
                 Triple(
-                    NotificationChannels.DECISIONS,
+                    NotificationCategory.PAYOUTS,
                     getString(R.string.notif_adjust_title, signed),
                     if (note.isBlank()) getString(R.string.notif_adjust_body_plain)
                     else getString(R.string.notif_adjust_body, note),
@@ -111,19 +111,19 @@ class KabMessagingService : FirebaseMessagingService() {
                 val amount = formatMoney(data["amount"]?.toDoubleOrNull() ?: 0.0)
                 val note = data["note"].orEmpty()
                 Triple(
-                    NotificationChannels.DECISIONS,
+                    NotificationCategory.PAYOUTS,
                     getString(R.string.notif_bonus_title, amount),
                     if (note.isBlank()) getString(R.string.notif_bonus_body_plain)
                     else getString(R.string.notif_bonus_body, note),
                 )
             }
             "app_update" -> Triple(
-                NotificationChannels.SYSTEM,
+                NotificationCategory.SYSTEM,
                 getString(R.string.notif_update_title, data["version_name"].orEmpty()),
                 data["notes"].orEmpty().ifBlank { getString(R.string.notif_update_body) },
             )
             "deadline_soon" -> Triple(
-                NotificationChannels.TASKS,
+                NotificationCategory.TASKS,
                 getString(R.string.notif_deadline_title),
                 getString(R.string.notif_deadline_body, data["title"].orEmpty()),
             )
@@ -132,18 +132,18 @@ class KabMessagingService : FirebaseMessagingService() {
                 val note = data["note"].orEmpty()
                 when (data["action"]) {
                     "approve" -> Triple(
-                        NotificationChannels.DECISIONS,
+                        NotificationCategory.PAYOUTS,
                         getString(R.string.notif_task_approved_title),
                         getString(R.string.notif_task_approved_body, title),
                     )
                     "rework" -> Triple(
-                        NotificationChannels.TASKS,
+                        NotificationCategory.TASKS,
                         getString(R.string.notif_task_rework_title),
                         if (note.isBlank()) getString(R.string.notif_task_rework_body, title)
                         else getString(R.string.notif_task_rework_note, title, note),
                     )
                     else -> Triple(
-                        NotificationChannels.DECISIONS,
+                        NotificationCategory.PAYOUTS,
                         getString(R.string.notif_task_rejected_title),
                         if (note.isBlank()) getString(R.string.notif_task_rejected_body, title)
                         else getString(R.string.notif_task_rejected_note, title, note),
@@ -151,14 +151,14 @@ class KabMessagingService : FirebaseMessagingService() {
                 }
             }
             "withdrawal_paid" -> Triple(
-                NotificationChannels.DECISIONS,
+                NotificationCategory.PAYOUTS,
                 getString(R.string.notif_paid_title, formatMoney(data["amount"]?.toDoubleOrNull() ?: 0.0)),
                 getString(R.string.notif_withdrawal_paid_body),
             )
             else -> return
         }
 
-        showNotification(event, channel, title, body)
+        showNotification(event, NotificationChannels.channelId(this, category), title, body)
     }
 
     private fun rewardText(type: String?, amount: String?): String {

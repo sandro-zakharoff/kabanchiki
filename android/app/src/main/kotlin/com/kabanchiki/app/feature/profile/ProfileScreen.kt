@@ -336,6 +336,9 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
             }
         }
 
+        // Per-category notification sounds, with preview.
+        NotificationSoundsCard()
+
         // Geolocation: explicit opt-in, visible status (no hidden tracking).
         val locationEnabled by viewModel.locationEnabled.collectAsState(initial = false)
         val locationLastSent by viewModel.locationLastSent.collectAsState(initial = 0L)

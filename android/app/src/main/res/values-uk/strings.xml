@@ -181,6 +181,23 @@
     <string name="channel_system">З\'єднання</string>
     <string name="channel_tracking">Таймер завдання</string>
     <string name="tracking_in_progress">Завдання виконується — таймер іде</string>
+
+    <!-- Notification sounds -->
+    <string name="sound_section_title">Звуки сповіщень</string>
+    <string name="sound_section_hint">Оберіть звук для кожного типу сповіщень.</string>
+    <string name="sound_pick_hint">Торкніться звука, щоб прослухати.</string>
+    <string name="sound_preview">Прослухати</string>
+    <string name="sound_classic">Класичний</string>
+    <string name="sound_aurora">Аврора</string>
+    <string name="sound_chime">Дзвіночок</string>
+    <string name="sound_ripple">Хвиля</string>
+    <string name="sound_beacon">Маяк</string>
+    <string name="sound_cat_tasks_desc">Нові завдання, дедлайни, доробки</string>
+    <string name="sound_cat_jobs_desc">Оновлення погодинних робіт</string>
+    <string name="sound_cat_payouts_desc">Гроші, рішення, бонуси</string>
+    <string name="sound_cat_system_desc">Оновлення застосунку та з\'єднання</string>
+    <string name="action_cancel">Скасувати</string>
+    <string name="action_save">Зберегти</string>
     <string name="offline_lost_title">Немає інтернету 📡</string>
     <string name="offline_lost_body">Таймер зупинено, чекаємо на з\'єднання. Якщо інтернет не з\'явиться за 10 хвилин, завдання стане на паузу.</string>
     <string name="offline_back_title">Інтернет повернувся! 🎉</string>

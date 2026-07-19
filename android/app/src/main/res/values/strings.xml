@@ -181,6 +181,23 @@
     <string name="channel_system">Connection</string>
     <string name="channel_tracking">Task timer</string>
     <string name="tracking_in_progress">Task in progress — the timer is running</string>
+
+    <!-- Notification sounds -->
+    <string name="sound_section_title">Notification sounds</string>
+    <string name="sound_section_hint">Pick a sound for each kind of notification.</string>
+    <string name="sound_pick_hint">Tap a sound to hear it.</string>
+    <string name="sound_preview">Preview</string>
+    <string name="sound_classic">Classic</string>
+    <string name="sound_aurora">Aurora</string>
+    <string name="sound_chime">Chime</string>
+    <string name="sound_ripple">Ripple</string>
+    <string name="sound_beacon">Beacon</string>
+    <string name="sound_cat_tasks_desc">New tasks, deadlines, rework</string>
+    <string name="sound_cat_jobs_desc">Hourly work updates</string>
+    <string name="sound_cat_payouts_desc">Money, approvals, bonuses</string>
+    <string name="sound_cat_system_desc">App updates and connection</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
     <string name="offline_lost_title">No internet 📡</string>
     <string name="offline_lost_body">The timer is stopped and waiting for the connection. If it does not return within 10 minutes, the task will be paused.</string>
     <string name="offline_back_title">Internet is back! 🎉</string>

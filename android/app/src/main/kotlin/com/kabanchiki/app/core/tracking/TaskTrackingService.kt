@@ -17,6 +17,7 @@ import com.kabanchiki.app.R
 import com.kabanchiki.app.core.data.TasksRepository
 import com.kabanchiki.app.core.data.TimeSync
 import com.kabanchiki.app.core.model.parseInstant
+import com.kabanchiki.app.core.push.NotificationCategory
 import com.kabanchiki.app.core.push.NotificationChannels
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
@@ -205,7 +206,8 @@ class TaskTrackingService : Service() {
 
     private fun notifyEvent(title: String, body: String) {
         runCatching {
-            val notification = NotificationCompat.Builder(this, NotificationChannels.SYSTEM)
+            val channel = NotificationChannels.channelId(this, NotificationCategory.SYSTEM)
+            val notification = NotificationCompat.Builder(this, channel)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(title)
                 .setContentText(body)
