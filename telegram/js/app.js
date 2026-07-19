@@ -1,14 +1,14 @@
 // Kabanchiki Mini App — controller: auth, realtime, rendering, actions.
 
-import * as api from "./api.js?v=212";
-import { AuthNeeded, NotLinked, NetworkError, AuthFailed, supabase, serverNow } from "./api.js?v=212";
-import { ONLINE_WINDOW_MS } from "./config.js?v=212";
+import * as api from "./api.js?v=213";
+import { AuthNeeded, NotLinked, NetworkError, AuthFailed, supabase, serverNow } from "./api.js?v=213";
+import { ONLINE_WINDOW_MS } from "./config.js?v=213";
 import {
   money, duration, dateTimeLocal, parseTs, initials, escapeHtml, deadline,
   DIFFICULTY_COLORS, TASK_STATUS, WITHDRAWAL_STATUS,
-} from "./format.js?v=212";
-import * as ui from "./ui.js?v=212";
-import { optimizeImage } from "./images.js?v=212";
+} from "./format.js?v=213";
+import * as ui from "./ui.js?v=213";
+import { optimizeImage } from "./images.js?v=213";
 
 const tg = window.Telegram?.WebApp;
 const $ = (sel) => document.querySelector(sel);
@@ -1001,8 +1001,12 @@ function withdrawalCard(w) {
   const methodChip = w.method ? " " + chip(w.method === "card" ? "на карту" : "готівка", "") : "";
   const lines = [];
   if (w.comment) lines.push(`<div class="card-s">Коментар: ${escapeHtml(w.comment)}</div>`);
-  if (w.status === "rejected" && w.reject_reason)
-    lines.push(`<div class="card-s neg">Причина: ${escapeHtml(w.reject_reason)}</div>`);
+  if (w.status === "rejected" && w.reject_reason) {
+    const reason = w.reject_reason === "not_received" ? "Виконавець не отримав готівку"
+      : w.reject_reason === "cancelled" ? "Скасовано виконавцем"
+      : "Причина: " + escapeHtml(w.reject_reason);
+    lines.push(`<div class="card-s neg">${reason}</div>`);
+  }
   if (w.paid_at) lines.push(`<div class="card-s muted">виплачено ${dateTimeLocal(w.paid_at)}` +
     (w.confirmed_at ? ` · підтверджено ${dateTimeLocal(w.confirmed_at)}` : "") + `</div>`);
   const act = w.status === "requested"

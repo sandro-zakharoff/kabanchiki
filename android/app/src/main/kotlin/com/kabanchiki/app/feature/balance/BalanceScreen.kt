@@ -94,6 +94,7 @@ class BalanceViewModel @Inject constructor(
     fun withdraw(amount: Double?) = action { balance.requestWithdrawal(amount) }
     fun cancel(id: String) = action { balance.cancelWithdrawal(id) }
     fun confirm(id: String) = action { balance.confirmWithdrawal(id) }
+    fun decline(id: String) = action { balance.declineWithdrawal(id) }
 
     private fun action(block: suspend () -> Unit) {
         viewModelScope.launch {
@@ -204,6 +205,13 @@ fun BalanceScreen(viewModel: BalanceViewModel = hiltViewModel()) {
                             KButton(
                                 text = stringResource(R.string.balance_confirm_received),
                                 onClick = { viewModel.confirm(w.id) },
+                                enabled = !busy,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                            KButton(
+                                text = stringResource(R.string.balance_not_received),
+                                onClick = { viewModel.decline(w.id) },
+                                variant = KButtonVariant.Danger,
                                 enabled = !busy,
                                 modifier = Modifier.fillMaxWidth(),
                             )

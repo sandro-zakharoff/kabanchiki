@@ -72,6 +72,11 @@ class BalanceRepository @Inject constructor(
         refresh()
     }
 
+    suspend fun declineWithdrawal(id: String) {
+        client.postgrest.rpc("decline_withdrawal", buildJsonObject { put("p_id", id) })
+        refresh()
+    }
+
     fun clear() {
         _ledger.value = emptyList()
         _withdrawals.value = emptyList()

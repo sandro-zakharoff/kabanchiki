@@ -184,7 +184,13 @@ Item {
                         }
                         Text {
                             visible: model.status === "rejected" && model.rejectReason.length > 0
-                            text: qsTr("Reason: %1").arg(model.rejectReason)
+                            text: {
+                                if (model.rejectReason === "not_received")
+                                    return qsTr("The assignee did not receive the cash")
+                                if (model.rejectReason === "cancelled")
+                                    return qsTr("Cancelled by the assignee")
+                                return qsTr("Reason: %1").arg(model.rejectReason)
+                            }
                             font.pixelSize: Theme.fontSizeSm
                             color: Theme.danger
                             wrapMode: Text.WordWrap

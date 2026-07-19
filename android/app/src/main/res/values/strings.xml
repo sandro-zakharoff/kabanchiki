@@ -158,6 +158,7 @@
     <string name="balance_withdrawals_off">Withdrawals are temporarily disabled.</string>
     <string name="balance_confirm_cash">You received %1$s in cash</string>
     <string name="balance_confirm_received">Confirm receipt</string>
+    <string name="balance_not_received">I did not receive it</string>
     <string name="balance_your_requests">Your requests</string>
     <string name="balance_operations">Operations</string>
     <string name="balance_no_ops">No operations yet</string>

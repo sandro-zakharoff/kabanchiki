@@ -158,6 +158,7 @@
     <string name="balance_withdrawals_off">Виводи тимчасово вимкнено.</string>
     <string name="balance_confirm_cash">Ти отримав %1$s готівкою</string>
     <string name="balance_confirm_received">Підтвердити отримання</string>
+    <string name="balance_not_received">Я не отримав</string>
     <string name="balance_your_requests">Твої запити</string>
     <string name="balance_operations">Операції</string>
     <string name="balance_no_ops">Ще немає операцій</string>
