@@ -30,6 +30,104 @@ function json(body: unknown, status = 200): Response {
   });
 }
 
+// ---------------------------------------------------------------- full child erasure
+
+/** Delete every object under `<childId>/` in a storage bucket (batched). */
+async function purgeBucketPrefix(bucket: string, childId: string): Promise<void> {
+  for (;;) {
+    const { data, error } = await admin.storage.from(bucket)
+      .list(childId, { limit: 100 });
+    if (error || !data || data.length === 0) return;
+    const paths = data.map((o) => `${childId}/${o.name}`);
+    const { error: rmErr } = await admin.storage.from(bucket).remove(paths);
+    if (rmErr) {
+      console.error(`purge ${bucket}/${childId} failed`, rmErr.message);
+      return;
+    }
+    if (data.length < 100) return;
+  }
+}
+
+/** Best-effort Google Drive deletion of the child's files (photos, avatar). */
+async function purgeDriveFiles(fileIds: string[]): Promise<void> {
+  if (fileIds.length === 0) return;
+  const { data: s } = await admin
+    .from("app_secrets")
+    .select("gdrive_client_id, gdrive_client_secret, gdrive_refresh_token")
+    .eq("id", true).maybeSingle();
+  if (!s?.gdrive_client_id || !s?.gdrive_client_secret || !s?.gdrive_refresh_token) return;
+
+  const tokenResp = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: s.gdrive_client_id,
+      client_secret: s.gdrive_client_secret,
+      refresh_token: s.gdrive_refresh_token,
+      grant_type: "refresh_token",
+    }),
+  });
+  const token = (await tokenResp.json())?.access_token;
+  if (!token) {
+    console.error("drive token refresh failed during child erasure");
+    return;
+  }
+  for (const id of fileIds) {
+    const resp = await fetch(
+      `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}`,
+      { method: "DELETE", headers: { Authorization: `Bearer ${token}` } },
+    );
+    if (!resp.ok && resp.status !== 404) {
+      console.error("drive delete failed", id, resp.status);
+    }
+  }
+}
+
+/**
+ * Erase absolutely everything about an assignee: photos in Supabase Storage and
+ * on Google Drive, queue rows about them, then the auth user — which cascades
+ * every table row (profile, tasks, jobs membership, ledger, withdrawals,
+ * bonuses, devices, locations, journal events) via foreign keys.
+ */
+async function eraseChild(childId: string): Promise<void> {
+  // 1. Collect Drive file ids before the rows cascade away.
+  const driveIds = new Set<string>();
+  const { data: prof } = await admin
+    .from("profiles").select("avatar_storage, avatar_path").eq("id", childId).maybeSingle();
+  if (prof?.avatar_storage === "drive" && prof.avatar_path) driveIds.add(prof.avatar_path);
+
+  const { data: taskAtt } = await admin
+    .from("attachments")
+    .select("storage, path, thumb_path, tasks!inner(child_id)")
+    .eq("tasks.child_id", childId);
+  const { data: wdAtt } = await admin
+    .from("attachments")
+    .select("storage, path, thumb_path, withdrawals!inner(child_id)")
+    .eq("withdrawals.child_id", childId);
+  for (const a of [...(taskAtt ?? []), ...(wdAtt ?? [])]) {
+    if (a.storage === "drive") {
+      if (a.path) driveIds.add(a.path);
+      if (a.thumb_path) driveIds.add(a.thumb_path);
+    }
+  }
+
+  // 2. Storage: everything lives under a per-child prefix in each bucket.
+  for (const bucket of ["task-photos", "proof-photos", "avatars"]) {
+    await purgeBucketPrefix(bucket, childId);
+  }
+  await purgeDriveFiles([...driveIds]);
+
+  // 3. Telegram queue rows about this child's events (events cascade on user
+  //    deletion, but tg_outbox only nulls its reference — remove them fully).
+  const { data: evs } = await admin.from("events").select("id").eq("child_id", childId);
+  const evIds = (evs ?? []).map((e) => e.id);
+  if (evIds.length > 0) await admin.from("tg_outbox").delete().in("event_id", evIds);
+
+  // 4. The auth user: cascades profiles and every child-keyed table.
+  const { error } = await admin.auth.admin.deleteUser(childId);
+  if (error) throw new Error(error.message);
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
 
@@ -92,8 +190,8 @@ Deno.serve(async (req) => {
       }
 
       case "delete_child": {
-        const { error } = await admin.auth.admin.deleteUser(String(body.child_id));
-        return error ? json({ error: error.message }, 400) : json({ ok: true });
+        await eraseChild(String(body.child_id));
+        return json({ ok: true });
       }
 
       case "create_parent": {
