@@ -229,122 +229,137 @@
         <translation>Налаштування балансу збережено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2049"/>
+        <location filename="../backend.py" line="1997"/>
+        <source>Journal cleared (%1 entries)</source>
+        <translation>Журнал очищено (%1 записів)</translation>
+    </message>
+    <message>
+        <location filename="../backend.py" line="2009"/>
+        <source>Location history cleared (%1 points)</source>
+        <translation>Історію локацій очищено (%1 точок)</translation>
+    </message>
+    <message>
+        <location filename="../backend.py" line="2022"/>
+        <source>Delivered notifications cleared (%1)</source>
+        <translation>Доставлені сповіщення очищено (%1)</translation>
+    </message>
+    <message>
+        <location filename="../backend.py" line="2096"/>
         <source>Bot token removed</source>
         <translation>Токен бота видалено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2070"/>
+        <location filename="../backend.py" line="2117"/>
         <source>Telegram settings saved</source>
         <translation>Налаштування Telegram збережено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2079"/>
+        <location filename="../backend.py" line="2126"/>
         <source>Bot notifications connected</source>
         <translation>Сповіщення бота підключено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2083"/>
+        <location filename="../backend.py" line="2130"/>
         <source>Settings saved, but bot notifications failed: %1</source>
         <translation>Налаштування збережено, але сповіщення бота не вдалося: %1</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2093"/>
+        <location filename="../backend.py" line="2140"/>
         <source>Set the bot username first</source>
         <translation>Спочатку вкажіть ім&apos;я бота</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2109"/>
+        <location filename="../backend.py" line="2156"/>
         <source>Telegram unlinked</source>
         <translation>Telegram відв&apos;язано</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2146"/>
+        <location filename="../backend.py" line="2193"/>
         <source>Enter the Client ID and Client Secret</source>
         <translation>Вкажіть Client ID і Client Secret</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2151"/>
+        <location filename="../backend.py" line="2198"/>
         <source>Waiting for Google sign-in in the browser…</source>
         <translation>Очікуємо вхід у Google у браузері…</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2159"/>
+        <location filename="../backend.py" line="2206"/>
         <source>Google Drive connected: %1</source>
         <translation>Google Drive підключено: %1</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2176"/>
+        <location filename="../backend.py" line="2223"/>
         <source>Google Drive disconnected</source>
         <translation>Google Drive відключено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2186"/>
+        <location filename="../backend.py" line="2233"/>
         <source>Google Drive is not connected</source>
         <translation>Google Drive не підключено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2193"/>
+        <location filename="../backend.py" line="2240"/>
         <source>Google Drive works: %1</source>
         <translation>Google Drive працює: %1</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2203"/>
+        <location filename="../backend.py" line="2250"/>
         <source>Connect Google Drive first</source>
         <translation>Спочатку підключіть Google Drive</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2210"/>
+        <location filename="../backend.py" line="2257"/>
         <source>New photos now go to Google Drive</source>
         <translation>Нові фото тепер зберігаються на Google Drive</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2212"/>
+        <location filename="../backend.py" line="2259"/>
         <source>New photos now go to Supabase</source>
         <translation>Нові фото тепер зберігаються в Supabase</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2223"/>
+        <location filename="../backend.py" line="2270"/>
         <source>Copied</source>
         <translation>Скопійовано</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2269"/>
+        <location filename="../backend.py" line="2316"/>
         <source>There is already a pending withdrawal</source>
         <translation>Уже є запит на виведення, що очікує</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2270"/>
+        <location filename="../backend.py" line="2317"/>
         <source>Amount is below the minimum</source>
         <translation>Сума менша за мінімум</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2271"/>
+        <location filename="../backend.py" line="2318"/>
         <source>Amount exceeds the available balance</source>
         <translation>Сума перевищує доступний баланс</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2272"/>
+        <location filename="../backend.py" line="2319"/>
         <source>Withdrawals are disabled</source>
         <translation>Виводи вимкнено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2273"/>
+        <location filename="../backend.py" line="2320"/>
         <source>Attach a receipt first</source>
         <translation>Спершу прикріпіть квитанцію</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2274"/>
+        <location filename="../backend.py" line="2321"/>
         <source>A comment is required</source>
         <translation>Потрібен коментар</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2275"/>
+        <location filename="../backend.py" line="2322"/>
         <source>Enter a valid amount</source>
         <translation>Введіть коректну суму</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2276"/>
+        <location filename="../backend.py" line="2323"/>
         <source>Choose a payout method</source>
         <translation>Оберіть спосіб виплати</translation>
     </message>
@@ -353,52 +368,53 @@
         <translation type="vanished">Баланс менший за мінімум</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2277"/>
+        <location filename="../backend.py" line="2324"/>
         <source>Already decided</source>
         <translation>Рішення вже ухвалено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2278"/>
+        <location filename="../backend.py" line="2325"/>
         <source>Action is not allowed in the current status</source>
         <translation>Дія недоступна в поточному статусі</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2279"/>
+        <location filename="../backend.py" line="2326"/>
         <source>The family must keep at least one active owner</source>
         <translation>У родині має лишатися принаймні один активний власник</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2280"/>
+        <location filename="../backend.py" line="2327"/>
         <source>You cannot disable your own account</source>
         <translation>Не можна відключити власний акаунт</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2281"/>
+        <location filename="../backend.py" line="2328"/>
         <source>You cannot delete your own account</source>
         <translation>Не можна видалити власний акаунт</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2282"/>
+        <location filename="../backend.py" line="2329"/>
+        <location filename="../backend.py" line="2330"/>
         <source>Only an owner can do this</source>
         <translation>Це може зробити лише власник</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2285"/>
+        <location filename="../backend.py" line="2333"/>
         <source>Connected, but the Kabanchiki schema is missing. Deploy the database first.</source>
         <translation>З’єднання є, але схеми Kabanchiki немає. Спершу розгорніть базу даних.</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2287"/>
+        <location filename="../backend.py" line="2335"/>
         <source>Could not reach that address. Check the Supabase URL.</source>
         <translation>Не вдалося звернутися за цією адресою. Перевірте URL Supabase.</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2288"/>
+        <location filename="../backend.py" line="2336"/>
         <source>The anon key is not valid for this project.</source>
         <translation>anon-ключ недійсний для цього проєкту.</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2295"/>
+        <location filename="../backend.py" line="2343"/>
         <source>Error: %1</source>
         <translation>Помилка: %1</translation>
     </message>
@@ -503,12 +519,12 @@
         <translation>Бонус видалено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2239"/>
+        <location filename="../backend.py" line="2286"/>
         <source>Fill in the APK, version and code</source>
         <translation>Вкажіть APK, версію та код</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2249"/>
+        <location filename="../backend.py" line="2296"/>
         <source>Update published</source>
         <translation>Оновлення опубліковано</translation>
     </message>
@@ -1195,7 +1211,7 @@
 <context>
     <name>JournalPage</name>
     <message>
-        <location filename="../qml/JournalPage.qml" line="54"/>
+        <location filename="../qml/JournalPage.qml" line="57"/>
         <source>Journal</source>
         <translation>Журнал</translation>
     </message>
@@ -1296,66 +1312,81 @@
     </message>
     <message>
         <location filename="../qml/JournalPage.qml" line="28"/>
+        <source>paid out</source>
+        <translation>виплачено</translation>
+    </message>
+    <message>
+        <location filename="../qml/JournalPage.qml" line="29"/>
+        <source>receipt confirmed</source>
+        <translation>отримання підтверджено</translation>
+    </message>
+    <message>
+        <location filename="../qml/JournalPage.qml" line="30"/>
+        <source>overdue</source>
+        <translation>прострочено</translation>
+    </message>
+    <message>
+        <location filename="../qml/JournalPage.qml" line="31"/>
         <source>payment updated</source>
         <translation>оплату оновлено</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="29"/>
+        <location filename="../qml/JournalPage.qml" line="32"/>
         <source>granted</source>
         <translation>нараховано</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="30"/>
+        <location filename="../qml/JournalPage.qml" line="33"/>
         <source>assigned</source>
         <translation>призначено</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="31"/>
+        <location filename="../qml/JournalPage.qml" line="34"/>
         <source>unassigned</source>
         <translation>знято</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="32"/>
+        <location filename="../qml/JournalPage.qml" line="35"/>
         <source>blocked</source>
         <translation>заблоковано</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="33"/>
+        <location filename="../qml/JournalPage.qml" line="36"/>
         <source>unblocked</source>
         <translation>розблоковано</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="34"/>
+        <location filename="../qml/JournalPage.qml" line="37"/>
         <source>status changed</source>
         <translation>статус змінено</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="60"/>
+        <location filename="../qml/JournalPage.qml" line="63"/>
         <source>Who did what and when — across the desktop, the phones and Telegram</source>
         <translation>Хто, що і коли зробив — з комп&apos;ютера, телефонів і Telegram</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="81"/>
+        <location filename="../qml/JournalPage.qml" line="84"/>
         <source>Needs attention</source>
         <translation>Потребують уваги</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="98"/>
+        <location filename="../qml/JournalPage.qml" line="101"/>
         <source>Withdrawal %1</source>
         <translation>Вивід %1</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="123"/>
+        <location filename="../qml/JournalPage.qml" line="126"/>
         <source>Decline withdrawal</source>
         <translation>Відхилити вивід</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="124"/>
+        <location filename="../qml/JournalPage.qml" line="127"/>
         <source>Reason (the assignee will see it)</source>
         <translation>Причина (виконавець побачить)</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="132"/>
+        <location filename="../qml/JournalPage.qml" line="135"/>
         <source>Pay…</source>
         <translation>Виплатити…</translation>
     </message>
@@ -1364,13 +1395,13 @@
         <translation type="vanished">Вивід %1 · %2</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="114"/>
+        <location filename="../qml/JournalPage.qml" line="117"/>
         <source>Approve</source>
         <translation>Прийняти</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="121"/>
-        <location filename="../qml/JournalPage.qml" line="125"/>
+        <location filename="../qml/JournalPage.qml" line="124"/>
+        <location filename="../qml/JournalPage.qml" line="128"/>
         <source>Decline</source>
         <translation>Відхилити</translation>
     </message>
@@ -1379,92 +1410,92 @@
         <translation type="vanished">Позначити оплаченим</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="150"/>
+        <location filename="../qml/JournalPage.qml" line="153"/>
         <source>All events</source>
         <translation>Усі події</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="151"/>
+        <location filename="../qml/JournalPage.qml" line="154"/>
         <source>Tasks</source>
         <translation>Завдання</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="152"/>
+        <location filename="../qml/JournalPage.qml" line="155"/>
         <source>Jobs</source>
         <translation>Роботи</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="153"/>
+        <location filename="../qml/JournalPage.qml" line="156"/>
         <source>Withdrawals</source>
         <translation>Виводи</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="154"/>
+        <location filename="../qml/JournalPage.qml" line="157"/>
         <source>Bonuses</source>
         <translation>Бонуси</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="155"/>
+        <location filename="../qml/JournalPage.qml" line="158"/>
         <source>Assignees</source>
         <translation>Виконавці</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="163"/>
+        <location filename="../qml/JournalPage.qml" line="166"/>
         <source>Everyone</source>
         <translation>Усі</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="171"/>
+        <location filename="../qml/JournalPage.qml" line="174"/>
         <source>All time</source>
         <translation>Весь час</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="172"/>
+        <location filename="../qml/JournalPage.qml" line="175"/>
         <source>Today</source>
         <translation>Сьогодні</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="173"/>
+        <location filename="../qml/JournalPage.qml" line="176"/>
         <source>7 days</source>
         <translation>7 днів</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="174"/>
+        <location filename="../qml/JournalPage.qml" line="177"/>
         <source>30 days</source>
         <translation>30 днів</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="181"/>
+        <location filename="../qml/JournalPage.qml" line="184"/>
         <source>Search: task, assignee, note…</source>
         <translation>Пошук: завдання, виконавець, нотатка…</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="211"/>
+        <location filename="../qml/JournalPage.qml" line="214"/>
         <source>No events match the filters</source>
         <translation>Немає подій за цими фільтрами</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="271"/>
+        <location filename="../qml/JournalPage.qml" line="274"/>
         <source>System</source>
         <translation>Система</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="322"/>
+        <location filename="../qml/JournalPage.qml" line="325"/>
         <source>Edit</source>
         <translation>Редагувати</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="329"/>
+        <location filename="../qml/JournalPage.qml" line="332"/>
         <source>Delete</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="331"/>
+        <location filename="../qml/JournalPage.qml" line="334"/>
         <source>Delete bonus</source>
         <translation>Видалити бонус</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="332"/>
+        <location filename="../qml/JournalPage.qml" line="335"/>
         <source>The bonus of %1 will be removed from the assignee&apos;s balance. Delete?</source>
         <translation>Бонус %1 буде прибрано з балансу виконавця. Видалити?</translation>
     </message>
@@ -1886,22 +1917,22 @@ Profile → Geolocation. Points arrive about every 15 minutes.</source>
         <translation>Мова</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="616"/>
+        <location filename="../qml/SettingsPage.qml" line="678"/>
         <source>Android app updates</source>
         <translation>Оновлення застосунку Android</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="617"/>
+        <location filename="../qml/SettingsPage.qml" line="679"/>
         <source>Publish a new APK — assignees get a push and an in-app “Update” banner. No Play Market needed.</source>
         <translation>Опублікуй новий APK — виконавці отримають пуш і банер «Оновити» в застосунку. Play Market не потрібен.</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="620"/>
+        <location filename="../qml/SettingsPage.qml" line="682"/>
         <source>Publish an update…</source>
         <translation>Опублікувати оновлення…</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="646"/>
+        <location filename="../qml/SettingsPage.qml" line="708"/>
         <source>Family task &amp; reward system</source>
         <translation>Сімейна система завдань і винагород</translation>
     </message>
@@ -2192,52 +2223,147 @@ Profile → Geolocation. Points arrive about every 15 minutes.</source>
         <translation>Supabase (вбудоване)</translation>
     </message>
     <message>
+        <location filename="../qml/SettingsPage.qml" line="617"/>
+        <source>Maintenance</source>
+        <translation>Обслуговування</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="618"/>
+        <source>Free up history the family no longer needs. Money data (balances, payouts) is never touched.</source>
+        <translation>Звільніть історію, яка родині вже не потрібна. Грошові дані (баланси, виплати) не зачіпаються.</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="647"/>
+        <source>Clear…</source>
+        <translation>Очистити…</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="653"/>
+        <source>Journal</source>
+        <translation>Журнал</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="654"/>
+        <source>The activity feed on the Journal page.</source>
+        <translation>Стрічка подій на сторінці «Журнал».</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="659"/>
+        <source>Location history</source>
+        <translation>Історія локацій</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="660"/>
+        <source>Recorded points of the assignees&apos; phones.</source>
+        <translation>Записані точки телефонів виконавців.</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="665"/>
+        <source>Delivered notifications</source>
+        <translation>Доставлені сповіщення</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="666"/>
+        <source>Internal queue rows that were already delivered. Pending ones are kept.</source>
+        <translation>Службові черги вже доставлених сповіщень. Недоставлені зберігаються.</translation>
+    </message>
+    <message>
         <location filename="../qml/SettingsPage.qml" line="669"/>
+        <source>Clear delivered notifications</source>
+        <translation>Очистити доставлені сповіщення</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="670"/>
+        <source>Remove the already-delivered rows from the notification queues?</source>
+        <translation>Прибрати вже доставлені рядки з черг сповіщень?</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="731"/>
+        <source>Clear history</source>
+        <translation>Очистити історію</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="746"/>
+        <source>Remove journal entries. Balances and payout records are not affected.</source>
+        <translation>Видалити записи журналу. Баланси та виплати не зачіпаються.</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="747"/>
+        <source>Remove recorded location points of the assignees&apos; phones.</source>
+        <translation>Видалити записані точки локацій телефонів виконавців.</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="757"/>
+        <source>Older than 30 days</source>
+        <translation>Старші за 30 днів</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="758"/>
+        <source>Older than 90 days</source>
+        <translation>Старші за 90 днів</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="759"/>
+        <source>Everything</source>
+        <translation>Усе</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="786"/>
+        <source>Everything will be removed permanently. This cannot be undone.</source>
+        <translation>Усе буде видалено назавжди. Цю дію не можна скасувати.</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="797"/>
+        <source>Clear</source>
+        <translation>Очистити</translation>
+    </message>
+    <message>
+        <location filename="../qml/SettingsPage.qml" line="813"/>
         <source>Change project</source>
         <translation>Змінити проєкт</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="675"/>
+        <location filename="../qml/SettingsPage.qml" line="819"/>
         <source>Point the app at a different Supabase project. The connection is tested before it is saved, and you will be signed out to sign in on the new project.</source>
         <translation>Спрямуйте застосунок на інший проєкт Supabase. З’єднання перевіряється перед збереженням, після чого вас буде виведено, щоб увійти в новий проєкт.</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="682"/>
+        <location filename="../qml/SettingsPage.qml" line="826"/>
         <source>Anon (publishable) key</source>
         <translation>Anon (публічний) ключ</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="688"/>
+        <location filename="../qml/SettingsPage.qml" line="832"/>
         <source>Test &amp; save</source>
         <translation>Перевірити й зберегти</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="716"/>
+        <location filename="../qml/SettingsPage.qml" line="860"/>
         <source>Give another owner full access. They sign in with this email and password.</source>
         <translation>Надайте іншому власнику повний доступ. Вхід — за цим email і паролем.</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="761"/>
+        <location filename="../qml/SettingsPage.qml" line="905"/>
         <source>Link Telegram</source>
         <translation>Прив&apos;язати Telegram</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="766"/>
+        <location filename="../qml/SettingsPage.qml" line="910"/>
         <source>Open this link on the phone that has your Telegram and press Start. It links this account to the Mini App and expires in 15 minutes.</source>
         <translation>Відкрийте це посилання на телефоні з вашим Telegram і натисніть Start. Воно прив&apos;яже цей акаунт до Mini App і діє 15 хвилин.</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="775"/>
+        <location filename="../qml/SettingsPage.qml" line="919"/>
         <source>Copy link</source>
         <translation>Копіювати посилання</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="777"/>
+        <location filename="../qml/SettingsPage.qml" line="921"/>
         <source>Done</source>
         <translation>Готово</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="706"/>
+        <location filename="../qml/SettingsPage.qml" line="850"/>
         <source>Add owner</source>
         <translation>Додати власника</translation>
     </message>
@@ -2247,46 +2373,47 @@ Profile → Geolocation. Points arrive about every 15 minutes.</source>
         <translation>Ви увійшли як</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="717"/>
+        <location filename="../qml/SettingsPage.qml" line="861"/>
         <source>Name</source>
         <translation>Ім&apos;я</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="718"/>
+        <location filename="../qml/SettingsPage.qml" line="862"/>
         <source>Email</source>
         <translation>Email</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="719"/>
+        <location filename="../qml/SettingsPage.qml" line="863"/>
         <source>Password (min. 6)</source>
         <translation>Пароль (мін. 6)</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="686"/>
-        <location filename="../qml/SettingsPage.qml" line="723"/>
-        <location filename="../qml/SettingsPage.qml" line="749"/>
+        <location filename="../qml/SettingsPage.qml" line="795"/>
+        <location filename="../qml/SettingsPage.qml" line="830"/>
+        <location filename="../qml/SettingsPage.qml" line="867"/>
+        <location filename="../qml/SettingsPage.qml" line="893"/>
         <source>Cancel</source>
         <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="725"/>
+        <location filename="../qml/SettingsPage.qml" line="869"/>
         <source>Add</source>
         <translation>Додати</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="735"/>
+        <location filename="../qml/SettingsPage.qml" line="879"/>
         <source>Change password</source>
         <translation>Змінити пароль</translation>
     </message>
     <message>
-        <location filename="../qml/SettingsPage.qml" line="745"/>
+        <location filename="../qml/SettingsPage.qml" line="889"/>
         <source>New password (min. 6)</source>
         <translation>Новий пароль (мін. 6)</translation>
     </message>
     <message>
         <location filename="../qml/SettingsPage.qml" line="324"/>
         <location filename="../qml/SettingsPage.qml" line="430"/>
-        <location filename="../qml/SettingsPage.qml" line="751"/>
+        <location filename="../qml/SettingsPage.qml" line="895"/>
         <source>Save</source>
         <translation>Зберегти</translation>
     </message>
@@ -3163,43 +3290,53 @@ Profile → Geolocation. Points arrive about every 15 minutes.</source>
         <translation>Коментар: %1</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="187"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="189"/>
+        <source>The assignee did not receive the cash</source>
+        <translation>Виконавець не отримав готівку</translation>
+    </message>
+    <message>
+        <location filename="../qml/WithdrawalsPage.qml" line="191"/>
+        <source>Cancelled by the assignee</source>
+        <translation>Скасовано виконавцем</translation>
+    </message>
+    <message>
+        <location filename="../qml/WithdrawalsPage.qml" line="192"/>
         <source>Reason: %1</source>
         <translation>Причина: %1</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="195"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="201"/>
         <source>paid %1</source>
         <translation>виплачено %1</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="196"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="202"/>
         <source>confirmed %1</source>
         <translation>підтверджено %1</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="227"/>
         <location filename="../qml/WithdrawalsPage.qml" line="233"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="239"/>
         <source>Decline</source>
         <translation>Відхилити</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="231"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="237"/>
         <source>Decline withdrawal</source>
         <translation>Відхилити вивід</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="232"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="238"/>
         <source>Reason (the assignee will see it)</source>
         <translation>Причина (виконавець побачить)</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="239"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="245"/>
         <source>Approve</source>
         <translation>Схвалити</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="245"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="251"/>
         <source>Pay…</source>
         <translation>Виплатити…</translation>
     </message>

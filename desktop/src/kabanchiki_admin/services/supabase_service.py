@@ -355,6 +355,26 @@ class SupabaseService:
             {"p_location_id": location_id, "p_locality": locality},
         ).execute()
 
+    # ------------------------------------------------------------- maintenance
+
+    async def clear_journal(self, before_iso: str | None) -> int:
+        """Owner-only: clear the audit journal (all, or entries before a moment)."""
+        assert self.client is not None
+        res = await self.client.rpc("admin_clear_journal", {"p_before": before_iso}).execute()
+        return int(res.data or 0)
+
+    async def clear_locations(self, before_iso: str | None) -> int:
+        """Owner-only: clear the assignees' location history."""
+        assert self.client is not None
+        res = await self.client.rpc("admin_clear_locations", {"p_before": before_iso}).execute()
+        return int(res.data or 0)
+
+    async def clear_delivered_queue(self) -> int:
+        """Owner-only: drop already-delivered rows from the notification queues."""
+        assert self.client is not None
+        res = await self.client.rpc("admin_clear_delivered_queue", {}).execute()
+        return int(res.data or 0)
+
     async def list_events(self, limit: int = 400) -> list[dict]:
         assert self.client is not None
         response = await (

@@ -1979,6 +1979,53 @@ class Backend(QObject):
             log.exception("setBalanceSettings")
             self.toastRequested.emit(self._human_error(exc), "error")
 
+    # ------------------------------------------------------------- maintenance
+
+    def _maintenance_cutoff(self, days: int) -> str | None:
+        """0 = clear everything; N = keep the last N days."""
+        if days <= 0:
+            return None
+        from datetime import timedelta
+
+        return (self.supabase.time.now_server() - timedelta(days=days)).isoformat()
+
+    @asyncSlot(int)
+    async def clearJournal(self, keep_days: int) -> None:  # noqa: N802
+        try:
+            removed = await self.supabase.clear_journal(self._maintenance_cutoff(keep_days))
+            self.toastRequested.emit(
+                self.tr("Journal cleared (%1 entries)").replace("%1", str(removed)), "success"
+            )
+            await self.refresh_all()
+        except Exception as exc:  # noqa: BLE001
+            log.exception("clearJournal")
+            self.toastRequested.emit(self._human_error(exc), "error")
+
+    @asyncSlot(int)
+    async def clearLocations(self, keep_days: int) -> None:  # noqa: N802
+        try:
+            removed = await self.supabase.clear_locations(self._maintenance_cutoff(keep_days))
+            self.toastRequested.emit(
+                self.tr("Location history cleared (%1 points)").replace("%1", str(removed)),
+                "success",
+            )
+            await self.refresh_all()
+        except Exception as exc:  # noqa: BLE001
+            log.exception("clearLocations")
+            self.toastRequested.emit(self._human_error(exc), "error")
+
+    @asyncSlot()
+    async def clearDeliveredQueue(self) -> None:  # noqa: N802
+        try:
+            removed = await self.supabase.clear_delivered_queue()
+            self.toastRequested.emit(
+                self.tr("Delivered notifications cleared (%1)").replace("%1", str(removed)),
+                "success",
+            )
+        except Exception as exc:  # noqa: BLE001
+            log.exception("clearDeliveredQueue")
+            self.toastRequested.emit(self._human_error(exc), "error")
+
     @Slot(str)
     def setLanguage(self, language: str) -> None:  # noqa: N802
         if language not in SUPPORTED_LANGUAGES or language == self.settings.language:
@@ -2280,6 +2327,7 @@ class Backend(QObject):
             "cannot disable yourself": self.tr("You cannot disable your own account"),
             "cannot delete yourself": self.tr("You cannot delete your own account"),
             "owner only": self.tr("Only an owner can do this"),
+            "NOT_OWNER": self.tr("Only an owner can do this"),
             # Connection wizard: classified codes from check_connection().
             "SCHEMA_MISSING": self.tr(
                 "Connected, but the Kabanchiki schema is missing. Deploy the database first."

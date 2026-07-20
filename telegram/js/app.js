@@ -1,14 +1,14 @@
 // Kabanchiki Mini App — controller: auth, realtime, rendering, actions.
 
-import * as api from "./api.js?v=213";
-import { AuthNeeded, NotLinked, NetworkError, AuthFailed, supabase, serverNow } from "./api.js?v=213";
-import { ONLINE_WINDOW_MS } from "./config.js?v=213";
+import * as api from "./api.js?v=214";
+import { AuthNeeded, NotLinked, NetworkError, AuthFailed, supabase, serverNow } from "./api.js?v=214";
+import { ONLINE_WINDOW_MS } from "./config.js?v=214";
 import {
   money, duration, dateTimeLocal, parseTs, initials, escapeHtml, deadline,
   DIFFICULTY_COLORS, TASK_STATUS, WITHDRAWAL_STATUS,
-} from "./format.js?v=213";
-import * as ui from "./ui.js?v=213";
-import { optimizeImage } from "./images.js?v=213";
+} from "./format.js?v=214";
+import * as ui from "./ui.js?v=214";
+import { optimizeImage } from "./images.js?v=214";
 
 const tg = window.Telegram?.WebApp;
 const $ = (sel) => document.querySelector(sel);
@@ -888,6 +888,9 @@ const EVENT_ACTION = {
   rework: { label: "на доробку", cls: "st-pause" },
   declined: { label: "відмова", cls: "st-declined" },
   requested: { label: "запит", cls: "pay-await" },
+  paid: { label: "виплачено", cls: "pay-paid" },
+  confirmed: { label: "підтверджено", cls: "st-done" },
+  overdue: { label: "прострочено", cls: "st-declined" },
   payment_changed: { label: "оплата", cls: "pay-paid" },
   granted: { label: "нараховано", cls: "st-done" },
   assigned: { label: "призначено", cls: "st-new" },

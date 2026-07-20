@@ -611,6 +611,68 @@ Item {
                 }
             }
 
+            // ---------------------------------------------------- Maintenance
+            Section {
+                visible: backend.isOwner
+                heading: qsTr("Maintenance")
+                caption: qsTr("Free up history the family no longer needs. Money data (balances, payouts) is never touched.")
+
+                component MaintRow: RowLayout {
+                    id: mrow
+                    property string title: ""
+                    property string hint: ""
+                    property var onClear: null
+                    Layout.fillWidth: true
+                    spacing: Theme.spacingMd
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 0
+                        Text {
+                            text: mrow.title
+                            font.pixelSize: Theme.fontSizeMd
+                            font.weight: Font.Medium
+                            color: Theme.textPrimary
+                        }
+                        Text {
+                            text: mrow.hint
+                            font.pixelSize: Theme.fontSizeXs
+                            color: Theme.textSecondary
+                            wrapMode: Text.WordWrap
+                            Layout.fillWidth: true
+                        }
+                    }
+                    AppButton {
+                        small: true
+                        variant: "ghost"
+                        text: qsTr("Clear…")
+                        onClicked: mrow.onClear()
+                    }
+                }
+
+                MaintRow {
+                    title: qsTr("Journal")
+                    hint: qsTr("The activity feed on the Journal page.")
+                    onClear: function() { clearHistoryDialog.openFor("journal") }
+                }
+                Rectangle { Layout.fillWidth: true; height: 1; color: Theme.border; opacity: 0.7 }
+                MaintRow {
+                    title: qsTr("Location history")
+                    hint: qsTr("Recorded points of the assignees' phones.")
+                    onClear: function() { clearHistoryDialog.openFor("locations") }
+                }
+                Rectangle { Layout.fillWidth: true; height: 1; color: Theme.border; opacity: 0.7 }
+                MaintRow {
+                    title: qsTr("Delivered notifications")
+                    hint: qsTr("Internal queue rows that were already delivered. Pending ones are kept.")
+                    onClear: function() {
+                        confirmRef.openWith(
+                            qsTr("Clear delivered notifications"),
+                            qsTr("Remove the already-delivered rows from the notification queues?"),
+                            function() { backend.clearDeliveredQueue() }, true)
+                    }
+                }
+            }
+
             // ---------------------------------------------------- Android updates
             Section {
                 heading: qsTr("Android app updates")
@@ -663,6 +725,88 @@ Item {
 
     PublishUpdateDialog { id: publishUpdateDialog }
     OwnerEditDialog { id: ownerEditDialog }
+
+    AppDialog {
+        id: clearHistoryDialog
+        title: qsTr("Clear history")
+        property string kind: "journal"
+        property int keepDays: 30
+
+        function openFor(k) {
+            kind = k
+            keepDays = 30
+            open()
+        }
+
+        contentItem: ColumnLayout {
+            implicitWidth: 420
+            spacing: Theme.spacingMd
+            Text {
+                text: clearHistoryDialog.kind === "journal"
+                    ? qsTr("Remove journal entries. Balances and payout records are not affected.")
+                    : qsTr("Remove recorded location points of the assignees' phones.")
+                font.pixelSize: Theme.fontSizeSm
+                color: Theme.textSecondary
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+            }
+            RowLayout {
+                spacing: Theme.spacingSm
+                Repeater {
+                    model: [
+                        { days: 30, label: qsTr("Older than 30 days") },
+                        { days: 90, label: qsTr("Older than 90 days") },
+                        { days: 0,  label: qsTr("Everything") }
+                    ]
+                    delegate: Rectangle {
+                        required property var modelData
+                        readonly property bool active: clearHistoryDialog.keepDays === modelData.days
+                        width: segText.implicitWidth + 28
+                        height: 36
+                        radius: Theme.radiusSm
+                        color: active ? Theme.accent : Theme.surfaceAlt
+                        border.width: 1
+                        border.color: active ? Theme.accent : Theme.border
+                        Behavior on color { ColorAnimation { duration: Theme.animFast } }
+                        Text {
+                            id: segText
+                            anchors.centerIn: parent
+                            text: parent.modelData.label
+                            font.pixelSize: Theme.fontSizeSm
+                            font.weight: Font.DemiBold
+                            color: parent.active ? "#FFFFFF" : Theme.textPrimary
+                        }
+                        HoverHandler { cursorShape: Qt.PointingHandCursor }
+                        TapHandler { onTapped: clearHistoryDialog.keepDays = parent.modelData.days }
+                    }
+                }
+            }
+            Text {
+                visible: clearHistoryDialog.keepDays === 0
+                text: qsTr("Everything will be removed permanently. This cannot be undone.")
+                font.pixelSize: Theme.fontSizeXs
+                color: Theme.danger
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+            }
+            RowLayout {
+                Layout.fillWidth: true
+                Item { Layout.fillWidth: true }
+                AppButton { text: qsTr("Cancel"); variant: "ghost"; onClicked: clearHistoryDialog.close() }
+                AppButton {
+                    text: qsTr("Clear")
+                    variant: "danger"
+                    onClicked: {
+                        if (clearHistoryDialog.kind === "journal")
+                            backend.clearJournal(clearHistoryDialog.keepDays)
+                        else
+                            backend.clearLocations(clearHistoryDialog.keepDays)
+                        clearHistoryDialog.close()
+                    }
+                }
+            }
+        }
+    }
 
     AppDialog {
         id: changeConnectionDialog
