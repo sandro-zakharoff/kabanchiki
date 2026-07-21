@@ -25,10 +25,18 @@ Item {
             periodFilter.model[periodFilter.currentIndex].value)
     }
 
-    function receiptUrls(items) {
+    // The Lightbox only understands pictures, so PDFs are left out of it — and
+    // the tapped tile's index has to be remapped to the filtered list, or a
+    // receipt after a PDF would open the wrong image.
+    function receiptPhotoUrls(items) {
         var urls = []
-        for (var i = 0; i < items.length; i++) urls.push(items[i].url)
+        for (var i = 0; i < items.length; i++) if (!items[i].isPdf) urls.push(items[i].url)
         return urls
+    }
+    function receiptPhotoIndex(items, index) {
+        var n = 0
+        for (var i = 0; i < index && i < items.length; i++) if (!items[i].isPdf) n++
+        return n
     }
 
     ColumnLayout {
@@ -212,12 +220,16 @@ Item {
                             spacing: Theme.spacingSm
                             Repeater {
                                 model: receiptList
-                                delegate: ImageThumb {
+                                delegate: ReceiptThumb {
                                     required property var modelData
                                     required property int index
                                     width: 64; height: 64
+                                    isPdf: modelData.isPdf || false
                                     source: modelData.thumbUrl || modelData.url
-                                    onActivated: lightboxRef.showList(root.receiptUrls(receiptList), index)
+                                    onActivated: lightboxRef.showList(
+                                        root.receiptPhotoUrls(receiptList),
+                                        root.receiptPhotoIndex(receiptList, index))
+                                    onOpenExternally: Qt.openUrlExternally(modelData.url)
                                 }
                             }
                         }

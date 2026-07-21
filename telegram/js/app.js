@@ -1010,7 +1010,10 @@ function receiptsHtml(w) {
   const rec = state.attachments.filter((a) => a.withdrawal_id === w.id && a.role === "receipt");
   if (!rec.length) return "";
   return `<div class="rcpts">` + rec.map((a, i) =>
-    `<button class="rcpt" data-action="wd-receipt" data-id="${w.id}" data-idx="${i}">📎 Квитанція ${rec.length > 1 ? i + 1 : ""}</button>`).join("") + `</div>`;
+    `<button class="rcpt" data-action="wd-receipt" data-id="${w.id}" data-idx="${i}">${
+      a.mime === "application/pdf" ? "📄" : "📎"
+    } Квитанція ${rec.length > 1 ? i + 1 : ""}${a.mime === "application/pdf" ? " (PDF)" : ""}</button>`)
+    .join("") + `</div>`;
 }
 
 function withdrawalCard(w) {
@@ -1670,8 +1673,9 @@ async function attachPickedReceipt(withdrawalId, childId) {
   const pending = receiptUploader ? receiptUploader.pending() : [];
   if (pending.length === 0) return;
   const a = pending[0];
+  const ext = a.mime === "application/pdf" ? "pdf" : a.mime === "image/webp" ? "webp" : "jpg";
   const photo = {
-    full: { blob: a.blob, mime: a.mime, ext: a.mime === "image/webp" ? "webp" : "jpg" },
+    full: { blob: a.blob, mime: a.mime, ext },
     thumb: a.thumbBlob
       ? { blob: a.thumbBlob, mime: a.thumbBlob.type, ext: a.thumbBlob.type === "image/webp" ? "webp" : "jpg" }
       : null,
@@ -1693,7 +1697,7 @@ function wdPayForm(id) {
   if (!w) return;
   const c = childById(w.child_id);
   payMethod = "card";
-  receiptUploader = new ui.PhotoUploader({ optimize: optimizeImage, max: 1, onChange: syncMainButton });
+  receiptUploader = new ui.PhotoUploader({ optimize: optimizeImage, max: 1, onChange: syncMainButton, allowPdf: true });
   openSheet(`
     <div class="sheet-title">Виплата ${acornWords(w.amount)}${c ? ` — ${escapeHtml(c.display_name)}` : ""}</div>
     <div class="segment">
@@ -1727,7 +1731,7 @@ function payoutForm(childId) {
   const c = childById(childId);
   const bal = childBalance(childId);
   payoutMethod = "card";
-  receiptUploader = new ui.PhotoUploader({ optimize: optimizeImage, max: 1, onChange: syncMainButton });
+  receiptUploader = new ui.PhotoUploader({ optimize: optimizeImage, max: 1, onChange: syncMainButton, allowPdf: true });
   openSheet(`
     <div class="sheet-title">Виплата${c ? ` — ${escapeHtml(c.display_name)}` : ""}</div>
     <div class="sheet-sub">Баланс: <b data-live-bal="${childId}">${acornsHtml(bal)}</b></div>
@@ -1904,8 +1908,17 @@ const HANDLERS = {
     const w = state.withdrawals.find((x) => x.id === el.dataset.id);
     const rec = state.attachments.filter((a) => a.withdrawal_id === el.dataset.id && a.role === "receipt");
     if (!rec.length || !w) return;
-    const urls = await Promise.all(rec.map((a) => api.attachmentUrl(a, false)));
-    ui.lightbox(urls, Number(el.dataset.idx) || 0);
+    const idx = Number(el.dataset.idx) || 0;
+    const picked = rec[idx];
+    if (picked?.mime === "application/pdf") {
+      // Telegram's webview will not render a PDF inline — open it outside.
+      const url = await api.attachmentUrl(picked, false);
+      if (tg?.openLink) tg.openLink(url); else window.open(url, "_blank");
+      return;
+    }
+    const photos = rec.filter((a) => a.mime !== "application/pdf");
+    const urls = await Promise.all(photos.map((a) => api.attachmentUrl(a, false)));
+    ui.lightbox(urls, photos.indexOf(picked));
   },
   "child-detail": (el) => openChildDetail(el.dataset.id),
   "child-add": () => childCreateForm(),

@@ -1347,6 +1347,7 @@ class Backend(QObject):
                     "attId": a["id"],
                     "url": await self.storage.attachment_url(a, thumb=False),
                     "thumbUrl": await self.storage.attachment_url(a, thumb=True),
+                    "isPdf": (a.get("mime") or "") == "application/pdf",
                 }
                 for a in receipts_by_wd.get(wid, [])
             ]
@@ -1917,6 +1918,13 @@ class Backend(QObject):
             "info",
         )
 
+    async def _upload_receipt(self, child_id: str, receipt: str) -> dict:
+        """A receipt is either a photo (optimised) or a PDF (uploaded as-is)."""
+        if receipt.lower().endswith(".pdf"):
+            return await self.storage.upload_document(child_id, receipt)
+        photo = await asyncio.to_thread(image_service.optimize_photo, receipt)
+        return await self.storage.upload_task_photo(child_id, photo)
+
     @asyncSlot(str, str, str)
     async def withdrawalPayCard(self, withdrawal_id: str, comment: str, receipt_file: str) -> None:  # noqa: N802
         try:
@@ -1925,8 +1933,7 @@ class Backend(QObject):
             if receipt:
                 wd = next((w for w in self._withdrawals_raw if w["id"] == withdrawal_id), None)
                 child_id = (wd or {}).get("child_id") or ""
-                photo = await asyncio.to_thread(image_service.optimize_photo, receipt)
-                info = await self.storage.upload_task_photo(child_id, photo)
+                info = await self._upload_receipt(child_id, receipt)
                 await self.supabase.attach_receipt(withdrawal_id, info)
             await self.supabase.withdrawal_pay(withdrawal_id, "card", comment)
             self.toastRequested.emit(self.tr("Paid to card"), "success")
@@ -1955,8 +1962,7 @@ class Backend(QObject):
             if method == "card":
                 receipt = self._local_file(receipt_file) if receipt_file else ""
                 if receipt:
-                    photo = await asyncio.to_thread(image_service.optimize_photo, receipt)
-                    info = await self.storage.upload_task_photo(child_id, photo)
+                    info = await self._upload_receipt(child_id, receipt)
                     await self.supabase.attach_receipt(wid, info)
             await self.supabase.withdrawal_pay(wid, method, comment)
             self.toastRequested.emit(
@@ -2410,6 +2416,7 @@ class Backend(QObject):
             "ABOVE_BALANCE": self.tr("Amount exceeds the available balance"),
             "WITHDRAWALS_DISABLED": self.tr("Withdrawals are disabled"),
             "RECEIPT_REQUIRED": self.tr("Attach a receipt first"),
+            "NOT_A_PDF": self.tr("That file is not a valid PDF"),
             "NOTE_REQUIRED": self.tr("A comment is required"),
             "INVALID_AMOUNT": self.tr("Enter a valid amount"),
             "INVALID_METHOD": self.tr("Choose a payout method"),

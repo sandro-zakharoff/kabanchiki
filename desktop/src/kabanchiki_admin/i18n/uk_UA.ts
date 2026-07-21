@@ -98,343 +98,348 @@
 <context>
     <name>Backend</name>
     <message>
-        <location filename="../backend.py" line="589"/>
+        <location filename="../backend.py" line="585"/>
         <source>Connection failed: %1</source>
         <translation>Не вдалося підключитися: %1</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1517"/>
+        <location filename="../backend.py" line="1518"/>
         <source>Withdrawal request</source>
         <translation>Запит на виведення</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1518"/>
+        <location filename="../backend.py" line="1519"/>
         <source>%1 asks to withdraw %2</source>
         <translation>%1 просить вивести %2</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1520"/>
+        <location filename="../backend.py" line="1521"/>
         <source>Approve</source>
         <translation>Прийняти</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1521"/>
+        <location filename="../backend.py" line="1522"/>
         <source>Decline</source>
         <translation>Відхилити</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1543"/>
+        <location filename="../backend.py" line="1544"/>
         <source>Tasks</source>
         <translation>Завдання</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1544"/>
+        <location filename="../backend.py" line="1545"/>
         <source>%1 declined the task “%2”</source>
         <translation>%1 відхилив(-ла) завдання «%2»</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="726"/>
-        <location filename="../backend.py" line="1628"/>
+        <location filename="../backend.py" line="722"/>
+        <location filename="../backend.py" line="1629"/>
         <source>Password updated</source>
         <translation>Пароль оновлено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="736"/>
+        <location filename="../backend.py" line="732"/>
         <source>Enter a valid email</source>
         <translation>Вкажіть коректний email</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="739"/>
+        <location filename="../backend.py" line="735"/>
         <source>Owner updated</source>
         <translation>Дані власника оновлено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="750"/>
+        <location filename="../backend.py" line="746"/>
         <source>Owner disabled</source>
         <translation>Власника відключено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="750"/>
+        <location filename="../backend.py" line="746"/>
         <source>Owner enabled</source>
         <translation>Власника увімкнено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1741"/>
+        <location filename="../backend.py" line="1742"/>
         <source>Task created</source>
         <translation>Завдання створено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1753"/>
+        <location filename="../backend.py" line="1754"/>
         <source>Task deleted</source>
         <translation>Завдання видалено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1849"/>
+        <location filename="../backend.py" line="1850"/>
         <source>Job created</source>
         <translation>Роботу створено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1557"/>
-        <location filename="../backend.py" line="1901"/>
+        <location filename="../backend.py" line="1558"/>
+        <location filename="../backend.py" line="1902"/>
         <source>Withdrawal approved</source>
         <translation>Виведення схвалено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="637"/>
+        <location filename="../backend.py" line="633"/>
         <source>Connected. Sign in to continue.</source>
         <translation>З’єднано. Увійдіть, щоб продовжити.</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="663"/>
+        <location filename="../backend.py" line="659"/>
         <source>Project changed. Sign in to continue.</source>
         <translation>Проєкт змінено. Увійдіть, щоб продовжити.</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1564"/>
-        <location filename="../backend.py" line="1908"/>
+        <location filename="../backend.py" line="1565"/>
+        <location filename="../backend.py" line="1909"/>
         <source>Withdrawal declined</source>
         <translation>Виведення відхилено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1892"/>
+        <location filename="../backend.py" line="1893"/>
         <source>Add a comment</source>
         <translation>Додайте коментар</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1895"/>
+        <location filename="../backend.py" line="1896"/>
         <source>Balance adjusted</source>
         <translation>Баланс змінено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1916"/>
-        <location filename="../backend.py" line="1965"/>
+        <location filename="../backend.py" line="1917"/>
+        <location filename="../backend.py" line="1971"/>
         <source>Marked as paid in cash — awaiting confirmation</source>
         <translation>Позначено як видане готівкою — очікує підтвердження</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1932"/>
-        <location filename="../backend.py" line="1963"/>
+        <location filename="../backend.py" line="1939"/>
+        <location filename="../backend.py" line="1969"/>
         <source>Paid to card</source>
         <translation>Виплачено на карту</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2015"/>
+        <location filename="../backend.py" line="2021"/>
         <source>Balance settings saved</source>
         <translation>Налаштування балансу збережено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2029"/>
+        <location filename="../backend.py" line="2035"/>
         <source>System</source>
         <translation>Система</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2038"/>
+        <location filename="../backend.py" line="2044"/>
         <source>to card</source>
         <translation>на карту</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2038"/>
+        <location filename="../backend.py" line="2044"/>
         <source>cash</source>
         <translation>готівка</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2044"/>
+        <location filename="../backend.py" line="2050"/>
         <source>not received</source>
         <translation>не отримано</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2045"/>
+        <location filename="../backend.py" line="2051"/>
         <source>cancelled by the assignee</source>
         <translation>скасовано виконавцем</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2049"/>
+        <location filename="../backend.py" line="2055"/>
         <source>was: %1</source>
         <translation>було: %1</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2089"/>
+        <location filename="../backend.py" line="2095"/>
         <source>Journal cleared (%1 entries)</source>
         <translation>Журнал очищено (%1 записів)</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2101"/>
+        <location filename="../backend.py" line="2107"/>
         <source>Location history cleared (%1 points)</source>
         <translation>Історію локацій очищено (%1 точок)</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2114"/>
+        <location filename="../backend.py" line="2120"/>
         <source>Delivered notifications cleared (%1)</source>
         <translation>Доставлені сповіщення очищено (%1)</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2188"/>
+        <location filename="../backend.py" line="2194"/>
         <source>Bot token removed</source>
         <translation>Токен бота видалено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2209"/>
+        <location filename="../backend.py" line="2215"/>
         <source>Telegram settings saved</source>
         <translation>Налаштування Telegram збережено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2218"/>
+        <location filename="../backend.py" line="2224"/>
         <source>Bot notifications connected</source>
         <translation>Сповіщення бота підключено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2222"/>
+        <location filename="../backend.py" line="2228"/>
         <source>Settings saved, but bot notifications failed: %1</source>
         <translation>Налаштування збережено, але сповіщення бота не вдалося: %1</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2232"/>
+        <location filename="../backend.py" line="2238"/>
         <source>Set the bot username first</source>
         <translation>Спочатку вкажіть ім&apos;я бота</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2248"/>
+        <location filename="../backend.py" line="2254"/>
         <source>Telegram unlinked</source>
         <translation>Telegram відв&apos;язано</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2285"/>
+        <location filename="../backend.py" line="2291"/>
         <source>Enter the Client ID and Client Secret</source>
         <translation>Вкажіть Client ID і Client Secret</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2290"/>
+        <location filename="../backend.py" line="2296"/>
         <source>Waiting for Google sign-in in the browser…</source>
         <translation>Очікуємо вхід у Google у браузері…</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2298"/>
+        <location filename="../backend.py" line="2304"/>
         <source>Google Drive connected: %1</source>
         <translation>Google Drive підключено: %1</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2315"/>
+        <location filename="../backend.py" line="2321"/>
         <source>Google Drive disconnected</source>
         <translation>Google Drive відключено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2325"/>
+        <location filename="../backend.py" line="2331"/>
         <source>Google Drive is not connected</source>
         <translation>Google Drive не підключено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2332"/>
+        <location filename="../backend.py" line="2338"/>
         <source>Google Drive works: %1</source>
         <translation>Google Drive працює: %1</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2342"/>
+        <location filename="../backend.py" line="2348"/>
         <source>Connect Google Drive first</source>
         <translation>Спочатку підключіть Google Drive</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2349"/>
+        <location filename="../backend.py" line="2355"/>
         <source>New photos now go to Google Drive</source>
         <translation>Нові фото тепер зберігаються на Google Drive</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2351"/>
+        <location filename="../backend.py" line="2357"/>
         <source>New photos now go to Supabase</source>
         <translation>Нові фото тепер зберігаються в Supabase</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2362"/>
+        <location filename="../backend.py" line="2368"/>
         <source>Copied</source>
         <translation>Скопійовано</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2408"/>
+        <location filename="../backend.py" line="2414"/>
         <source>There is already a pending withdrawal</source>
         <translation>Уже є запит на виведення, що очікує</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2409"/>
+        <location filename="../backend.py" line="2415"/>
         <source>Amount is below the minimum</source>
         <translation>Сума менша за мінімум</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2410"/>
+        <location filename="../backend.py" line="2416"/>
         <source>Amount exceeds the available balance</source>
         <translation>Сума перевищує доступний баланс</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2411"/>
+        <location filename="../backend.py" line="2417"/>
         <source>Withdrawals are disabled</source>
         <translation>Виводи вимкнено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2412"/>
+        <location filename="../backend.py" line="2418"/>
         <source>Attach a receipt first</source>
         <translation>Спершу прикріпіть квитанцію</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2413"/>
+        <location filename="../backend.py" line="2419"/>
+        <source>That file is not a valid PDF</source>
+        <translation>Цей файл не є коректним PDF</translation>
+    </message>
+    <message>
+        <location filename="../backend.py" line="2420"/>
         <source>A comment is required</source>
         <translation>Потрібен коментар</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2414"/>
+        <location filename="../backend.py" line="2421"/>
         <source>Enter a valid amount</source>
         <translation>Введіть коректну суму</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2415"/>
+        <location filename="../backend.py" line="2422"/>
         <source>Choose a payout method</source>
         <translation>Оберіть спосіб виплати</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2416"/>
+        <location filename="../backend.py" line="2423"/>
         <source>Already decided</source>
         <translation>Рішення вже ухвалено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2417"/>
+        <location filename="../backend.py" line="2424"/>
         <source>Action is not allowed in the current status</source>
         <translation>Дія недоступна в поточному статусі</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2418"/>
+        <location filename="../backend.py" line="2425"/>
         <source>The family must keep at least one active owner</source>
         <translation>У родині має лишатися принаймні один активний власник</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2419"/>
+        <location filename="../backend.py" line="2426"/>
         <source>You cannot disable your own account</source>
         <translation>Не можна відключити власний акаунт</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2420"/>
+        <location filename="../backend.py" line="2427"/>
         <source>You cannot delete your own account</source>
         <translation>Не можна видалити власний акаунт</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2421"/>
-        <location filename="../backend.py" line="2422"/>
+        <location filename="../backend.py" line="2428"/>
+        <location filename="../backend.py" line="2429"/>
         <source>Only an owner can do this</source>
         <translation>Це може зробити лише власник</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2425"/>
+        <location filename="../backend.py" line="2432"/>
         <source>Connected, but the Kabanchiki schema is missing. Deploy the database first.</source>
         <translation>З’єднання є, але схеми Kabanchiki немає. Спершу розгорніть базу даних.</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2427"/>
+        <location filename="../backend.py" line="2434"/>
         <source>Could not reach that address. Check the Supabase URL.</source>
         <translation>Не вдалося звернутися за цією адресою. Перевірте URL Supabase.</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2428"/>
+        <location filename="../backend.py" line="2435"/>
         <source>The anon key is not valid for this project.</source>
         <translation>anon-ключ недійсний для цього проєкту.</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2435"/>
+        <location filename="../backend.py" line="2442"/>
         <source>Error: %1</source>
         <translation>Помилка: %1</translation>
     </message>
@@ -459,157 +464,157 @@
         <translation>Доступний заробіток</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1808"/>
+        <location filename="../backend.py" line="1809"/>
         <source>Task updated</source>
         <translation>Завдання оновлено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1825"/>
+        <location filename="../backend.py" line="1826"/>
         <source>Job updated</source>
         <translation>Роботу оновлено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1835"/>
+        <location filename="../backend.py" line="1836"/>
         <source>Job deleted</source>
         <translation>Роботу видалено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1514"/>
-        <location filename="../backend.py" line="1529"/>
-        <location filename="../backend.py" line="1541"/>
+        <location filename="../backend.py" line="1515"/>
+        <location filename="../backend.py" line="1530"/>
+        <location filename="../backend.py" line="1542"/>
         <source>Assignee</source>
         <translation>Виконавець</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1618"/>
+        <location filename="../backend.py" line="1619"/>
         <source>Assignee account created</source>
         <translation>Акаунт виконавця створено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1822"/>
-        <location filename="../backend.py" line="1846"/>
+        <location filename="../backend.py" line="1823"/>
+        <location filename="../backend.py" line="1847"/>
         <source>Choose at least one assignee</source>
         <translation>Оберіть хоча б одного виконавця</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1777"/>
+        <location filename="../backend.py" line="1778"/>
         <source>Task re-issued</source>
         <translation>Завдання видано повторно</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1650"/>
+        <location filename="../backend.py" line="1651"/>
         <source>Assignee updated</source>
         <translation>Виконавця оновлено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1661"/>
+        <location filename="../backend.py" line="1662"/>
         <source>Assignee blocked</source>
         <translation>Виконавця заблоковано</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1661"/>
+        <location filename="../backend.py" line="1662"/>
         <source>Assignee unblocked</source>
         <translation>Виконавця розблоковано</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1672"/>
+        <location filename="../backend.py" line="1673"/>
         <source>Assignee deleted</source>
         <translation>Виконавця видалено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1682"/>
-        <location filename="../backend.py" line="1695"/>
-        <location filename="../backend.py" line="1889"/>
+        <location filename="../backend.py" line="1683"/>
+        <location filename="../backend.py" line="1696"/>
+        <location filename="../backend.py" line="1890"/>
         <source>Enter an amount</source>
         <translation>Вкажіть суму</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1685"/>
+        <location filename="../backend.py" line="1686"/>
         <source>Bonus granted</source>
         <translation>Бонус нараховано</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1698"/>
+        <location filename="../backend.py" line="1699"/>
         <source>Bonus updated</source>
         <translation>Бонус оновлено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1708"/>
+        <location filename="../backend.py" line="1709"/>
         <source>Bonus deleted</source>
         <translation>Бонус видалено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2378"/>
+        <location filename="../backend.py" line="2384"/>
         <source>Fill in the APK, version and code</source>
         <translation>Вкажіть APK, версію та код</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="2388"/>
+        <location filename="../backend.py" line="2394"/>
         <source>Update published</source>
         <translation>Оновлення опубліковано</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1763"/>
+        <location filename="../backend.py" line="1764"/>
         <source>Task accepted</source>
         <translation>Завдання прийнято</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1764"/>
+        <location filename="../backend.py" line="1765"/>
         <source>Task rejected</source>
         <translation>Завдання відхилено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1765"/>
+        <location filename="../backend.py" line="1766"/>
         <source>Sent for rework</source>
         <translation>Відправлено на доробку</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1766"/>
+        <location filename="../backend.py" line="1767"/>
         <source>Done</source>
         <translation>Готово</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1531"/>
+        <location filename="../backend.py" line="1532"/>
         <source>Task to review</source>
         <translation>Завдання на перевірку</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="1532"/>
+        <location filename="../backend.py" line="1533"/>
         <source>%1 submitted the task “%2” for review</source>
         <translation>%1 відправив(-ла) завдання «%2» на перевірку</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="669"/>
+        <location filename="../backend.py" line="665"/>
         <source>Enter email and password</source>
         <translation>Вкажіть email і пароль</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="676"/>
+        <location filename="../backend.py" line="672"/>
         <source>Wrong email or password</source>
         <translation>Невірний email або пароль</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="682"/>
+        <location filename="../backend.py" line="678"/>
         <source>Signed in</source>
         <translation>Вхід виконано</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="700"/>
+        <location filename="../backend.py" line="696"/>
         <source>Enter a valid email and password (min. 6)</source>
         <translation>Вкажіть коректний email і пароль (мін. 6)</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="704"/>
+        <location filename="../backend.py" line="700"/>
         <source>Owner added</source>
         <translation>Власника додано</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="714"/>
+        <location filename="../backend.py" line="710"/>
         <source>Owner removed</source>
         <translation>Власника видалено</translation>
     </message>
     <message>
-        <location filename="../backend.py" line="723"/>
+        <location filename="../backend.py" line="719"/>
         <source>Password too short</source>
         <translation>Пароль закороткий</translation>
     </message>
@@ -622,47 +627,47 @@
         <translation>Баланси</translation>
     </message>
     <message>
-        <location filename="../qml/BalancesPage.qml" line="58"/>
+        <location filename="../qml/BalancesPage.qml" line="57"/>
         <source>= 1 hryvnia</source>
         <translation>= 1 гривня</translation>
     </message>
     <message>
-        <location filename="../qml/BalancesPage.qml" line="114"/>
+        <location filename="../qml/BalancesPage.qml" line="113"/>
         <source>week %1 · month %2</source>
         <translation>тиждень %1 · місяць %2</translation>
     </message>
     <message>
-        <location filename="../qml/BalancesPage.qml" line="133"/>
+        <location filename="../qml/BalancesPage.qml" line="132"/>
         <source>Pay out</source>
         <translation>Виплатити</translation>
     </message>
     <message>
-        <location filename="../qml/BalancesPage.qml" line="144"/>
+        <location filename="../qml/BalancesPage.qml" line="143"/>
         <source>Adjust</source>
         <translation>Коригувати</translation>
     </message>
     <message>
-        <location filename="../qml/BalancesPage.qml" line="151"/>
+        <location filename="../qml/BalancesPage.qml" line="150"/>
         <source>All history</source>
         <translation>Уся історія</translation>
     </message>
     <message>
-        <location filename="../qml/BalancesPage.qml" line="151"/>
+        <location filename="../qml/BalancesPage.qml" line="150"/>
         <source>History</source>
         <translation>Історія</translation>
     </message>
     <message>
-        <location filename="../qml/BalancesPage.qml" line="170"/>
+        <location filename="../qml/BalancesPage.qml" line="169"/>
         <source>Operations</source>
         <translation>Операції</translation>
     </message>
     <message>
-        <location filename="../qml/BalancesPage.qml" line="178"/>
+        <location filename="../qml/BalancesPage.qml" line="177"/>
         <source>Show all</source>
         <translation>Показати всі</translation>
     </message>
     <message>
-        <location filename="../qml/BalancesPage.qml" line="201"/>
+        <location filename="../qml/BalancesPage.qml" line="200"/>
         <source>No operations yet</source>
         <translation>Ще немає операцій</translation>
     </message>
@@ -1148,33 +1153,33 @@
         <translation>Зупинено</translation>
     </message>
     <message>
-        <location filename="../qml/JobsPage.qml" line="136"/>
+        <location filename="../qml/JobsPage.qml" line="135"/>
         <source>total time</source>
         <translation>загальний час</translation>
     </message>
     <message>
-        <location filename="../qml/JobsPage.qml" line="213"/>
+        <location filename="../qml/JobsPage.qml" line="211"/>
         <source>Stop</source>
         <translation>Зупинити</translation>
     </message>
     <message>
-        <location filename="../qml/JobsPage.qml" line="213"/>
+        <location filename="../qml/JobsPage.qml" line="211"/>
         <source>Start</source>
         <translation>Запустити</translation>
     </message>
     <message>
-        <location filename="../qml/JobsPage.qml" line="218"/>
-        <location filename="../qml/JobsPage.qml" line="221"/>
+        <location filename="../qml/JobsPage.qml" line="216"/>
+        <location filename="../qml/JobsPage.qml" line="219"/>
         <source>Finish job</source>
         <translation>Завершити роботу</translation>
     </message>
     <message>
-        <location filename="../qml/JobsPage.qml" line="222"/>
+        <location filename="../qml/JobsPage.qml" line="220"/>
         <source>The job “%1” will be stopped and hidden from everyone. Continue?</source>
         <translation>Роботу «%1» буде зупинено і приховано для всіх. Продовжити?</translation>
     </message>
     <message>
-        <location filename="../qml/JobsPage.qml" line="192"/>
+        <location filename="../qml/JobsPage.qml" line="190"/>
         <source>Edit</source>
         <translation>Редагувати</translation>
     </message>
@@ -1184,17 +1189,17 @@
         <translation>/ год</translation>
     </message>
     <message>
-        <location filename="../qml/JobsPage.qml" line="171"/>
+        <location filename="../qml/JobsPage.qml" line="170"/>
         <source>earned</source>
         <translation>зароблено</translation>
     </message>
     <message>
-        <location filename="../qml/JobsPage.qml" line="203"/>
+        <location filename="../qml/JobsPage.qml" line="201"/>
         <source>Delete</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="../qml/JobsPage.qml" line="206"/>
+        <location filename="../qml/JobsPage.qml" line="204"/>
         <source>Delete job</source>
         <translation>Видалити роботу</translation>
     </message>
@@ -1209,7 +1214,7 @@
         <translation>Погодинна робота — спільний таймер, який запускаєш і зупиняєш ти; виконавці заробляють за годину</translation>
     </message>
     <message>
-        <location filename="../qml/JobsPage.qml" line="207"/>
+        <location filename="../qml/JobsPage.qml" line="205"/>
         <source>The job “%1” and its whole history will be deleted for everyone. Delete?</source>
         <translation>Роботу «%1» та всю її історію буде видалено для всіх. Видалити?</translation>
     </message>
@@ -1478,22 +1483,22 @@
         <translation>Система</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="322"/>
+        <location filename="../qml/JournalPage.qml" line="321"/>
         <source>Edit</source>
         <translation>Редагувати</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="329"/>
+        <location filename="../qml/JournalPage.qml" line="328"/>
         <source>Delete</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="331"/>
+        <location filename="../qml/JournalPage.qml" line="330"/>
         <source>Delete bonus</source>
         <translation>Видалити бонус</translation>
     </message>
     <message>
-        <location filename="../qml/JournalPage.qml" line="332"/>
+        <location filename="../qml/JournalPage.qml" line="331"/>
         <source>The bonus of %1 will be removed from the assignee&apos;s balance. Delete?</source>
         <translation>Бонус %1 буде прибрано з балансу виконавця. Видалити?</translation>
     </message>
@@ -1644,8 +1649,8 @@ Profile → Geolocation. Points arrive about every 15 minutes.</source>
     </message>
     <message>
         <location filename="../qml/PayoutDialog.qml" line="53"/>
-        <source>Images (*.png *.jpg *.jpeg *.webp)</source>
-        <translation>Зображення (*.png *.jpg *.jpeg *.webp)</translation>
+        <source>Receipt (*.pdf *.png *.jpg *.jpeg *.webp)</source>
+        <translation>Квитанція (*.pdf *.png *.jpg *.jpeg *.webp)</translation>
     </message>
     <message>
         <location filename="../qml/PayoutDialog.qml" line="66"/>
@@ -3194,8 +3199,8 @@ Profile → Geolocation. Points arrive about every 15 minutes.</source>
     </message>
     <message>
         <location filename="../qml/WithdrawalPayDialog.qml" line="38"/>
-        <source>Images (*.png *.jpg *.jpeg *.webp)</source>
-        <translation>Зображення (*.png *.jpg *.jpeg *.webp)</translation>
+        <source>Receipt (*.pdf *.png *.jpg *.jpeg *.webp)</source>
+        <translation>Квитанція (*.pdf *.png *.jpg *.jpeg *.webp)</translation>
     </message>
     <message>
         <location filename="../qml/WithdrawalPayDialog.qml" line="57"/>
@@ -3267,13 +3272,13 @@ Profile → Geolocation. Points arrive about every 15 minutes.</source>
     <name>WithdrawalsPage</name>
     <message>
         <location filename="../qml/WithdrawalsPage.qml" line="11"/>
-        <location filename="../qml/WithdrawalsPage.qml" line="64"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="72"/>
         <source>Requested</source>
         <translation>Запитано</translation>
     </message>
     <message>
         <location filename="../qml/WithdrawalsPage.qml" line="12"/>
-        <location filename="../qml/WithdrawalsPage.qml" line="65"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="73"/>
         <source>Approved</source>
         <translation>Схвалено</translation>
     </message>
@@ -3284,141 +3289,141 @@ Profile → Geolocation. Points arrive about every 15 minutes.</source>
     </message>
     <message>
         <location filename="../qml/WithdrawalsPage.qml" line="14"/>
-        <location filename="../qml/WithdrawalsPage.qml" line="67"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="75"/>
         <source>Confirmed</source>
         <translation>Підтверджено</translation>
     </message>
     <message>
         <location filename="../qml/WithdrawalsPage.qml" line="15"/>
-        <location filename="../qml/WithdrawalsPage.qml" line="68"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="76"/>
         <source>Declined</source>
         <translation>Відхилено</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="40"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="48"/>
         <source>Withdrawals</source>
         <translation>Виводи</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="55"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="63"/>
         <source>Everyone</source>
         <translation>Усі</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="63"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="71"/>
         <source>Any status</source>
         <translation>Будь-який статус</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="66"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="74"/>
         <source>Paid</source>
         <translation>Виплачено</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="77"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="85"/>
         <source>Any method</source>
         <translation>Будь-який спосіб</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="78"/>
-        <location filename="../qml/WithdrawalsPage.qml" line="170"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="86"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="178"/>
         <source>To card</source>
         <translation>На карту</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="79"/>
-        <location filename="../qml/WithdrawalsPage.qml" line="170"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="87"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="178"/>
         <source>Cash</source>
         <translation>Готівка</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="88"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="96"/>
         <source>All time</source>
         <translation>Весь час</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="89"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="97"/>
         <source>Today</source>
         <translation>Сьогодні</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="90"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="98"/>
         <source>7 days</source>
         <translation>7 днів</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="91"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="99"/>
         <source>30 days</source>
         <translation>30 днів</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="106"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="114"/>
         <source>No withdrawals</source>
         <translation>Немає виводів</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="150"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="158"/>
         <source>requested %1</source>
         <translation>запит %1</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="179"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="187"/>
         <source>Comment: %1</source>
         <translation>Коментар: %1</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="189"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="197"/>
         <source>The assignee did not receive the cash</source>
         <translation>Виконавець не отримав готівку</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="191"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="199"/>
         <source>Cancelled by the assignee</source>
         <translation>Скасовано виконавцем</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="192"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="200"/>
         <source>Reason: %1</source>
         <translation>Причина: %1</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="201"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="209"/>
         <source>paid %1</source>
         <translation>виплачено %1</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="202"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="210"/>
         <source>confirmed %1</source>
         <translation>підтверджено %1</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="233"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="245"/>
         <source>History</source>
         <translation>Історія</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="239"/>
-        <location filename="../qml/WithdrawalsPage.qml" line="245"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="251"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="257"/>
         <source>Decline</source>
         <translation>Відхилити</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="243"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="255"/>
         <source>Decline withdrawal</source>
         <translation>Відхилити вивід</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="244"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="256"/>
         <source>Reason (the assignee will see it)</source>
         <translation>Причина (виконавець побачить)</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="251"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="263"/>
         <source>Approve</source>
         <translation>Схвалити</translation>
     </message>
     <message>
-        <location filename="../qml/WithdrawalsPage.qml" line="257"/>
+        <location filename="../qml/WithdrawalsPage.qml" line="269"/>
         <source>Pay…</source>
         <translation>Виплатити…</translation>
     </message>

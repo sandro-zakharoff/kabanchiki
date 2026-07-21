@@ -35,7 +35,7 @@ AppDialog {
     D.FileDialog {
         id: receiptPicker
         title: qsTr("Choose a receipt")
-        nameFilters: [qsTr("Images (*.png *.jpg *.jpeg *.webp)")]
+        nameFilters: [qsTr("Receipt (*.pdf *.png *.jpg *.jpeg *.webp)")]
         onAccepted: root.receiptFile = selectedFile.toString()
     }
 

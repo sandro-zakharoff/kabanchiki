@@ -391,11 +391,13 @@ let phSeq = 0;
  * render() returns the grid markup; call wire(root) once after each render.
  */
 export class PhotoUploader {
-  constructor({ optimize, max = 10, maxSourceMb = 10, onChange }) {
+  constructor({ optimize, max = 10, maxSourceMb = 10, onChange, allowPdf = false }) {
     this.optimize = optimize;
     this.max = max;
     this.maxSourceMb = maxSourceMb;
     this.onChange = onChange;
+    // Receipts are often bank PDFs; task photos stay pictures only.
+    this.allowPdf = allowPdf;
     this.existing = []; // [{id, url, att}]
     this.added = [];    // [{key, blob, thumbBlob, mime, previewUrl, progress, error}]
     this.removedExisting = [];
@@ -413,7 +415,9 @@ export class PhotoUploader {
         </div>`),
       ...this.added.map((a) => `
         <div class="phcell ${a.error ? "err" : ""}" data-ph-add="${a.key}">
-          <img src="${a.previewUrl}" alt="">
+          ${a.isPdf
+            ? `<div class="phdoc"><span>📄</span><b>PDF</b></div>`
+            : `<img src="${a.previewUrl}" alt="">`}
           ${a.error
             ? `<div class="ph-err">${escapeHtml(a.error)}</div>`
             : a.progress != null
@@ -426,8 +430,11 @@ export class PhotoUploader {
         : "",
     ].join("");
     return `<div class="phgrid" data-ph="${this.uid}">${cells}</div>
-      <div class="phhint">До ${this.max} фото, ≤ ${this.maxSourceMb} МБ кожне — стискаються автоматично</div>
-      <input type="file" accept="image/*" multiple hidden data-ph-input="${this.uid}">`;
+      <div class="phhint">${this.allowPdf
+          ? `Фото або PDF, ≤ ${this.maxSourceMb} МБ — фото стискаються автоматично`
+          : `До ${this.max} фото, ≤ ${this.maxSourceMb} МБ кожне — стискаються автоматично`}</div>
+      <input type="file" accept="${this.allowPdf ? "image/*,application/pdf" : "image/*"}"
+             multiple hidden data-ph-input="${this.uid}">`;
   }
 
   wire(root) {
@@ -471,8 +478,10 @@ export class PhotoUploader {
       input.value = "";
       for (const f of files) {
         if (this.count >= this.max) break;
-        if (!/^image\//.test(f.type)) continue;
-        const entry = { key: `k${++phSeq}`, previewUrl: URL.createObjectURL(f), progress: null };
+        const isPdf = f.type === "application/pdf";
+        if (!/^image\//.test(f.type) && !(this.allowPdf && isPdf)) continue;
+        const entry = { key: `k${++phSeq}`, previewUrl: URL.createObjectURL(f),
+                        progress: null, isPdf };
         if (f.size > this.maxSourceMb * 1024 * 1024) {
           entry.error = `Занадто велике (>${this.maxSourceMb} МБ)`;
           this.added.push(entry);
@@ -480,6 +489,13 @@ export class PhotoUploader {
         }
         this.added.push(entry);
         this.refresh();
+        if (isPdf) {
+          // Upload the document exactly as picked: no re-encoding, no thumbnail.
+          entry.blob = f;
+          entry.mime = f.type;
+          entry.thumbBlob = null;
+          continue;
+        }
         try {
           const opt = await this.optimize(f);
           entry.blob = opt.full.blob;

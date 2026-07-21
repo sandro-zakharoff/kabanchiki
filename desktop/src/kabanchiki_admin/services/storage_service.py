@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import logging
 import uuid
+from pathlib import Path
 
 from kabanchiki_admin.services.gdrive_service import (
     GDriveError,
@@ -28,6 +29,8 @@ from kabanchiki_admin.services.supabase_service import (
 log = logging.getLogger(__name__)
 
 BUCKET_BY_ROLE = {"task": TASK_PHOTOS_BUCKET, "proof": PROOF_PHOTOS_BUCKET}
+
+PDF_MIME = "application/pdf"
 
 
 class StorageService:
@@ -104,6 +107,48 @@ class StorageService:
             "thumb_path": thumb,
             "mime": photo.full.mime,
             "size_bytes": len(photo.full.data),
+        }
+
+    async def upload_document(self, child_id: str, path: str) -> dict:
+        """Upload a receipt that is not an image (a PDF) exactly as it is.
+
+        There is nothing to re-encode and no thumbnail to make, so this is the
+        photo path minus both — the attachment row simply carries a null
+        thumb_path and the clients show a document tile instead of a preview.
+        """
+        src = Path(path)
+        data = src.read_bytes()
+        # Trust the bytes, not the extension: the bucket enforces its MIME list
+        # server-side, so a mislabelled file would fail late and confusingly.
+        if not data.startswith(b"%PDF-"):
+            raise ValueError("NOT_A_PDF")
+
+        if self.backend == "drive":
+            drive = self.drive()
+            if drive is not None:
+                try:
+                    file_id = await drive.upload(
+                        "task", f"{uuid.uuid4().hex}.pdf", PDF_MIME, data
+                    )
+                    return {
+                        "storage": "drive",
+                        "path": file_id,
+                        "thumb_path": None,
+                        "mime": PDF_MIME,
+                        "size_bytes": len(data),
+                    }
+                except GDriveError:
+                    log.warning("drive upload failed, falling back to supabase", exc_info=True)
+
+        stored = await self.supabase.upload_bytes(
+            TASK_PHOTOS_BUCKET, f"{child_id}/{uuid.uuid4().hex}.pdf", data, PDF_MIME
+        )
+        return {
+            "storage": "supabase",
+            "path": stored,
+            "thumb_path": None,
+            "mime": PDF_MIME,
+            "size_bytes": len(data),
         }
 
     async def upload_avatar(self, profile_id: str, img: OptimizedImage) -> tuple[str, str]:
