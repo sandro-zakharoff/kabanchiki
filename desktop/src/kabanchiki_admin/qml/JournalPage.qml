@@ -222,20 +222,16 @@ Item {
                 implicitHeight: row.implicitHeight + Theme.spacingMd * 2
                 shadow: false
                 readonly property var meta: root.actionMeta[model.action] || { label: model.action, c: Theme.textSecondary }
-                color: hoverArea.containsMouse && model.isTask ? Theme.surfaceAlt : Theme.surface
+                color: hoverArea.containsMouse ? Theme.surfaceAlt : Theme.surface
                 Behavior on color { ColorAnimation { duration: Theme.animFast } }
 
+                // Any entry opens the full story of the entity it belongs to.
                 MouseArea {
                     id: hoverArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    cursorShape: model.isTask ? Qt.PointingHandCursor : Qt.ArrowCursor
-                    onClicked: {
-                        if (!model.isTask) return
-                        var rows = backend.tasksModel.all()
-                        for (var i = 0; i < rows.length; i++)
-                            if (rows[i].taskId === model.refId) { taskDetailRef.openFor(rows[i]); break }
-                    }
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: backend.openTimeline(model.entity, model.refId, model.childName)
                 }
 
                 Rectangle {

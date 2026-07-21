@@ -227,6 +227,12 @@ Item {
                             Layout.fillWidth: true
                             Layout.topMargin: Theme.spacingXs
                             spacing: Theme.spacingSm
+                            AppButton {
+                                small: true
+                                variant: "ghost"
+                                text: qsTr("History")
+                                onClicked: backend.openTimeline("withdrawal", model.wId, model.childName)
+                            }
                             Item { Layout.fillWidth: true }
                             AppButton {
                                 visible: model.status === "requested"

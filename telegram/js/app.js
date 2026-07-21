@@ -1,14 +1,14 @@
 // Kabanchiki Mini App — controller: auth, realtime, rendering, actions.
 
-import * as api from "./api.js?v=214";
-import { AuthNeeded, NotLinked, NetworkError, AuthFailed, supabase, serverNow } from "./api.js?v=214";
-import { ONLINE_WINDOW_MS } from "./config.js?v=214";
+import * as api from "./api.js?v=215";
+import { AuthNeeded, NotLinked, NetworkError, AuthFailed, supabase, serverNow } from "./api.js?v=215";
+import { ONLINE_WINDOW_MS } from "./config.js?v=215";
 import {
   money, duration, dateTimeLocal, parseTs, initials, escapeHtml, deadline,
   DIFFICULTY_COLORS, TASK_STATUS, WITHDRAWAL_STATUS,
-} from "./format.js?v=214";
-import * as ui from "./ui.js?v=214";
-import { optimizeImage } from "./images.js?v=214";
+} from "./format.js?v=215";
+import * as ui from "./ui.js?v=215";
+import { optimizeImage } from "./images.js?v=215";
 
 const tg = window.Telegram?.WebApp;
 const $ = (sel) => document.querySelector(sel);
@@ -173,15 +173,15 @@ function scheduleReload() {
 async function reloadAll() {
   const [children, devices, tasks, jobs, jobStats,
     withdrawals, bonuses, events, locations, parents, attachments,
-    ledger, latestRelease] = await Promise.all([
+    ledger, latestRelease, , config] = await Promise.all([
     api.listChildren(), api.listDevices(), api.listTasks(),
     api.listJobs(), api.listJobStats(), api.listWithdrawals(), api.listBonuses(),
     api.listEvents(), api.listLocations(), api.listParents(), api.listAttachments(),
-    api.listLedger(), api.latestRelease(), api.loadStorageConfig(),
+    api.listLedger(), api.latestRelease(), api.loadStorageConfig(), api.loadAppConfig(),
   ]);
   Object.assign(state, {
     children, devices, tasks, jobs, jobStats, withdrawals, bonuses,
-    events, locations, parents, attachments, ledger, latestRelease,
+    events, locations, parents, attachments, ledger, latestRelease, config,
   });
 }
 
@@ -296,12 +296,20 @@ const LEDGER_KIND = {
   reversal: { label: "Повернення", icon: "↺" },
 };
 
+// Ledger source types that map onto a journal entity, so a transaction can
+// open the story of whatever produced it.
+const LEDGER_ENTITY = { task: "task", job: "job", withdrawal: "withdrawal", bonus: "bonus" };
+
 function ledgerRowHtml(e) {
   const k = LEDGER_KIND[e.kind] || { label: e.kind, icon: "•" };
   const amt = Number(e.amount);
   const sign = amt >= 0 ? "+" : "";
   const title = e.note ? `${k.label} · ${escapeHtml(e.note)}` : k.label;
-  return `<div class="ledger-row">
+  const entity = LEDGER_ENTITY[e.source_type];
+  const tap = entity && e.source_id
+    ? ` tap" data-action="timeline" data-entity="${entity}" data-id="${e.source_id}`
+    : "";
+  return `<div class="ledger-row${tap}">
     <span class="lg-ic lg-${e.kind}">${k.icon}</span>
     <div class="lg-b"><div class="lg-t">${title}</div>
       <div class="lg-s">${dateTimeLocal(e.created_at)}${e.actor_name ? " · " + escapeHtml(e.actor_name) : ""}</div></div>
@@ -1012,12 +1020,16 @@ function withdrawalCard(w) {
   }
   if (w.paid_at) lines.push(`<div class="card-s muted">виплачено ${dateTimeLocal(w.paid_at)}` +
     (w.confirmed_at ? ` · підтверджено ${dateTimeLocal(w.confirmed_at)}` : "") + `</div>`);
+  const history = `<button class="btn ghost sm" data-action="timeline"
+      data-entity="withdrawal" data-id="${w.id}">Історія</button>`;
   const act = w.status === "requested"
-    ? `<div class="actions row"><button class="btn danger sm" data-action="wd-decline" data-id="${w.id}">Відхилити</button>
+    ? `<div class="actions row">${history}
+       <button class="btn danger sm" data-action="wd-decline" data-id="${w.id}">Відхилити</button>
        <button class="btn ok sm" data-action="wd-approve" data-id="${w.id}">Схвалити</button></div>`
     : (w.status === "approved"
-      ? `<div class="actions row"><button class="btn sm" data-action="wd-pay" data-id="${w.id}">Виплатити…</button></div>`
-      : "");
+      ? `<div class="actions row">${history}
+         <button class="btn sm" data-action="wd-pay" data-id="${w.id}">Виплатити…</button></div>`
+      : `<div class="actions row">${history}</div>`);
   return `<div class="card col">
     <div class="card-row">${avatar(child, 36)}<div class="card-b">
       <div class="card-t">Вивід ${money(w.amount)}</div>
@@ -1077,13 +1089,6 @@ function journalEvent(e) {
   const details = e.details || {};
   const amount = details.amount ?? details.earned;
   const who = e.actor_kind === "system" ? "Система" : (e.actor_name || child.display_name || "—");
-  // Entries whose task/job still exists open the full details, like desktop.
-  const openTask = e.entity === "task" && e.action !== "deleted"
-    && state.tasks.some((t) => t.id === e.entity_id);
-  const openJob = e.entity === "job" && e.action !== "deleted"
-    && state.jobs.some((j) => j.id === e.entity_id);
-  const openable = openTask || openJob;
-  const openAction = openTask ? "task-detail" : "job-detail";
   // A granted bonus that still exists stays manageable from its entry.
   const liveBonus = e.entity === "bonus" && e.action === "granted"
     && state.bonuses.some((b) => b.id === e.entity_id);
@@ -1103,13 +1108,94 @@ function journalEvent(e) {
       (details.note ? chip(escapeHtml(details.note), "") : "") + `</div>
     </div>` +
     (amount != null ? `<div class="card-r sm">${money(amount)}</div>` : "") +
-    (openable ? `<div class="card-r">›</div>` : "");
+    `<div class="card-r">›</div>`;
 
   if (bonusActs) {
     return `<div class="card col"><div class="card-row">${inner}</div>${bonusActs}</div>`;
   }
-  return `<div class="card ${openable ? "tap" : ""}" ${openable
-      ? `data-action="${openAction}" data-id="${e.entity_id}"` : ""}>${inner}</div>`;
+  // Tapping an entry opens that entity's full story; the sheet itself offers a
+  // jump to the live task/job when one still exists.
+  return `<div class="card tap" data-action="timeline"
+      data-entity="${e.entity}" data-id="${e.entity_id}">${inner}</div>`;
+}
+
+// ---------------------------------------------------------------- entity timeline
+
+/** Human line under a timeline step: actor plus whatever the event carries. */
+function timelineMeta(e) {
+  const d = e.details || {};
+  const bits = [];
+  const who = e.actor_kind === "system" ? "Система" : (e.actor_name || "");
+  if (who) bits.push(`<b>${escapeHtml(who)}</b>`);
+  const amount = d.amount ?? d.earned;
+  if (amount != null) bits.push(money(amount));
+  if (d.method) bits.push(d.method === "card" ? "на карту" : "готівка");
+  if (d.note) bits.push(`«${escapeHtml(d.note)}»`);
+  if (d.reason) {
+    const r = d.reason === "not_received" ? "не отримано"
+      : d.reason === "cancelled" ? "скасовано виконавцем" : escapeHtml(d.reason);
+    bits.push(`«${r}»`);
+  }
+  if (d.old_name) bits.push(`було: ${escapeHtml(d.old_name)}`);
+  return bits.join(" · ");
+}
+
+/** The story of one entity, step by step, as a card. */
+async function timelineSheet(entity, entityId) {
+  const label = EVENT_ENTITY[entity] || entity;
+  openSheet(`
+    <div class="sheet-title">Історія · ${label}</div>
+    <div class="tl-load">Завантаження…</div>`);
+  let steps = [];
+  try {
+    steps = await api.entityTimeline(entity, entityId);
+  } catch (e) {
+    console.error("timeline failed", e);
+    const box = $("#sheet .tl-load");
+    if (box) box.textContent = "Не вдалося завантажити історію";
+    return;
+  }
+  const card = $("#sheet .sheet-card");
+  if (!card) return;   // sheet closed while loading
+
+  const title = steps.length ? steps[steps.length - 1].entity_title : "";
+  // Context: who it belongs to, taken from whichever row we still have loaded.
+  const src = entity === "task" ? state.tasks.find((t) => t.id === entityId)
+    : entity === "withdrawal" ? state.withdrawals.find((w) => w.id === entityId)
+      : entity === "bonus" ? state.bonuses.find((b) => b.id === entityId) : null;
+  const child = src ? childById(src.child_id) : (entity === "child" ? childById(entityId) : null);
+
+  const rows = steps.map((e) => {
+    const meta = EVENT_ACTION[e.action] || { label: e.action, cls: "" };
+    const sub = timelineMeta(e);
+    return `<li class="tl-step">
+      <span class="tl-dot ${meta.cls}"></span>
+      <div class="tl-body">
+        <div class="tl-head"><span class="tl-act">${meta.label}</span>
+          <span class="tl-time">${dateTimeLocal(e.created_at)}</span></div>
+        ${sub ? `<div class="tl-sub">${sub}</div>` : ""}
+      </div></li>`;
+  }).join("");
+
+  // Jump to the live entity when it still exists.
+  const openable = (entity === "task" && state.tasks.some((t) => t.id === entityId))
+    ? "task-detail"
+    : (entity === "job" && state.jobs.some((j) => j.id === entityId)) ? "job-detail" : "";
+
+  card.innerHTML = `<div class="sheet-grip"></div>
+    <div class="sheet-title">Історія · ${label}</div>
+    ${title || child ? `<div class="sheet-sub">${escapeHtml(title || "")}` +
+      (child ? ` — ${escapeHtml(child.display_name)}` : "") + `</div>` : ""}
+    ${steps.length
+      ? `<ol class="tl">${rows}</ol>`
+      : `<div class="empty-sm">Подій ще немає</div>`}
+    <div class="actions">
+      <button class="btn ghost" data-action="close">Закрити</button>
+      ${openable
+        ? `<button class="btn" data-action="${openable}" data-id="${entityId}">Відкрити</button>`
+        : ""}
+    </div>`;
+  attachSheetDrag(card);
 }
 
 function bonusEditForm(id) {
@@ -1561,25 +1647,71 @@ function wdRejectForm(id) {
 }
 
 let payMethod = "card";
+let receiptUploader = null;     // PhotoUploader for the card receipt
+
+/** The receipt block is only meaningful for card payouts. */
+function toggleReceiptBlock(method) {
+  const box = $("#wd-receipt-box") || $("#po-receipt-box");
+  if (box) box.classList.toggle("hidden", method !== "card");
+}
+
+/**
+ * Upload the picked receipt (if any) and attach it to the withdrawal.
+ * childId is passed explicitly because a just-created payout is not in state yet.
+ */
+async function attachPickedReceipt(withdrawalId, childId) {
+  const pending = receiptUploader ? receiptUploader.pending() : [];
+  if (pending.length === 0) return;
+  const a = pending[0];
+  const photo = {
+    full: { blob: a.blob, mime: a.mime, ext: a.mime === "image/webp" ? "webp" : "jpg" },
+    thumb: a.thumbBlob
+      ? { blob: a.thumbBlob, mime: a.thumbBlob.type, ext: a.thumbBlob.type === "image/webp" ? "webp" : "jpg" }
+      : null,
+  };
+  const info = await api.uploadTaskPhoto(childId, photo,
+    (p) => receiptUploader.setProgress(a.key, p));
+  await api.attachReceipt(withdrawalId, info);
+}
+
+function receiptBlock(boxId) {
+  const required = state.config?.require_receipt_for_card;
+  return `<div id="${boxId}" class="rcpt-box">
+      ${formSec(required ? "Квитанція (обов'язково)" : "Квитанція (необов'язково)")}
+      ${receiptUploader.render()}</div>`;
+}
+
 function wdPayForm(id) {
   const w = state.withdrawals.find((x) => x.id === id);
   if (!w) return;
   const c = childById(w.child_id);
   payMethod = "card";
+  receiptUploader = new ui.PhotoUploader({ optimize: optimizeImage, max: 1, onChange: syncMainButton });
   openSheet(`
     <div class="sheet-title">Виплата ${money(w.amount)}${c ? ` — ${escapeHtml(c.display_name)}` : ""}</div>
     <div class="segment">
       <button class="seg on" data-action="wd-method" data-val="card">На карту</button>
       <button class="seg" data-action="wd-method" data-val="cash">Готівка</button></div>
     <div id="wd-cash-hint" class="hint hidden">Виконавцю прийде запит підтвердити отримання готівки.</div>
-    <div id="wd-card-hint" class="hint">Квитанцію можна прикріпити з Windows-реєстру виводів.</div>
+    ${receiptBlock("wd-receipt-box")}
+    ${fieldErr("wdrcpt")}
     <label class="fl">Коментар (необов'язково)<input id="wd-comment" class="inp" placeholder="напр. решта 3 ₴ за мною"></label>
     <div class="actions"><button class="btn ghost" data-action="close">Скасувати</button>
       <button class="btn" data-main="1" data-action="wd-pay-do" data-id="${id}">Підтвердити виплату</button></div>`);
+  receiptUploader.wire($("#sheet .sheet-card"));
 }
 async function payWithdrawal(id) {
-  await submitSheet(() => api.withdrawalPay(id, payMethod, $("#wd-comment")?.value || ""),
-    payMethod === "cash" ? "Позначено як видане готівкою" : "Виплачено на карту");
+  clearErrs();
+  const needReceipt = payMethod === "card" && state.config?.require_receipt_for_card;
+  if (needReceipt && receiptUploader.pending().length === 0) {
+    return setErr("wdrcpt", "Додайте квитанцію");
+  }
+  const childId = state.withdrawals.find((x) => x.id === id)?.child_id || "";
+  await submitSheet(async () => {
+    // Attach first: the RPC refuses a card payout without a required receipt.
+    if (payMethod === "card") await attachPickedReceipt(id, childId);
+    await api.withdrawalPay(id, payMethod, $("#wd-comment")?.value || "");
+  }, payMethod === "cash" ? "Позначено як видане готівкою" : "Виплачено на карту");
 }
 
 // Owner-initiated payout to an assignee.
@@ -1588,6 +1720,7 @@ function payoutForm(childId) {
   const c = childById(childId);
   const bal = childBalance(childId);
   payoutMethod = "card";
+  receiptUploader = new ui.PhotoUploader({ optimize: optimizeImage, max: 1, onChange: syncMainButton });
   openSheet(`
     <div class="sheet-title">Виплата${c ? ` — ${escapeHtml(c.display_name)}` : ""}</div>
     <div class="sheet-sub">Баланс: <b data-live-bal="${childId}">${money(bal)}</b></div>
@@ -1602,9 +1735,12 @@ function payoutForm(childId) {
       <button class="seg on" data-action="payout-method" data-val="card">На карту</button>
       <button class="seg" data-action="payout-method" data-val="cash">Готівка</button></div>
     <div id="po-cash-hint" class="hint hidden">Виконавцю прийде запит підтвердити отримання готівки.</div>
+    ${receiptBlock("po-receipt-box")}
+    ${fieldErr("porcpt")}
     <label class="fl">Коментар (необов'язково)<input id="po-comment" class="inp" placeholder="напр. решта 3 ₴ за мною"></label>
     <div class="actions"><button class="btn ghost" data-action="close">Скасувати</button>
       <button class="btn" data-main="1" data-action="payout-do" data-id="${childId}">Виплатити</button></div>`);
+  receiptUploader.wire($("#sheet .sheet-card"));
 }
 async function savePayout(childId) {
   clearErrs();
@@ -1612,9 +1748,15 @@ async function savePayout(childId) {
   const amt = Number($("#po-amt").value || 0);
   if (amt <= 0) return setErr("poamt", "Вкажіть суму");
   if (amt > bal + 0.001) return setErr("poamt", "Більше за доступний баланс");
+  if (payoutMethod === "card" && state.config?.require_receipt_for_card
+      && receiptUploader.pending().length === 0) {
+    return setErr("porcpt", "Додайте квитанцію");
+  }
   await submitSheet(async () => {
     const passAmt = Math.abs(amt - bal) < 0.01 ? null : amt;   // exact all → server uses live balance
     const id = await api.createWithdrawal(childId, passAmt);
+    // Attach before paying: the RPC refuses a card payout without a required receipt.
+    if (payoutMethod === "card") await attachPickedReceipt(id, childId);
     await api.withdrawalPay(id, payoutMethod, ($("#po-comment") || {}).value || "");
   }, payoutMethod === "cash" ? "Позначено готівкою" : "Виплачено на карту");
 }
@@ -1657,6 +1799,7 @@ const HANDLERS = {
   "reload-data": () => { state.loaded = false; render(); loadData(); },
   "task-filter": (el) => { state.taskFilter = el.dataset.id; render(); },
   "journal-filter": (el) => { state.journalFilter = el.dataset.id; render(); },
+  timeline: (el) => timelineSheet(el.dataset.entity, el.dataset.id),
   "task-detail": (el) => openTaskDetail(el.dataset.id),
   "task-create": () => taskForm(),
   "task-edit": (el) => taskForm(state.tasks.find((t) => t.id === el.dataset.id)),
@@ -1739,7 +1882,7 @@ const HANDLERS = {
     document.querySelectorAll("[data-action='wd-method']").forEach((b) =>
       b.classList.toggle("on", b.dataset.val === payMethod));
     $("#wd-cash-hint")?.classList.toggle("hidden", payMethod !== "cash");
-    $("#wd-card-hint")?.classList.toggle("hidden", payMethod === "cash");
+    toggleReceiptBlock(payMethod);
   },
   "wd-pay-do": (el) => payWithdrawal(el.dataset.id),
   "wd-filter": (el) => { state.wdStatus = el.dataset.id; render(); },
@@ -1779,6 +1922,7 @@ const HANDLERS = {
     document.querySelectorAll("[data-action='payout-method']").forEach((b) =>
       b.classList.toggle("on", b.dataset.val === payoutMethod));
     $("#po-cash-hint")?.classList.toggle("hidden", payoutMethod !== "cash");
+    toggleReceiptBlock(payoutMethod);
   },
   "payout-do": (el) => savePayout(el.dataset.id),
   "po-all": (el) => { const i = $("#po-amt"); if (i) i.value = childBalance(el.dataset.id).toFixed(2); },

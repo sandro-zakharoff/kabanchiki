@@ -179,10 +179,27 @@ Item {
                     model: backend.ledgerModel
                     ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
                     delegate: Rectangle {
+                        id: ledgerRow
                         width: ledgerList.width
                         height: 58
-                        color: "transparent"
                         readonly property var meta: root.kindMeta(model.kind)
+                        // A transaction produced by a task/job/payout/bonus can
+                        // open that entity's full story.
+                        readonly property bool traceable:
+                            model.sourceEntity.length > 0 && model.sourceId.length > 0
+                        color: traceable && ledgerHover.containsMouse ? Theme.surfaceAlt : "transparent"
+                        Behavior on color { ColorAnimation { duration: Theme.animFast } }
+
+                        MouseArea {
+                            id: ledgerHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: ledgerRow.traceable ? Qt.PointingHandCursor : Qt.ArrowCursor
+                            onClicked: {
+                                if (ledgerRow.traceable)
+                                    backend.openTimeline(model.sourceEntity, model.sourceId, model.childName)
+                            }
+                        }
 
                         RowLayout {
                             anchors.fill: parent

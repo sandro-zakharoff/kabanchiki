@@ -165,6 +165,41 @@ const MONTHS = ["січень", "лютий", "березень", "квітен�
 const DOW = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
 const two = (n) => String(n).padStart(2, "0");
 
+const WHEEL_ITEM = 44;   // must match .wheel .w-item height in styles.css
+
+/**
+ * Make a snap wheel advance by exactly one value per mouse-wheel notch.
+ *
+ * A native wheel notch scrolls ~100px — over two 44px items — so with
+ * `scroll-snap-type: mandatory` the wheel lands two or three values away and
+ * the wanted one is hard to hit. We take the gesture over: accumulate the delta
+ * (trackpads emit many tiny ones), step a single item once it passes a
+ * threshold, and hold a short lock so the smooth scroll is not re-triggered by
+ * its own momentum. Touch scrolling is untouched.
+ */
+function bindWheelStep(el) {
+  let acc = 0;
+  let locked = false;
+  el.addEventListener("wheel", (e) => {
+    e.preventDefault();                       // we drive the scroll ourselves
+    if (locked) return;
+    // Normalise: line-mode deltas count as one item, page-mode as three.
+    const unit = e.deltaMode === 1 ? WHEEL_ITEM : e.deltaMode === 2 ? WHEEL_ITEM * 3 : 1;
+    acc += e.deltaY * unit;
+    if (Math.abs(acc) < WHEEL_ITEM * 0.5) return;
+
+    const dir = Math.sign(acc);
+    acc = 0;
+    const max = el.scrollHeight - el.clientHeight;
+    const next = Math.min(max, Math.max(0,
+      (Math.round(el.scrollTop / WHEEL_ITEM) + dir) * WHEEL_ITEM));
+    if (next === el.scrollTop) return;
+    locked = true;
+    el.scrollTo({ top: next, behavior: "smooth" });
+    setTimeout(() => { locked = false; }, 130);
+  }, { passive: false });
+}
+
 // Custom date+time picker: month calendar, hour/minute snap wheels, presets.
 // onDone(dateOrNull) — null means "no deadline".
 export function deadlineSheet({ value = null, onDone }) {
@@ -258,6 +293,8 @@ export function deadlineSheet({ value = null, onDone }) {
     const v = wheelVal(wheelM);
     if (v !== lastTickM) { lastTickM = v; haptic("select"); }
   }, { passive: true });
+  bindWheelStep(wheelH);
+  bindWheelStep(wheelM);
 
   function finish(date) {
     haptic("impact");

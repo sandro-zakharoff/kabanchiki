@@ -295,6 +295,19 @@ Item {
     ConfirmDialog { id: confirmDialog }
     NoteDialog { id: noteDialog }
     Lightbox { id: lightbox }
+    TimelineDialog { id: timelineDialog }
+
+    // The backend answers openTimeline() here, so any page can ask for a story
+    // without owning the dialog itself.
+    Connections {
+        target: backend
+        function onTimelineReady(steps, entity, subtitle) {
+            timelineDialog.steps = steps
+            timelineDialog.entity = entity
+            timelineDialog.subtitle = subtitle
+            timelineDialog.open()
+        }
+    }
 
     // Pages reach dialogs through these:
     property alias taskDialogRef: taskDialog

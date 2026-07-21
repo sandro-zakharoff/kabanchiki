@@ -7,8 +7,8 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 import {
   SUPABASE_URL, SUPABASE_ANON_KEY, TG_AUTH_URL, ADMIN_URL, DRIVE_URL,
   TASK_PHOTOS_BUCKET, PROOF_PHOTOS_BUCKET, AVATARS_BUCKET,
-} from "./config.js?v=214";
-import { xhrUpload, blobToBase64 } from "./images.js?v=214";
+} from "./config.js?v=215";
+import { xhrUpload, blobToBase64 } from "./images.js?v=215";
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
@@ -150,6 +150,14 @@ export const listEvents = () =>
   supabase.from("events").select("*").order("id", { ascending: false })
     .limit(300).then(r => r.data || []);
 
+/**
+ * The complete, ordered story of one entity — served by the server because the
+ * feed above is capped and would truncate the history of anything older.
+ */
+export const entityTimeline = (entity, entityId) =>
+  supabase.rpc("entity_timeline", { p_entity: entity, p_entity_id: entityId })
+    .then((r) => { throwOnError(r); return r.data || []; });
+
 export const listLocations = () =>
   supabase.from("locations").select("*").order("id", { ascending: false })
     .limit(200).then(r => r.data || []);
@@ -177,6 +185,12 @@ export async function loadStorageConfig() {
   storageBackendValue = data?.storage_backend === "drive" ? "drive" : "supabase";
   return storageBackendValue;
 }
+
+/** Money-related settings the owner UI needs (receipt rules, limits). */
+export const loadAppConfig = () =>
+  supabase.from("app_config")
+    .select("min_withdrawal, withdrawals_enabled, auto_approve_below, require_receipt_for_card, currency")
+    .limit(1).maybeSingle().then((r) => r.data || {});
 
 const signedCache = new Map(); // `${bucket}/${path}` -> {url, until}
 

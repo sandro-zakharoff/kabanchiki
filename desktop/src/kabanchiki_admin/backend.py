@@ -276,6 +276,8 @@ class Backend(QObject):
                 "timeText",
                 "dateText",
                 "actorName",
+                "sourceEntity",
+                "sourceId",
             ],
             self,
         )
@@ -1252,6 +1254,13 @@ class Backend(QObject):
                     "timeText": fmt_datetime_local(when),
                     "dateText": fmt_date_local(when),
                     "actorName": e.get("actor_name") or "",
+                    # Lets a transaction open the story of whatever produced it.
+                    "sourceEntity": (
+                        e.get("source_type") or ""
+                        if (e.get("source_type") or "") in ("task", "job", "withdrawal", "bonus")
+                        else ""
+                    ),
+                    "sourceId": e.get("source_id") or "",
                 }
             )
         self._ledgerModel.set_rows(rows)
@@ -1978,6 +1987,60 @@ class Backend(QObject):
         except Exception as exc:  # noqa: BLE001
             log.exception("setBalanceSettings")
             self.toastRequested.emit(self._human_error(exc), "error")
+
+    # ------------------------------------------------------------- timeline
+
+    timelineReady = Signal("QVariant", str, str)  # steps, entity label, subtitle
+
+    def _timeline_detail(self, row: dict) -> str:
+        """One readable line under a step: who did it, plus what it carried."""
+        details = row.get("details") or {}
+        bits: list[str] = []
+        if row.get("actor_kind") == "system":
+            bits.append(self.tr("System"))
+        elif row.get("actor_name"):
+            bits.append(row["actor_name"])
+
+        amount = details.get("amount", details.get("earned"))
+        if amount is not None:
+            bits.append(fmt_money(float(amount)))
+        method = details.get("method")
+        if method:
+            bits.append(self.tr("to card") if method == "card" else self.tr("cash"))
+        if details.get("note"):
+            bits.append(f"«{details['note']}»")
+        reason = details.get("reason")
+        if reason:
+            human = {
+                "not_received": self.tr("not received"),
+                "cancelled": self.tr("cancelled by the assignee"),
+            }.get(reason, reason)
+            bits.append(f"«{human}»")
+        if details.get("old_name"):
+            bits.append(self.tr("was: %1").replace("%1", str(details["old_name"])))
+        return " · ".join(bits)
+
+    @asyncSlot(str, str, str)
+    async def openTimeline(self, entity: str, entity_id: str, subtitle: str) -> None:  # noqa: N802
+        """Fetch one entity's full story and hand it to the dialog."""
+        try:
+            rows = await self.supabase.entity_timeline(entity, entity_id)
+        except Exception as exc:  # noqa: BLE001
+            log.exception("openTimeline")
+            self.toastRequested.emit(self._human_error(exc), "error")
+            return
+        steps = [
+            {
+                "action": r.get("action") or "",
+                "timeText": fmt_datetime_local(parse_ts(r.get("created_at"))),
+                "detailText": self._timeline_detail(r),
+                "title": r.get("entity_title") or "",
+            }
+            for r in rows
+        ]
+        title = steps[-1]["title"] if steps else ""
+        sub = " — ".join(x for x in (title, subtitle) if x)
+        self.timelineReady.emit(steps, entity, sub)
 
     # ------------------------------------------------------------- maintenance
 

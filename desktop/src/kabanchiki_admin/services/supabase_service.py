@@ -355,6 +355,18 @@ class SupabaseService:
             {"p_location_id": location_id, "p_locality": locality},
         ).execute()
 
+    async def entity_timeline(self, entity: str, entity_id: str) -> list[dict]:
+        """The complete story of one entity, oldest step first.
+
+        Served by the database rather than filtered from the loaded feed: that
+        feed is capped, so an older entity's history would come out truncated.
+        """
+        assert self.client is not None
+        response = await self.client.rpc(
+            "entity_timeline", {"p_entity": entity, "p_entity_id": entity_id}
+        ).execute()
+        return response.data or []
+
     # ------------------------------------------------------------- maintenance
 
     async def clear_journal(self, before_iso: str | None) -> int:
