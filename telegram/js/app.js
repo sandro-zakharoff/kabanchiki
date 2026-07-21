@@ -1,14 +1,14 @@
 // Kabanchiki Mini App — controller: auth, realtime, rendering, actions.
 
-import * as api from "./api.js?v=216";
-import { AuthNeeded, NotLinked, NetworkError, AuthFailed, supabase, serverNow } from "./api.js?v=216";
-import { ONLINE_WINDOW_MS } from "./config.js?v=216";
+import * as api from "./api.js?v=217";
+import { AuthNeeded, NotLinked, NetworkError, AuthFailed, supabase, serverNow } from "./api.js?v=217";
+import { ONLINE_WINDOW_MS } from "./config.js?v=217";
 import {
   acornsHtml, acornWords, duration, dateTimeLocal, parseTs, initials, escapeHtml, deadline,
   DIFFICULTY_COLORS, TASK_STATUS, WITHDRAWAL_STATUS,
-} from "./format.js?v=216";
-import * as ui from "./ui.js?v=216";
-import { optimizeImage } from "./images.js?v=216";
+} from "./format.js?v=217";
+import * as ui from "./ui.js?v=217";
+import { optimizeImage } from "./images.js?v=217";
 
 const tg = window.Telegram?.WebApp;
 const $ = (sel) => document.querySelector(sel);
