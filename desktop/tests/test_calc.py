@@ -8,10 +8,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from kabanchiki_admin.models import (
     Session,
-    balance_for,
+    acorn_unit,
     earned_seconds,
+    fmt_acorns,
+    fmt_acorns_words,
     fmt_duration,
-    fmt_money,
+    live_acorns,
     parse_ts,
     total_seconds,
 )
@@ -55,17 +57,55 @@ def test_reset_after_all_sessions_is_zero():
     assert earned_seconds(sessions, reset_at=at(10), now=at(60)) == 0
 
 
-def test_balance_rounding():
-    # 1799 s at 100 ₴/h -> 49.97 (round half up on the cent boundary is fine)
-    assert balance_for(1800, 100.0) == 50.0
-    assert balance_for(3600, 55.5) == 55.5
-    assert balance_for(0, 100.0) == 0.0
+def test_live_acorns_only_ever_whole():
+    # 30 min at 60/h: exactly 30 acorns (1800 s banked as 1800*60 acorn-seconds)
+    assert live_acorns(1800 * 60, 0, 60) == 30
+    # half an acorn earned is not shown as anything yet — and is not lost either
+    assert live_acorns(1800 * 1, 0, 1) == 0
+    # ticking forward: the same floor the server applies, never a fraction
+    assert live_acorns(0, 1799, 100) == 49
+    assert live_acorns(0, 1800, 100) == 50
+    # the carried remainder matures without the tick ever going backwards
+    assert live_acorns(1800 * 1, 1800, 1) == 1
+    assert live_acorns(0, 0, 100) == 0
 
 
-def test_fmt_money():
-    assert fmt_money(0) == "0.00 ₴"
-    assert fmt_money(1234567.5) == "1 234 567.50 ₴"
-    assert fmt_money(-12.3) == "-12.30 ₴"
+def test_acorn_unit_declension():
+    # Ukrainian: one / few / many, driven by the last two digits
+    assert acorn_unit(1) == "жолудь"
+    assert acorn_unit(2) == "жолуді"
+    assert acorn_unit(4) == "жолуді"
+    assert acorn_unit(5) == "жолудів"
+    assert acorn_unit(0) == "жолудів"
+    # the teens are the trap: 11-14 take the 'many' form, not the 'one'/'few'
+    assert acorn_unit(11) == "жолудів"
+    assert acorn_unit(12) == "жолудів"
+    assert acorn_unit(14) == "жолудів"
+    assert acorn_unit(21) == "жолудь"
+    assert acorn_unit(22) == "жолуді"
+    assert acorn_unit(25) == "жолудів"
+    assert acorn_unit(111) == "жолудів"
+    assert acorn_unit(121) == "жолудь"
+    # sign never changes the form
+    assert acorn_unit(-3) == "жолуді"
+    assert acorn_unit(1, "en") == "acorn"
+    assert acorn_unit(5, "en") == "acorns"
+
+
+def test_fmt_acorns():
+    assert fmt_acorns(0) == "0"
+    assert fmt_acorns(1234567) == "1 234 567"
+    assert fmt_acorns(-12) == "-12"
+    # the mark is an icon, so the number carries no unit of its own
+    assert "₴" not in fmt_acorns(100)
+
+
+def test_fmt_acorns_words():
+    assert fmt_acorns_words(1) == "1 жолудь"
+    assert fmt_acorns_words(883) == "883 жолуді"  # ...83 -> few
+    assert fmt_acorns_words(885) == "885 жолудів"  # ...85 -> many
+    assert fmt_acorns_words(1234) == "1 234 жолуді"
+    assert fmt_acorns_words(2, "en") == "2 acorns"
 
 
 def test_fmt_duration():

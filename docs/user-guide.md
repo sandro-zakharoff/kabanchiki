@@ -1,8 +1,9 @@
 # User guide
 
 Kabanchiki is a family task-and-reward system. Parents (owners) hand out tasks
-and hourly jobs; children (assignees) complete them and earn money that is
-tracked to the kopiyka. Everyone sees the same data in real time.
+and hourly jobs; children (assignees) complete them and earn acorns — the
+app's own currency, always a whole number, never a fraction. Everyone sees
+the same data in real time.
 
 The interface is available in English and Ukrainian.
 

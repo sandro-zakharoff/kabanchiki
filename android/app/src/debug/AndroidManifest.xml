@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug-only: a gallery of the acorn mark for visual checks. Merged into
+     debug builds only, so it can never reach a release APK. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name="com.kabanchiki.app.debug.AcornPreviewActivity"
+            android:exported="true"
+            android:label="Acorn preview" />
+    </application>
+</manifest>

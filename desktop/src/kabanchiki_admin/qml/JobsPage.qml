@@ -94,9 +94,11 @@ Item {
                                 }
                             }
 
-                            Text {
+                            AcornAmount {
                                 text: model.rateText
-                                font.pixelSize: Theme.fontSizeSm
+                                suffix: qsTr("/ hour")
+                                fontSize: Theme.fontSizeSm
+                                fontWeight: Font.Normal
                                 color: Theme.textSecondary
                             }
 
@@ -169,12 +171,12 @@ Item {
                                     font.pixelSize: Theme.fontSizeXs
                                     color: Theme.textSecondary
                                 }
-                                Text {
+                                AcornAmount {
                                     text: modelData.earnedText
-                                    font.pixelSize: Theme.fontSizeLg
-                                    font.weight: Font.Bold
-                                    font.family: "Consolas"
-                                    color: modelData.earned > 0 ? Theme.accent : Theme.textSecondary
+                                    fontSize: Theme.fontSizeLg
+                                    fontWeight: Font.Bold
+                                    fontFamily: "Consolas"
+                                        color: modelData.earned > 0 ? Theme.accent : Theme.textSecondary
                                 }
                             }
                         }

@@ -37,10 +37,24 @@ const admin = createClient(
 const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-function fmtMoney(v: number | string | undefined): string {
+// Bot messages are plain text, so the acorn is spelled out rather than drawn.
+// 1 жолудь / 2-4 жолуді / 5-20 жолудів, with the teens taking the last form.
+function acornUnit(n: number): string {
+  const a = Math.abs(Math.round(n));
+  if (Math.floor((a % 100) / 10) === 1) return "жолудів";
+  const last = a % 10;
+  if (last === 1) return "жолудь";
+  if (last >= 2 && last <= 4) return "жолуді";
+  return "жолудів";
+}
+
+function fmtAcorns(v: number | string | undefined): string {
   if (v === undefined || v === null) return "";
   const n = Number(v);
-  return isNaN(n) ? "" : `${n.toFixed(2)} ₴`;
+  if (isNaN(n)) return "";
+  const whole = Math.round(n);
+  const grouped = String(Math.abs(whole)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return `${whole < 0 ? "-" : ""}${grouped} ${acornUnit(whole)}`;
 }
 
 function fmtTime(iso: string | undefined): string {
@@ -57,7 +71,7 @@ function render(rec: OutboxRecord, botUsername: string) {
   const p = rec.payload;
   const who = esc(p.actor || "Виконавець");
   const title = esc(p.title || "");
-  const amount = fmtMoney(p.amount);
+  const amount = fmtAcorns(p.amount);
   const when = fmtTime(p.at);
   const note = p.note ? `\n💬 ${esc(p.note)}` : "";
 

@@ -9,8 +9,8 @@ AppDialog {
     property string childId: ""
     property string editBonusId: ""
     acceptAction: function() {
-        if (!(amountField.text.length > 0 && parseFloat(amountField.text.replace(",", ".")) > 0)) return
-        var amount = parseFloat(amountField.text.replace(",", "."))
+        if (!(amountField.text.length > 0 && parseInt(amountField.text, 10) > 0)) return
+        var amount = parseInt(amountField.text, 10)
         if (root.editBonusId.length > 0) backend.updateBonus(root.editBonusId, amount, noteField.text)
         else backend.giveBonus(root.childId, amount, noteField.text)
         root.close()
@@ -44,12 +44,12 @@ AppDialog {
             color: Theme.textSecondary
         }
 
-        Text { text: qsTr("Amount, ₴"); font.pixelSize: Theme.fontSizeSm; font.weight: Font.DemiBold; color: Theme.textSecondary }
+        Text { text: qsTr("Amount, acorns"); font.pixelSize: Theme.fontSizeSm; font.weight: Font.DemiBold; color: Theme.textSecondary }
         AppTextField {
             id: amountField
             Layout.fillWidth: true
-            placeholderText: "0.00"
-            validator: DoubleValidator { bottom: 0; decimals: 2; notation: DoubleValidator.StandardNotation }
+            placeholderText: "0"
+            validator: IntValidator { bottom: 0 }
         }
 
         // Quick amount chips.
@@ -85,9 +85,9 @@ AppDialog {
             AppButton { text: qsTr("Cancel"); variant: "ghost"; onClicked: root.close() }
             AppButton {
                 text: root.editBonusId.length > 0 ? qsTr("Save") : qsTr("Grant bonus")
-                enabled: amountField.text.length > 0 && parseFloat(amountField.text.replace(",", ".")) > 0
+                enabled: amountField.text.length > 0 && parseInt(amountField.text, 10) > 0
                 onClicked: {
-                    var amount = parseFloat(amountField.text.replace(",", "."))
+                    var amount = parseInt(amountField.text, 10)
                     if (root.editBonusId.length > 0) {
                         backend.updateBonus(root.editBonusId, amount, noteField.text)
                     } else {

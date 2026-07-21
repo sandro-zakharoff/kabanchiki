@@ -53,7 +53,7 @@ class BalanceRepository @Inject constructor(
     }
 
     /** amount == null cashes out the whole balance. Returns the new payout id. */
-    suspend fun requestWithdrawal(amount: Double? = null): String {
+    suspend fun requestWithdrawal(amount: Int? = null): String {
         val result = client.postgrest.rpc(
             "request_withdrawal",
             buildJsonObject { if (amount != null) put("p_amount", amount) },

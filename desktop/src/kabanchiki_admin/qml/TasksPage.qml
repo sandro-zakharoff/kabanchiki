@@ -186,7 +186,7 @@ Item {
                     Rectangle { width: 1; Layout.preferredHeight: 32; color: Theme.border }
                     ColumnLayout {
                         spacing: 0
-                        Text { text: model.balanceText; font.pixelSize: Theme.fontSizeLg; font.weight: Font.Bold; color: Theme.accent; Layout.alignment: Qt.AlignHCenter }
+                        AcornAmount { text: model.balanceText; fontSize: Theme.fontSizeLg; fontWeight: Font.Bold; color: Theme.accent; Layout.alignment: Qt.AlignHCenter }
                         Text { text: qsTr("balance"); font.pixelSize: Theme.fontSizeXs; color: Theme.textSecondary; Layout.alignment: Qt.AlignHCenter }
                     }
 

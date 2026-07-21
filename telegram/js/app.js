@@ -1,14 +1,14 @@
 // Kabanchiki Mini App — controller: auth, realtime, rendering, actions.
 
-import * as api from "./api.js?v=215";
-import { AuthNeeded, NotLinked, NetworkError, AuthFailed, supabase, serverNow } from "./api.js?v=215";
-import { ONLINE_WINDOW_MS } from "./config.js?v=215";
+import * as api from "./api.js?v=216";
+import { AuthNeeded, NotLinked, NetworkError, AuthFailed, supabase, serverNow } from "./api.js?v=216";
+import { ONLINE_WINDOW_MS } from "./config.js?v=216";
 import {
-  money, duration, dateTimeLocal, parseTs, initials, escapeHtml, deadline,
+  acornsHtml, acornWords, duration, dateTimeLocal, parseTs, initials, escapeHtml, deadline,
   DIFFICULTY_COLORS, TASK_STATUS, WITHDRAWAL_STATUS,
-} from "./format.js?v=215";
-import * as ui from "./ui.js?v=215";
-import { optimizeImage } from "./images.js?v=215";
+} from "./format.js?v=216";
+import * as ui from "./ui.js?v=216";
+import { optimizeImage } from "./images.js?v=216";
 
 const tg = window.Telegram?.WebApp;
 const $ = (sel) => document.querySelector(sel);
@@ -265,13 +265,20 @@ function liveStat(stat) {
   const extra = running ? Math.max(0, (serverNow() - snap) / 1000) : 0;
   const earnedSeconds = (stat.earned_seconds || 0) + extra;
   const totalSeconds = (stat.total_seconds || 0) + extra;
-  const tail = Math.floor(extra / 3600 * Number(stat.hourly_rate || 0) * 100) / 100;
+  // Tick the exact acorn-seconds accumulator and floor by 3600, exactly as
+  // settle_job_member() does, so the live number is precisely what the next
+  // settlement will credit and the balance never jumps when the cron lands.
+  const acornSeconds = Number(stat.accrued_acorn_seconds || 0)
+    + Math.floor(extra) * Number(stat.hourly_rate || 0);
+  const earned = Math.floor(Math.max(0, acornSeconds) / 3600);
   return {
     running,
     earnedSeconds,
     totalSeconds,
-    earned: Number(stat.earned_total || 0) + tail,
-    uncredited: Number(stat.earned_total || 0) - Number(stat.credited_amount || 0) + tail,
+    earned,
+    // Non-negative by construction; a negative value would mean the snapshot
+    // and the ledger disagree, so clamp instead of eating into the balance.
+    uncredited: Math.max(0, earned - Number(stat.credited_amount || 0)),
   };
 }
 
@@ -283,7 +290,7 @@ function childBalance(childId) {
   const tail = state.jobStats
     .filter((s) => s.child_id === childId)
     .reduce((sum, s) => sum + liveStat(s).uncredited, 0);
-  return Math.floor((ledgerSum + tail) * 100) / 100;
+  return ledgerSum + tail;
 }
 
 // Human labels + icon per ledger kind.
@@ -313,7 +320,7 @@ function ledgerRowHtml(e) {
     <span class="lg-ic lg-${e.kind}">${k.icon}</span>
     <div class="lg-b"><div class="lg-t">${title}</div>
       <div class="lg-s">${dateTimeLocal(e.created_at)}${e.actor_name ? " · " + escapeHtml(e.actor_name) : ""}</div></div>
-    <div class="lg-a ${amt >= 0 ? "pos" : "neg"}">${sign}${money(amt)}</div></div>`;
+    <div class="lg-a ${amt >= 0 ? "pos" : "neg"}">${acornsHtml(amt, { signed: true })}</div></div>`;
 }
 
 // Weekly / monthly positive earnings from the ledger (for the balances card).
@@ -483,7 +490,7 @@ function taskCard(t) {
   const child = t.profiles || childById(t.child_id) || {};
   const diff = DIFFICULTY_COLORS[t.difficulty] || "#8598B5";
   const reward = t.reward_type === "hourly"
-    ? `${money(t.reward_amount)}/год` : money(t.reward_amount);
+    ? `${acornsHtml(t.reward_amount)}/год` : acornsHtml(t.reward_amount);
   return `<div class="card tap" data-action="task-detail" data-id="${t.id}">
     <div class="card-l"><span class="diffbar" style="background:${diff}"></span>
       ${avatar(child, 34)}</div>
@@ -517,7 +524,7 @@ async function openTaskDetail(id) {
     galleryHtml(galleryCtx.proof, "proof"),
   ]);
   const reward = t.reward_type === "hourly"
-    ? `${money(t.reward_amount)}/год` : money(t.reward_amount);
+    ? `${acornsHtml(t.reward_amount)}/год` : acornsHtml(t.reward_amount);
 
   let actions = "";
   if (t.status === "submitted") {
@@ -528,7 +535,7 @@ async function openTaskDetail(id) {
       `<button class="btn warn" data-action="task-rework" data-id="${t.id}">На доробку</button>` +
       `<button class="btn danger" data-action="task-reject" data-id="${t.id}">Відхилити</button>`;
   } else if (t.status === "done" && t.earned_amount != null) {
-    actions = `<div class="paid-note">✓ Нараховано на баланс: <b>${money(t.earned_amount)}</b></div>`;
+    actions = `<div class="paid-note">✓ Нараховано на баланс: <b>${acornsHtml(t.earned_amount)}</b></div>`;
   }
 
   const rows = [];
@@ -537,7 +544,7 @@ async function openTaskDetail(id) {
   if (t.requirements) rows.push(field("Вимоги", escapeHtml(t.requirements)));
   rows.push(field("Тип", t.completion_mode === "simple" ? "Без таймера" : "З таймером"));
   if (t.total_seconds) rows.push(field("Витрачено часу", duration(t.total_seconds)));
-  if (t.earned_amount != null) rows.push(field("Нараховано", money(t.earned_amount)));
+  if (t.earned_amount != null) rows.push(field("Нараховано", acornsHtml(t.earned_amount)));
   if (t.decline_reason) rows.push(field("Коментар", escapeHtml(t.decline_reason)));
   if (t.proof_text_content) rows.push(field("Звіт (текст)", escapeHtml(t.proof_text_content)));
 
@@ -581,7 +588,7 @@ function jobCard(job) {
     const live = liveStat(s);
     return `<div class="member">${avatar(child, 30)}
       <div class="member-b"><div class="member-n">${escapeHtml(child.display_name || "")}</div>
-      <div class="member-s">Зароблено: <b id="bal-${job.id}-${s.child_id}">${money(live.earned)}</b>
+      <div class="member-s">Зароблено: <b id="bal-${job.id}-${s.child_id}">${acornsHtml(live.earned)}</b>
         · <span id="ern-${job.id}-${s.child_id}">${duration(live.earnedSeconds)}</span></div></div></div>`;
   }).join("") || `<div class="member-empty">Немає виконавців</div>`;
 
@@ -593,7 +600,7 @@ function jobCard(job) {
   return `<div class="card job ${running ? "live" : ""}">
     <div class="job-top">
       <div><div class="card-t">${escapeHtml(job.title)}</div>
-        <div class="card-s">${money(job.hourly_rate)}/год</div></div>
+        <div class="card-s">${acornsHtml(job.hourly_rate)}/год</div></div>
       <div class="job-timer ${running ? "run" : ""}" id="tmr-${job.id}">${duration(timer)}</div>
     </div>
     <div class="members">${memberRows}</div>
@@ -617,14 +624,14 @@ function openJobDetail(id) {
     const child = childById(s.child_id) || {};
     const live = liveStat(s);
     return field(escapeHtml(child.display_name || "—"),
-      `${money(live.earned)} · ${duration(live.earnedSeconds)}`);
+      `${acornsHtml(live.earned)} · ${duration(live.earnedSeconds)}`);
   }).join("") || field("Виконавці", `<span class="muted">нікого не призначено</span>`);
   const timer = members.length ? liveStat(members[0]).totalSeconds : 0;
 
   openSheet(`
     <div class="sheet-head">
       <div><div class="sheet-title">${escapeHtml(job.title)}</div>
-      <div class="sheet-sub">${money(job.hourly_rate)}/год</div></div></div>
+      <div class="sheet-sub">${acornsHtml(job.hourly_rate)}/год</div></div></div>
     <div class="chips lg">
       ${chip(running ? "Виконується" : "Зупинено", running ? "st-run" : "st-pause")}
       ${chip(`⏱ ${duration(timer)}`, "")}
@@ -659,7 +666,7 @@ function renderAssignees() {
         ${c.blocked ? chip("заблоковано", "st-declined") : ""}
         ${app.outdated ? chip("є оновлення", "st-pause") : ""}</div>
         <div class="card-s"><span class="dot ${p.dot}"></span>${p.label}</div>
-        <div class="card-s2">${tasks} активних · баланс <span data-live-bal="${c.id}">${money(bal)}</span></div></div>
+        <div class="card-s2">${tasks} активних · баланс <span data-live-bal="${c.id}">${acornsHtml(bal)}</span></div></div>
       <div class="card-r">›</div></div>`;
   }).join("");
   return `<div class="list">${cards}</div>`;
@@ -670,7 +677,7 @@ function openChildDetail(id) {
   if (!c) return;
   const p = PRESENCE[presence(c)];
   // Compact balance only — detailed history lives in the "Баланси" tab.
-  const balLine = field("Баланс", `<b class="bal-inline" data-live-bal="${id}">${money(childBalance(id))}</b>`);
+  const balLine = field("Баланс", `<b class="bal-inline" data-live-bal="${id}">${acornsHtml(childBalance(id))}</b>`);
 
   // Latest reported location (newest first in state.locations).
   const loc = state.locations.find((l) => l.child_id === id);
@@ -965,8 +972,8 @@ function balanceCard(c) {
   return `<div class="card bal-card">
     <div class="bal-card-top">${avatar(c, 40)}
       <div class="card-b"><div class="card-t">${escapeHtml(c.display_name)}</div>
-        <div class="card-s2">тиждень ${money(earnedWindow(c.id, 7))} · місяць ${money(earnedWindow(c.id, 30))}</div></div>
-      <div class="bal-card-amt" data-live-bal="${c.id}">${money(bal)}</div></div>
+        <div class="card-s2">тиждень ${acornWords(earnedWindow(c.id, 7))} · місяць ${acornWords(earnedWindow(c.id, 30))}</div></div>
+      <div class="bal-card-amt" data-live-bal="${c.id}">${acornsHtml(bal)}</div></div>
     <button class="btn payout-btn" data-action="child-payout" data-id="${c.id}" ${bal > 0 ? "" : "disabled"}>Виплатити</button>
     <div class="actions row">
       <button class="btn ghost sm" data-action="child-adjust" data-id="${c.id}">Коригувати</button>
@@ -1032,7 +1039,7 @@ function withdrawalCard(w) {
       : `<div class="actions row">${history}</div>`);
   return `<div class="card col">
     <div class="card-row">${avatar(child, 36)}<div class="card-b">
-      <div class="card-t">Вивід ${money(w.amount)}</div>
+      <div class="card-t">Вивід ${acornsHtml(w.amount)}</div>
       <div class="card-s">${escapeHtml(child.display_name || "")} · ${dateTimeLocal(w.requested_at)}</div>
       <div class="chips">${chip(s.label, s.cls)}${methodChip}</div>
       ${lines.join("")}${receiptsHtml(w)}</div></div>${act}</div>`;
@@ -1107,7 +1114,7 @@ function journalEvent(e) {
       <div class="chips">${chip(`${EVENT_ENTITY[e.entity] || e.entity} · ${meta.label}`, meta.cls)}` +
       (details.note ? chip(escapeHtml(details.note), "") : "") + `</div>
     </div>` +
-    (amount != null ? `<div class="card-r sm">${money(amount)}</div>` : "") +
+    (amount != null ? `<div class="card-r sm">${acornsHtml(amount)}</div>` : "") +
     `<div class="card-r">›</div>`;
 
   if (bonusActs) {
@@ -1128,7 +1135,7 @@ function timelineMeta(e) {
   const who = e.actor_kind === "system" ? "Система" : (e.actor_name || "");
   if (who) bits.push(`<b>${escapeHtml(who)}</b>`);
   const amount = d.amount ?? d.earned;
-  if (amount != null) bits.push(money(amount));
+  if (amount != null) bits.push(acornWords(amount));
   if (d.method) bits.push(d.method === "card" ? "на карту" : "готівка");
   if (d.note) bits.push(`«${escapeHtml(d.note)}»`);
   if (d.reason) {
@@ -1204,8 +1211,8 @@ function bonusEditForm(id) {
   const c = childById(b.child_id);
   openSheet(`
     <div class="sheet-title">Редагувати бонус${c ? ` — ${escapeHtml(c.display_name)}` : ""}</div>
-    <label class="fl">Сума (₴, від'ємна — штраф)
-      <input id="be-amt" class="inp" type="number" step="0.5" inputmode="decimal" value="${b.amount}"></label>
+    <label class="fl">Скільки жолудів (від'ємне — штраф)
+      <input id="be-amt" class="inp" type="number" step="1" inputmode="numeric" value="${b.amount}"></label>
     ${fieldErr("beamt")}
     <label class="fl">Причина<input id="be-note" class="inp" value="${escAttr(b.note)}"></label>
     <div class="actions"><button class="btn ghost" data-action="close">Скасувати</button>
@@ -1213,7 +1220,7 @@ function bonusEditForm(id) {
 }
 async function saveBonusEdit(id) {
   clearErrs();
-  const amt = Number($("#be-amt").value || 0);
+  const amt = Math.trunc(Number($("#be-amt").value || 0));
   if (!amt) return setErr("beamt", "Вкажіть суму");
   await submitSheet(() => api.updateBonus(id, amt, $("#be-note").value), "Збережено");
 }
@@ -1230,7 +1237,7 @@ function journalWithdrawal(w) {
       : "");
   return `<div class="card col">
     <div class="card-row">${avatar(child, 30)}<div class="card-b">
-      <div class="card-t sm">Вивід ${money(w.amount)}</div>
+      <div class="card-t sm">Вивід ${acornsHtml(w.amount)}</div>
       <div class="card-s">${escapeHtml(child.display_name || "")} · ${dateTimeLocal(w.requested_at)}</div>
       <div class="chips">${chip(s.label, s.cls)}${methodChip}</div></div></div>${act}</div>`;
 }
@@ -1367,14 +1374,14 @@ function startTicker() {
         const live = liveStat(s);
         const b = document.getElementById(`bal-${job.id}-${s.child_id}`);
         const e = document.getElementById(`ern-${job.id}-${s.child_id}`);
-        if (b) b.textContent = money(live.earned);
+        if (b) b.innerHTML = acornsHtml(live.earned);
         if (e) e.textContent = duration(live.earnedSeconds);
       }
     }
 
     // Personal balances wherever they are shown (cards, lists, open popups).
     document.querySelectorAll("[data-live-bal]").forEach((el) => {
-      el.textContent = money(childBalance(el.getAttribute("data-live-bal")));
+      el.innerHTML = acornsHtml(childBalance(el.getAttribute("data-live-bal")));
     });
   }, 1000);
 }
@@ -1465,9 +1472,9 @@ async function taskForm(t = null) {
     ], taskFormMode)}
     <div class="fl">Нагорода</div>
     <div id="t-rtype-wrap">${rewardSegment(t?.reward_type ?? "fixed")}</div>
-    <label class="fl">Сума (₴)
-      <input id="t-amount" class="inp" type="number" min="0" step="0.5"
-             inputmode="decimal" value="${t?.reward_amount ?? ""}" placeholder="0.00"></label>
+    <label class="fl">Скільки жолудів
+      <input id="t-amount" class="inp" type="number" min="0" step="1"
+             inputmode="numeric" value="${t?.reward_amount ?? ""}" placeholder="0"></label>
     ${fieldErr("amount")}
     <div class="fl">Складність</div>
     ${ui.difficultyPicker(t?.difficulty ?? 2)}
@@ -1535,7 +1542,7 @@ async function saveTask() {
   const card = $("#sheet .sheet-card");
   const editId = $("#t-edit").value;
   const title = $("#t-title").value.trim();
-  const amount = Number($("#t-amount").value || 0);
+  const amount = Math.trunc(Number($("#t-amount").value || 0));
   const childIds = editId ? [] : pickedChildren("t-child");
   let bad = false;
   if (!title) { setErr("title", "Вкажіть назву"); bad = true; }
@@ -1591,8 +1598,8 @@ function jobForm(job = null) {
     ${fieldErr("jtitle")}
     <label class="fl">Опис
       <textarea id="j-desc" class="inp" rows="2">${escapeHtml(job?.description || "")}</textarea></label>
-    <label class="fl">Ставка за годину (₴)
-      <input id="j-rate" class="inp" type="number" min="0" step="1" inputmode="decimal"
+    <label class="fl">Жолудів за годину
+      <input id="j-rate" class="inp" type="number" min="0" step="1" inputmode="numeric"
              value="${job?.hourly_rate ?? 0}"></label>
     <div class="hint">Заробіток автоматично йде на баланс виконавця.</div>
     <div class="fl">Виконавці<div class="picks">${multiChildPicker("j-child", memberIds)}</div></div>
@@ -1606,7 +1613,7 @@ async function saveJob() {
   if (!title) return setErr("jtitle", "Вкажіть назву");
   const fields = {
     title, description: $("#j-desc").value.trim(),
-    hourly_rate: Number($("#j-rate").value || 0),
+    hourly_rate: Math.trunc(Number($("#j-rate").value || 0)),
   };
   const picks = pickedChildren("j-child");
   if (editId) {
@@ -1621,8 +1628,8 @@ function adjustForm(childId) {
   const c = childById(childId);
   openSheet(`
     <div class="sheet-title">Коригувати баланс${c ? ` — ${escapeHtml(c.display_name)}` : ""}</div>
-    <label class="fl">Сума (₴, від'ємна — штраф)
-      <input id="adj-amt" class="inp" type="number" step="0.5" inputmode="decimal" placeholder="0.00"></label>
+    <label class="fl">Скільки жолудів (від'ємне — штраф)
+      <input id="adj-amt" class="inp" type="number" step="1" inputmode="numeric" placeholder="0"></label>
     ${fieldErr("adjamt")}
     <label class="fl">Коментар (обов'язково)<input id="adj-note" class="inp" placeholder="напр. за гарну поведінку / виправлення"></label>
     ${fieldErr("adjnote")}
@@ -1631,7 +1638,7 @@ function adjustForm(childId) {
 }
 async function saveAdjust(childId) {
   clearErrs();
-  const amt = Number($("#adj-amt").value || 0);
+  const amt = Math.trunc(Number($("#adj-amt").value || 0));
   const note = ($("#adj-note").value || "").trim();
   if (!amt) return setErr("adjamt", "Вкажіть суму");
   if (!note) return setErr("adjnote", "Додайте коментар");
@@ -1688,14 +1695,14 @@ function wdPayForm(id) {
   payMethod = "card";
   receiptUploader = new ui.PhotoUploader({ optimize: optimizeImage, max: 1, onChange: syncMainButton });
   openSheet(`
-    <div class="sheet-title">Виплата ${money(w.amount)}${c ? ` — ${escapeHtml(c.display_name)}` : ""}</div>
+    <div class="sheet-title">Виплата ${acornWords(w.amount)}${c ? ` — ${escapeHtml(c.display_name)}` : ""}</div>
     <div class="segment">
       <button class="seg on" data-action="wd-method" data-val="card">На карту</button>
       <button class="seg" data-action="wd-method" data-val="cash">Готівка</button></div>
     <div id="wd-cash-hint" class="hint hidden">Виконавцю прийде запит підтвердити отримання готівки.</div>
     ${receiptBlock("wd-receipt-box")}
     ${fieldErr("wdrcpt")}
-    <label class="fl">Коментар (необов'язково)<input id="wd-comment" class="inp" placeholder="напр. решта 3 ₴ за мною"></label>
+    <label class="fl">Коментар (необов'язково)<input id="wd-comment" class="inp" placeholder="напр. решта 3 жолуді за мною"></label>
     <div class="actions"><button class="btn ghost" data-action="close">Скасувати</button>
       <button class="btn" data-main="1" data-action="wd-pay-do" data-id="${id}">Підтвердити виплату</button></div>`);
   receiptUploader.wire($("#sheet .sheet-card"));
@@ -1723,10 +1730,10 @@ function payoutForm(childId) {
   receiptUploader = new ui.PhotoUploader({ optimize: optimizeImage, max: 1, onChange: syncMainButton });
   openSheet(`
     <div class="sheet-title">Виплата${c ? ` — ${escapeHtml(c.display_name)}` : ""}</div>
-    <div class="sheet-sub">Баланс: <b data-live-bal="${childId}">${money(bal)}</b></div>
-    <label class="fl">Сума (₴)</label>
+    <div class="sheet-sub">Баланс: <b data-live-bal="${childId}">${acornsHtml(bal)}</b></div>
+    <label class="fl">Скільки жолудів</label>
     <div class="amt-field">
-      <input id="po-amt" type="number" step="0.5" inputmode="decimal" placeholder="0.00">
+      <input id="po-amt" type="number" step="1" inputmode="numeric" placeholder="0">
       <button class="amt-all" data-action="po-all" data-id="${childId}">Усе</button>
     </div>
     ${fieldErr("poamt")}
@@ -1737,7 +1744,7 @@ function payoutForm(childId) {
     <div id="po-cash-hint" class="hint hidden">Виконавцю прийде запит підтвердити отримання готівки.</div>
     ${receiptBlock("po-receipt-box")}
     ${fieldErr("porcpt")}
-    <label class="fl">Коментар (необов'язково)<input id="po-comment" class="inp" placeholder="напр. решта 3 ₴ за мною"></label>
+    <label class="fl">Коментар (необов'язково)<input id="po-comment" class="inp" placeholder="напр. решта 3 жолуді за мною"></label>
     <div class="actions"><button class="btn ghost" data-action="close">Скасувати</button>
       <button class="btn" data-main="1" data-action="payout-do" data-id="${childId}">Виплатити</button></div>`);
   receiptUploader.wire($("#sheet .sheet-card"));
@@ -1745,7 +1752,7 @@ function payoutForm(childId) {
 async function savePayout(childId) {
   clearErrs();
   const bal = childBalance(childId);
-  const amt = Number($("#po-amt").value || 0);
+  const amt = Math.trunc(Number($("#po-amt").value || 0));
   if (amt <= 0) return setErr("poamt", "Вкажіть суму");
   if (amt > bal + 0.001) return setErr("poamt", "Більше за доступний баланс");
   if (payoutMethod === "card" && state.config?.require_receipt_for_card
@@ -1925,7 +1932,7 @@ const HANDLERS = {
     toggleReceiptBlock(payoutMethod);
   },
   "payout-do": (el) => savePayout(el.dataset.id),
-  "po-all": (el) => { const i = $("#po-amt"); if (i) i.value = childBalance(el.dataset.id).toFixed(2); },
+  "po-all": (el) => { const i = $("#po-amt"); if (i) i.value = String(childBalance(el.dataset.id)); },
   "child-password": (el) => passwordForm(el.dataset.id),
   "password-save": (el) => savePassword(el.dataset.id),
   "child-block": (el) => guard(async () => { await api.setChildBlocked(el.dataset.id, true); closeSheet(); }, "Заблоковано"),

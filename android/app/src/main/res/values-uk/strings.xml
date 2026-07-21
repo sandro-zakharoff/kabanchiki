@@ -70,6 +70,7 @@
     <string name="job_title">Погодинна робота</string>
     <string name="job_empty">Погодинної роботи поки немає</string>
     <string name="job_rate">%1$s / год</string>
+    <string name="job_rate_suffix">/ год</string>
     <string name="job_min_withdrawal">Мінімум для виведення: %1$s</string>
     <string name="job_total_time">Загальний час</string>
     <string name="job_earned_now">Зароблено</string>
@@ -79,11 +80,11 @@
     <string name="job_withdraw">Вивести %1$s</string>
     <string name="job_withdraw_pending">Чекаємо на підтвердження…</string>
     <string name="job_withdraw_below_min">Менше мінімуму (%1$s)</string>
-    <string name="job_withdraw_open">Вивести кошти</string>
-    <string name="withdraw_title">Вивід коштів</string>
+    <string name="job_withdraw_open">Вивести жолуді</string>
+    <string name="withdraw_title">Вивід жолудів</string>
     <string name="withdraw_balance">Баланс</string>
     <string name="withdraw_min">Мінімум</string>
-    <string name="withdraw_amount">Сума виводу (₴)</string>
+    <string name="withdraw_amount">Скільки жолудів вивести</string>
     <string name="withdraw_all">Вивести все (%1$s)</string>
     <string name="withdraw_confirm">Запросити вивід</string>
     <string name="withdraw_below_min">Не менше мінімуму (%1$s)</string>
@@ -152,6 +153,7 @@
 
     <!-- Balance screen -->
     <string name="balance_title">Баланс</string>
+    <string name="balance_load_failed">Не вдалося завантажити баланс. Потягни, щоб оновити.</string>
     <string name="balance_available">Доступний баланс</string>
     <string name="balance_withdraw">Запросити вивід</string>
     <string name="balance_min_hint">Мінімальний вивід — %1$s</string>
@@ -187,14 +189,14 @@
     <string name="sound_section_hint">Оберіть звук для кожного типу сповіщень.</string>
     <string name="sound_pick_hint">Торкніться звука, щоб прослухати.</string>
     <string name="sound_preview">Прослухати</string>
-    <string name="sound_classic">Класичний</string>
-    <string name="sound_aurora">Аврора</string>
-    <string name="sound_chime">Дзвіночок</string>
-    <string name="sound_ripple">Хвиля</string>
-    <string name="sound_beacon">Маяк</string>
+    <string name="sound_classic">Мейн</string>
+    <string name="sound_aurora">Лайт</string>
+    <string name="sound_chime">Чілл</string>
+    <string name="sound_ripple">Смув</string>
+    <string name="sound_beacon">Год</string>
     <string name="sound_cat_tasks_desc">Нові завдання, дедлайни, доробки</string>
     <string name="sound_cat_jobs_desc">Оновлення погодинних робіт</string>
-    <string name="sound_cat_payouts_desc">Гроші, рішення, бонуси</string>
+    <string name="sound_cat_payouts_desc">Жолуді, рішення, бонуси</string>
     <string name="sound_cat_system_desc">Оновлення застосунку та з\'єднання</string>
     <string name="action_cancel">Скасувати</string>
     <string name="action_save">Зберегти</string>
@@ -212,7 +214,7 @@
     <string name="notif_job_started_body">%1$s — таймер запущено, вперед!</string>
     <string name="notif_job_stopped_title">Роботу зупинено ⏸️</string>
     <string name="notif_job_stopped_body">%1$s — таймер на паузі</string>
-    <string name="notif_withdrawal_approved_title">Гроші отримано! ✅</string>
+    <string name="notif_withdrawal_approved_title">Жолуді отримано! ✅</string>
     <string name="notif_withdrawal_approved_body">Виведення %1$s схвалено</string>
     <string name="notif_withdrawal_declined_title">Виведення відхилено ❌</string>
     <string name="notif_withdrawal_declined_body">Виведення %1$s відхилено</string>
@@ -226,4 +228,13 @@
     <string name="profile_avatar_add">Додати фото</string>
     <string name="profile_avatar_change">Змінити фото</string>
     <string name="profile_avatar_remove">Прибрати</string>
+
+    <!-- Відмінювання валюти. Android сам обирає форму за правилами української:
+         one — 1, 21, 31…; few — 2-4, 22-24…; many — 0, 5-20, 11-14… -->
+    <plurals name="acorns">
+        <item quantity="one">%s жолудь</item>
+        <item quantity="few">%s жолуді</item>
+        <item quantity="many">%s жолудів</item>
+        <item quantity="other">%s жолудя</item>
+    </plurals>
 </resources>

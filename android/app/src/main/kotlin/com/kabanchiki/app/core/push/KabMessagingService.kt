@@ -11,7 +11,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.kabanchiki.app.MainActivity
 import com.kabanchiki.app.R
 import com.kabanchiki.app.core.data.DeviceRepository
-import com.kabanchiki.app.core.model.formatMoney
+import com.kabanchiki.app.core.designsystem.acornWords
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,7 +57,7 @@ class KabMessagingService : FirebaseMessagingService() {
                 getString(
                     R.string.notif_job_assigned_body,
                     data["title"].orEmpty(),
-                    formatMoney(data["hourly_rate"]?.toDoubleOrNull() ?: 0.0),
+                    acornWords(this, data["hourly_rate"]?.toIntOrNull() ?: 0),
                 ),
             )
             "job_started" -> Triple(
@@ -71,7 +71,7 @@ class KabMessagingService : FirebaseMessagingService() {
                 getString(R.string.notif_job_stopped_body, data["title"].orEmpty()),
             )
             "withdrawal_approved" -> {
-                val amount = formatMoney(data["amount"]?.toDoubleOrNull() ?: 0.0)
+                val amount = acornWords(this, data["amount"]?.toIntOrNull() ?: 0)
                 Triple(
                     NotificationCategory.PAYOUTS,
                     getString(R.string.notif_withdrawal_approved_title),
@@ -79,7 +79,7 @@ class KabMessagingService : FirebaseMessagingService() {
                 )
             }
             "withdrawal_rejected" -> {
-                val amount = formatMoney(data["amount"]?.toDoubleOrNull() ?: 0.0)
+                val amount = acornWords(this, data["amount"]?.toIntOrNull() ?: 0)
                 val reason = data["reason"].orEmpty()
                 Triple(
                     NotificationCategory.PAYOUTS,
@@ -89,7 +89,7 @@ class KabMessagingService : FirebaseMessagingService() {
                 )
             }
             "withdrawal_cash_pending" -> {
-                val amount = formatMoney(data["amount"]?.toDoubleOrNull() ?: 0.0)
+                val amount = acornWords(this, data["amount"]?.toIntOrNull() ?: 0)
                 Triple(
                     NotificationCategory.PAYOUTS,
                     getString(R.string.notif_cash_pending_title),
@@ -97,9 +97,9 @@ class KabMessagingService : FirebaseMessagingService() {
                 )
             }
             "balance_adjusted" -> {
-                val amount = data["amount"]?.toDoubleOrNull() ?: 0.0
+                val amount = data["amount"]?.toIntOrNull() ?: 0
                 val note = data["note"].orEmpty()
-                val signed = (if (amount >= 0) "+" else "") + formatMoney(amount)
+                val signed = (if (amount >= 0) "+" else "") + acornWords(this, amount)
                 Triple(
                     NotificationCategory.PAYOUTS,
                     getString(R.string.notif_adjust_title, signed),
@@ -108,7 +108,7 @@ class KabMessagingService : FirebaseMessagingService() {
                 )
             }
             "bonus_granted" -> {
-                val amount = formatMoney(data["amount"]?.toDoubleOrNull() ?: 0.0)
+                val amount = acornWords(this, data["amount"]?.toIntOrNull() ?: 0)
                 val note = data["note"].orEmpty()
                 Triple(
                     NotificationCategory.PAYOUTS,
@@ -152,7 +152,7 @@ class KabMessagingService : FirebaseMessagingService() {
             }
             "withdrawal_paid" -> Triple(
                 NotificationCategory.PAYOUTS,
-                getString(R.string.notif_paid_title, formatMoney(data["amount"]?.toDoubleOrNull() ?: 0.0)),
+                getString(R.string.notif_paid_title, acornWords(this, data["amount"]?.toIntOrNull() ?: 0)),
                 getString(R.string.notif_withdrawal_paid_body),
             )
             else -> return
@@ -162,8 +162,8 @@ class KabMessagingService : FirebaseMessagingService() {
     }
 
     private fun rewardText(type: String?, amount: String?): String {
-        val money = formatMoney(amount?.toDoubleOrNull() ?: 0.0)
-        return if (type == "hourly") getString(R.string.task_reward_hourly, money) else money
+        val words = acornWords(this, amount?.toIntOrNull() ?: 0)
+        return if (type == "hourly") getString(R.string.task_reward_hourly, words) else words
     }
 
     private fun showNotification(event: String, channel: String, title: String, body: String) {

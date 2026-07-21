@@ -7,8 +7,8 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 import {
   SUPABASE_URL, SUPABASE_ANON_KEY, TG_AUTH_URL, ADMIN_URL, DRIVE_URL,
   TASK_PHOTOS_BUCKET, PROOF_PHOTOS_BUCKET, AVATARS_BUCKET,
-} from "./config.js?v=215";
-import { xhrUpload, blobToBase64 } from "./images.js?v=215";
+} from "./config.js?v=216";
+import { xhrUpload, blobToBase64 } from "./images.js?v=216";
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },

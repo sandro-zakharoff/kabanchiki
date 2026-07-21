@@ -67,7 +67,7 @@ import com.kabanchiki.app.core.model.ProofRequirement
 import com.kabanchiki.app.core.model.TaskStatus
 import com.kabanchiki.app.core.model.formatDateTime
 import com.kabanchiki.app.core.model.formatDuration
-import com.kabanchiki.app.core.model.formatMoney
+
 import com.kabanchiki.app.core.model.parseInstant
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Instant
@@ -152,7 +152,12 @@ fun TaskDetailScreen(
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     val (label, color) = taskStatusChip(task)
                     KChip(text = label, color = color, filled = true)
-                    KChip(text = rewardText(task), color = KabColors.accentDark)
+                    KChip(
+                        text = "",
+                        acorns = task.rewardAmount,
+                        suffix = if (task.rewardType == "hourly") stringResource(R.string.job_rate_suffix) else null,
+                        color = KabColors.accentDark,
+                    )
                     Spacer(Modifier.weight(1f))
                     com.kabanchiki.app.core.designsystem.KDifficultyBadge(level = task.difficulty)
                 }
@@ -263,11 +268,14 @@ fun TaskDetailScreen(
                     )
                 }
                 if (showEarned) {
+                    // Hourly tasks are priced once at completion, so the live
+                    // figure floors the same way the server rounds it there.
                     val earned = task.earnedAmount
-                        ?: (liveSeconds / 3600.0 * task.rewardAmount)
+                        ?: ((liveSeconds * task.rewardAmount) / 3600L).toInt()
                     com.kabanchiki.app.core.designsystem.KStatTile(
                         label = stringResource(R.string.task_earned),
-                        value = formatMoney(earned),
+                        value = "",
+                        acorns = earned,
                         valueColor = KabColors.success,
                         modifier = Modifier.weight(1f),
                     )

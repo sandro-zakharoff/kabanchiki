@@ -37,8 +37,8 @@ android {
         applicationId = "com.kabanchiki.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 14
-        versionName = "2.2.0"
+        versionCode = 18
+        versionName = "2.3.1"
 
         buildConfigField(
             "String",
@@ -128,6 +128,10 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.datetime)
+
+    // Money decoding is the one thing that must never silently break: a strict
+    // Int field once aborted the whole response and blanked every balance.
+    testImplementation(kotlin("test"))
     implementation(libs.kotlinx.coroutines.play.services)
 
     implementation(libs.firebase.messaging)

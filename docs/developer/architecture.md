@@ -1,6 +1,6 @@
 # Kabanchiki — архітектура
 
-Сімейна система завдань і винагород. Дорослий («власник») створює завдання та погодинні роботи, діти («виконавці») виконують їх і отримують гроші. Один бекенд, три клієнти.
+Сімейна система завдань і винагород. Дорослий («власник») створює завдання та погодинні роботи, діти («виконавці») виконують їх і отримують жолуді. Один бекенд, три клієнти.
 
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌───────────────────┐
@@ -42,7 +42,7 @@
 
 ## Android (`android/app/src/main/kotlin/com/kabanchiki/app/`)
 
-- `core/data/*Repository.kt` — запити (tasks/jobs/bonuses/devices/update), `RealtimeSync` (realtime + heartbeat presence 20 с + signOutIfBlocked), `TimeSync` (`server_now()` — час і гроші рахуються ТІЛЬКИ від серверних міток).
+- `core/data/*Repository.kt` — запити (tasks/jobs/bonuses/devices/update), `RealtimeSync` (realtime + heartbeat presence 20 с + signOutIfBlocked), `TimeSync` (`server_now()` — час і жолуді рахуються ТІЛЬКИ від серверних міток).
 - `core/tracking/` — `TaskTrackingService`/`JobTrackingService` (FGS-таймери з ongoing-нотифікацією), `OfflineGuard` (гап >10 хв → пауза, RPC `task_apply_offline_gap`).
 - `core/push/` — FCM data-повідомлення, рендер локально (канали з кастомним звуком, версія в id `tasks_v1`).
 - `feature/` — екрани: Login, Home (кастомний нижній док), Tasks/TaskDetail, Jobs, Profile, UpdateBanner.
@@ -62,7 +62,7 @@
 **Основні таблиці:** `profiles` (виконавці; + `last_seen_at`, `blocked`), `devices` (FCM-токени; + `app_version/app_version_code`), `tasks` (статуси `new/in_progress/paused/submitted/done/declined`; `completion_mode timer|simple`; `payment_status unpaid/awaiting/paid` + `paid_at`; proof text/photo; `created_by`+`created_by_name` — авторство), `task_intervals`, `jobs` (`idle/running/archived`; + авторство) + `job_members` (баланс від `earnings_reset_at`) + `job_sessions`, `withdrawals` (+ `payment_status`), `bonuses`, `notifications_outbox`, `app_releases`, `parents` (+ `telegram_id`, `link_code`, `phone`, `note`, `disabled`), `app_config` (singleton: bot username, miniapp URL), `app_secrets` (токен бота), `events` (аудит: пишуть ТІЛЬКИ тригери, читають власники; ретенція ~5000), `locations` (остання 50-точкова історія геолокації виконавця через RPC `location_report`; читають власники).
 
 **Ключові принципи:**
-- Час/гроші рахуються тільки на сервері (`server_now()`, `job_earned_seconds()`, view `job_member_stats` security_invoker).
+- Час/жолуді рахуються тільки на сервері (`server_now()`, `job_earned_seconds()`, view `job_member_stats` security_invoker).
 - Життєвий цикл завдання: `new → in_progress/paused → submitted → (власник: task_review) done / declined / назад у new (rework, нотатка в decline_reason)`. `simple`-завдання: `new → done` одразу (`task_complete`).
 - Вивід: `request_withdrawal` (сума рахується сервером) → `admin_decide_withdrawal` (approve → `payment_status='awaiting'`, баланс скидається `earnings_reset_at = period_to`; decline — баланс зберігається).
 

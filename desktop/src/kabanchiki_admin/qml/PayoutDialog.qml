@@ -17,19 +17,19 @@ AppDialog {
     property string receiptFile: ""
 
     function amountValue() {
-        var v = parseFloat(amountField.text.replace(",", "."))
+        var v = parseInt(amountField.text, 10)
         return isNaN(v) ? 0 : v
     }
     function canPay() {
         var a = amountValue()
-        return a > 0 && a <= root.balance + 0.001
+        return a > 0 && a <= root.balance
             && !(root.method === "card" && backend.requireReceiptForCard && root.receiptFile.length === 0)
     }
     function submit() {
         if (!canPay()) return
         var a = amountValue()
         // Exact "all" → pass 0 so the server uses the live balance (no tick race).
-        var amt = Math.abs(a - root.balance) < 0.01 ? 0 : a
+        var amt = (a === root.balance) ? 0 : a
         backend.payoutToChild(root.childId, amt, root.method, commentField.text.trim(), root.receiptFile)
         root.close()
     }
@@ -63,15 +63,15 @@ AppDialog {
             color: Theme.textSecondary
         }
 
-        Text { text: qsTr("Amount, ₴"); font.pixelSize: Theme.fontSizeSm; font.weight: Font.DemiBold; color: Theme.textSecondary }
+        Text { text: qsTr("Amount, acorns"); font.pixelSize: Theme.fontSizeSm; font.weight: Font.DemiBold; color: Theme.textSecondary }
         RowLayout {
             Layout.fillWidth: true
             spacing: Theme.spacingSm
             AppTextField {
                 id: amountField
                 Layout.fillWidth: true
-                placeholderText: "0.00"
-                validator: DoubleValidator { bottom: 0; decimals: 2; notation: DoubleValidator.StandardNotation }
+                placeholderText: "0"
+                validator: IntValidator { bottom: 0 }
             }
             AppButton {
                 text: qsTr("All %1").arg(root.balanceText)
@@ -157,7 +157,7 @@ AppDialog {
         AppTextField {
             id: commentField
             Layout.fillWidth: true
-            placeholderText: qsTr("e.g. 3 ₴ change left with me")
+            placeholderText: qsTr("e.g. 3 acorns change left with me")
         }
 
         RowLayout {

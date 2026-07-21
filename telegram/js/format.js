@@ -22,15 +22,46 @@ export const WITHDRAWAL_STATUS = {
   rejected:  { label: "Відхилено",    cls: "st-declined" },
 };
 
-export function money(amount) {
-  const n = Number(amount ?? 0);
+// The acorn is indivisible: whole numbers only, everywhere. The mark itself is
+// an image placed beside the number (acornsHtml) rather than a character glued
+// into the string — an <img> cannot be aligned from inside a text node.
+export function acorns(amount) {
+  const n = Math.round(Number(amount ?? 0));
   const sign = n < 0 ? "-" : "";
-  const cents = Math.round(Math.abs(n) * 100);
-  const whole = Math.floor(cents / 100);
-  const frac = cents % 100;
   // Group thousands with a plain space (locale-independent, matches desktop).
-  const grouped = String(whole).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  return `${sign}${grouped}.${String(frac).padStart(2, "0")} ₴`;
+  const grouped = String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return `${sign}${grouped}`;
+}
+
+// 1 жолудь / 2-4 жолуді / 5-20 жолудів, and the teens all take the last form.
+const ACORN_FORMS = ["жолудь", "жолуді", "жолудів"];
+export function acornUnit(count) {
+  const n = Math.abs(Math.round(Number(count) || 0));
+  if (Math.floor(n % 100 / 10) === 1) return ACORN_FORMS[2];
+  const last = n % 10;
+  if (last === 1) return ACORN_FORMS[0];
+  if (last >= 2 && last <= 4) return ACORN_FORMS[1];
+  return ACORN_FORMS[2];
+}
+
+/** "5 жолудів" — for sentences and labels, where an image cannot sit inline. */
+export function acornWords(amount) {
+  const n = Math.round(Number(amount ?? 0));
+  return `${acorns(n)} ${acornUnit(n)}`;
+}
+
+/**
+ * The number followed by the acorn mark, as HTML.
+ *
+ * `mono` tints the mark to the surrounding text colour, for dark fills where
+ * the brown would disappear; everywhere else the coloured mark is the right
+ * one — its two-tone cap is what keeps it readable as an acorn at label sizes.
+ */
+export function acornsHtml(amount, { signed = false, mono = false } = {}) {
+  const n = Math.round(Number(amount ?? 0));
+  const sign = signed && n >= 0 ? "+" : "";
+  return `<span class="acn">${sign}${acorns(n)}` +
+    `<img class="acn-m${mono ? " mono" : ""}" src="./assets/acorn.svg?v=216" alt="" aria-hidden="true"></span>`;
 }
 
 export function duration(totalSeconds) {

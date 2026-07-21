@@ -1,6 +1,6 @@
 [project]
 name = "kabanchiki-admin"
-version = "2.3.0"
+version = "2.4.1"
 description = "Kabanchiki — Windows admin app for the family task & reward system."
 requires-python = ">=3.13"
 readme = "README.md"

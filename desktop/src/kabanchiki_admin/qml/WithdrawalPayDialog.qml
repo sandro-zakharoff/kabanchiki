@@ -126,7 +126,7 @@ AppDialog {
         AppTextField {
             id: commentField
             Layout.fillWidth: true
-            placeholderText: qsTr("e.g. 3 ₴ change left with me")
+            placeholderText: qsTr("e.g. 3 acorns change left with me")
         }
 
         RowLayout {

@@ -35,7 +35,7 @@ AppDialog {
             description: descArea.text,
             completion_mode: root.completionMode,
             reward_type: rewardCombo.model[rewardCombo.currentIndex].value,
-            reward_amount: parseFloat(amountField.text.replace(",", ".")),
+            reward_amount: parseInt(amountField.text, 10),
             difficulty: root.difficulty,
             requirements: reqArea.text,
             proof_text: proofTextCombo.model[proofTextCombo.currentIndex].value,
@@ -260,7 +260,7 @@ AppDialog {
 
                 FieldLabel { text: qsTr("Reward") }
                 FieldLabel {
-                    text: rewardCombo.currentIndex === 0 ? qsTr("Amount, ₴") : qsTr("Rate, ₴/hour")
+                    text: rewardCombo.currentIndex === 0 ? qsTr("Amount, acorns") : qsTr("Rate, acorns/hour")
                 }
 
                 AppComboBox {
@@ -276,8 +276,8 @@ AppDialog {
                 AppTextField {
                     id: amountField
                     Layout.fillWidth: true
-                    placeholderText: "0.00"
-                    validator: DoubleValidator { bottom: 0; decimals: 2; notation: DoubleValidator.StandardNotation }
+                    placeholderText: "0"
+                    validator: IntValidator { bottom: 0 }
                 }
             }
 

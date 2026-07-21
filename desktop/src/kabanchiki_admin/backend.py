@@ -38,11 +38,13 @@ from kabanchiki_admin.config import (
 )
 from kabanchiki_admin.models import (
     DIFFICULTY_COLORS,
+    fmt_acorns,
+    fmt_acorns_words,
     fmt_date_local,
     fmt_datetime_local,
     fmt_deadline,
     fmt_duration,
-    fmt_money,
+    live_acorns,
     parse_ts,
 )
 from kabanchiki_admin.services import gdrive_service, image_service
@@ -156,6 +158,7 @@ class Backend(QObject):
                 "color",
                 "activeCount",
                 "doneCount",
+                "balance",
                 "balanceText",
                 "presence",
                 "currentTask",
@@ -191,6 +194,7 @@ class Backend(QObject):
                 "proofTextContent",
                 "proofPhotoUrl",
                 "totalText",
+                "earnedAmount",
                 "earnedText",
                 "createdAtText",
                 "dateSection",
@@ -311,6 +315,7 @@ class Backend(QObject):
                 "childName",
                 "childColor",
                 "childAvatarUrl",
+                "amount",
                 "amountText",
                 "status",
                 "method",
@@ -520,6 +525,18 @@ class Backend(QObject):
         return QUrl.fromLocalFile(str(ASSETS_DIR / "app.png")).toString()
 
     appIconUrl = Property(str, _get_app_icon_url, constant=True)
+
+    # The acorn mark, resolved here rather than by a relative path in QML so it
+    # keeps working from the frozen bundle, where assets move into _internal.
+    def _get_acorn_icon_url(self) -> str:
+        return QUrl.fromLocalFile(str(ASSETS_DIR / "acorn.svg")).toString()
+
+    acornIconUrl = Property(str, _get_acorn_icon_url, constant=True)
+
+    @Slot(float, result=str)
+    def acornWords(self, amount: float) -> str:  # noqa: N802
+        """'5 жолудів' — for sentences, where an icon cannot sit inline."""
+        return fmt_acorns_words(amount, self.settings.language)
 
     def _set_busy(self, value: bool) -> None:
         if self._busy != value:
@@ -954,37 +971,48 @@ class Backend(QObject):
     # balance(child) = sum(ledger) + live job tail (earned_total - credited).
     # Mirrors public.assignee_balance(); the server stays the source of truth.
 
-    def _ledger_sum(self, child_id: str) -> float:
+    def _ledger_sum(self, child_id: str) -> int:
         return sum(
-            float(e.get("amount") or 0) for e in self._ledger_raw if e.get("child_id") == child_id
+            int(e.get("amount") or 0) for e in self._ledger_raw if e.get("child_id") == child_id
         )
 
-    def _job_tail(self, child_id: str, extra_seconds: float = 0.0) -> float:
-        """Uncredited job accrual, optionally advanced by extra_seconds (live tick)."""
-        tail = 0.0
+    def _job_tail(self, child_id: str, extra_seconds: float = 0.0) -> int:
+        """Uncredited whole acorns, optionally advanced by extra_seconds (live tick).
+
+        The tick works off accrued_acorn_seconds — the server's exact, un-rounded
+        accumulator — so a ticking balance shows exactly what the next settlement
+        will credit, and never jumps when the settle cron lands.
+        """
+        tail = 0
         for s in self._stats_raw:
             if s["child_id"] != child_id:
                 continue
-            rate = float(s.get("hourly_rate") or 0)
-            uncredited = float(s.get("earned_total") or 0) - float(s.get("credited_amount") or 0)
-            if s.get("running_since") and extra_seconds:
-                uncredited += round(extra_seconds / 3600.0 * rate, 2)
-            tail += uncredited
+            ticking = extra_seconds if s.get("running_since") else 0.0
+            earned = live_acorns(
+                int(s.get("accrued_acorn_seconds") or 0),
+                ticking,
+                int(s.get("hourly_rate") or 0),
+            )
+            # Non-negative by construction (credited_amount is floor(accrued/3600)
+            # at the last settlement, and accrued only grows), so a negative value
+            # means the snapshot and the ledger disagree — clamp rather than
+            # quietly subtracting it from the balance.
+            tail += max(0, earned - int(s.get("credited_amount") or 0))
         return tail
 
-    def _live_balance(self, child_id: str, extra_seconds: float = 0.0) -> float:
-        return round(self._ledger_sum(child_id) + self._job_tail(child_id, extra_seconds), 2)
+    def _live_balance(self, child_id: str, extra_seconds: float = 0.0) -> int:
+        return self._ledger_sum(child_id) + self._job_tail(child_id, extra_seconds)
 
-    def _earned_window(self, child_id: str, days: int) -> float:
+    def _earned_window(self, child_id: str, days: int) -> int:
         """Positive earnings (task/job/bonus/positive adjustment) in the last N days."""
         cutoff = self.supabase.time.now_server() - timedelta(days=days)
-        total = 0.0
+        total = 0
         for e in self._ledger_raw:
             if e.get("child_id") != child_id:
                 continue
             if e.get("kind") not in ("task", "job", "bonus", "adjustment"):
                 continue
-            amount = float(e.get("amount") or 0)
+            amount = int(e.get("amount") or 0)
             if amount <= 0:
                 continue
             when = parse_ts(e.get("created_at"))
@@ -1050,7 +1078,8 @@ class Backend(QObject):
                     "color": child.get("avatar_color") or "#CDB1B1",
                     "activeCount": len(active_tasks),
                     "doneCount": len(done),
-                    "balanceText": fmt_money(balance),
+                    "balance": balance,
+                    "balanceText": fmt_acorns(balance),
                     "presence": presence,
                     "currentTask": in_progress[0]["title"] if in_progress else "",
                     "blocked": bool(child.get("blocked")),
@@ -1092,11 +1121,8 @@ class Backend(QObject):
             created = parse_ts(t.get("created_at"))
             deadline_dt = parse_ts(t.get("deadline_at"))
             deadline_text, deadline_state = fmt_deadline(deadline_dt)
-            reward = float(t.get("reward_amount") or 0)
-            if t["reward_type"] == "fixed":
-                reward_text = fmt_money(reward)
-            else:
-                reward_text = self.tr("%1 / hour").replace("%1", fmt_money(reward))
+            reward = int(t.get("reward_amount") or 0)
+            reward_text = fmt_acorns(reward)
             earned = t.get("earned_amount")
             rows.append(
                 {
@@ -1121,7 +1147,8 @@ class Backend(QObject):
                         PROOF_PHOTOS_BUCKET, t.get("proof_photo_path")
                     ),
                     "totalText": fmt_duration(int(t.get("total_seconds") or 0)),
-                    "earnedText": fmt_money(float(earned)) if earned is not None else "",
+                    "earnedAmount": int(earned) if earned is not None else 0,
+                    "earnedText": fmt_acorns(int(earned)) if earned is not None else "",
                     "createdAtText": fmt_datetime_local(created),
                     "dateSection": fmt_date_local(created),
                     "completedAtText": fmt_datetime_local(parse_ts(t.get("completed_at"))),
@@ -1147,7 +1174,7 @@ class Backend(QObject):
             members = []
             for s in stats:
                 child = children_by_id.get(s["child_id"], {})
-                earned = float(s.get("earned_total") or 0)
+                earned = int(s.get("earned_total") or 0)
                 members.append(
                     {
                         "childId": s["child_id"],
@@ -1157,7 +1184,7 @@ class Backend(QObject):
                         "earnedSeconds": int(s.get("earned_seconds") or 0),
                         # Earned on THIS job (flows to the personal balance).
                         "earned": earned,
-                        "earnedText": fmt_money(earned),
+                        "earnedText": fmt_acorns(earned),
                     }
                 )
             total = max((int(s.get("total_seconds") or 0) for s in stats), default=0)
@@ -1166,10 +1193,8 @@ class Backend(QObject):
                     "jobId": job["id"],
                     "title": job["title"],
                     "description": job.get("description") or "",
-                    "rate": float(job["hourly_rate"]),
-                    "rateText": self.tr("%1 / hour").replace(
-                        "%1", fmt_money(float(job["hourly_rate"]))
-                    ),
+                    "rate": int(job["hourly_rate"]),
+                    "rateText": fmt_acorns(int(job["hourly_rate"])),
                     "status": job["status"],
                     "running": job["status"] == "running",
                     "totalText": fmt_duration(total),
@@ -1192,7 +1217,8 @@ class Backend(QObject):
                     "childName": profile.get("display_name") or "",
                     "childColor": profile.get("avatar_color") or "#CDB1B1",
                     "childAvatarUrl": self.storage.avatar_url(profile),
-                    "amountText": fmt_money(float(w["amount"])),
+                    "amount": int(w["amount"]),
+                    "amountText": fmt_acorns(int(w["amount"])),
                     "status": w["status"],
                     "method": w.get("method") or "",
                     "requestedAtText": fmt_datetime_local(parse_ts(w.get("requested_at"))),
@@ -1211,9 +1237,13 @@ class Backend(QObject):
                     "color": child.get("avatar_color") or "#CDB1B1",
                     "avatarUrl": self.storage.avatar_url(child),
                     "balance": self._live_balance(cid),
-                    "balanceText": fmt_money(self._live_balance(cid)),
-                    "weekText": fmt_money(self._earned_window(cid, 7)),
-                    "monthText": fmt_money(self._earned_window(cid, 30)),
+                    "balanceText": fmt_acorns(self._live_balance(cid)),
+                    "weekText": fmt_acorns_words(
+                        self._earned_window(cid, 7), self.settings.language
+                    ),
+                    "monthText": fmt_acorns_words(
+                        self._earned_window(cid, 30), self.settings.language
+                    ),
                     "blocked": bool(child.get("blocked")),
                 }
             )
@@ -1247,7 +1277,7 @@ class Backend(QObject):
                     "childName": profile.get("display_name") or "",
                     "kind": e.get("kind") or "",
                     "amount": amount,
-                    "amountText": ("+" if amount >= 0 else "") + fmt_money(amount),
+                    "amountText": ("+" if amount >= 0 else "") + fmt_acorns(amount),
                     "positive": amount >= 0,
                     "note": e.get("note") or "",
                     "title": self.LEDGER_LABELS.get(e.get("kind") or "", e.get("kind") or ""),
@@ -1327,8 +1357,8 @@ class Backend(QObject):
                     "childName": profile.get("display_name") or "",
                     "childColor": profile.get("avatar_color") or "#CDB1B1",
                     "childAvatarUrl": self.storage.avatar_url(profile),
-                    "amount": float(w["amount"]),
-                    "amountText": fmt_money(float(w["amount"])),
+                    "amount": int(w["amount"]),
+                    "amountText": fmt_acorns(int(w["amount"])),
                     "status": w.get("status") or "",
                     "method": w.get("method") or "",
                     "comment": w.get("comment") or "",
@@ -1405,7 +1435,7 @@ class Backend(QObject):
                     "childName": child.get("display_name") or "",
                     "childColor": child.get("avatar_color") or "#CDB1B1",
                     "childAvatarUrl": self.storage.avatar_url(child),
-                    "amountText": fmt_money(float(amount)) if amount is not None else "",
+                    "amountText": fmt_acorns(float(amount)) if amount is not None else "",
                     "noteText": note,
                     "timeText": fmt_datetime_local(when),
                     "dateText": fmt_date_local(when),
@@ -1446,11 +1476,10 @@ class Backend(QObject):
             total = max((int(s.get("total_seconds") or 0) for s in job_stats), default=0)
             members = []
             for m, s in zip(row["membersVar"], job_stats):
-                base = float(s.get("earned_total") or 0)
-                earned = base + round(int(elapsed) / 3600.0 * row["rate"], 2)
+                earned = live_acorns(int(s.get("accrued_acorn_seconds") or 0), elapsed, row["rate"])
                 m = dict(m)
                 m["earned"] = earned
-                m["earnedText"] = fmt_money(earned)
+                m["earnedText"] = fmt_acorns(earned)
                 members.append(m)
             self._jobsModel.update_row(
                 i, {"totalText": fmt_duration(total + int(elapsed)), "membersVar": members}
@@ -1459,10 +1488,10 @@ class Backend(QObject):
         # Balances tick live too (ledger + growing job tail).
         for i, row in enumerate(self._childrenModel.rows):
             bal = self._live_balance(row["childId"], extra_seconds=elapsed)
-            self._childrenModel.update_row(i, {"balanceText": fmt_money(bal)})
+            self._childrenModel.update_row(i, {"balance": bal, "balanceText": fmt_acorns(bal)})
         for i, row in enumerate(self._balancesModel.rows):
             bal = self._live_balance(row["childId"], extra_seconds=elapsed)
-            self._balancesModel.update_row(i, {"balance": bal, "balanceText": fmt_money(bal)})
+            self._balancesModel.update_row(i, {"balance": bal, "balanceText": fmt_acorns(bal)})
 
     # ------------------------------------------------------------- realtime
 
@@ -1483,7 +1512,7 @@ class Backend(QObject):
         if table == "withdrawals" and event == "INSERT" and record.get("status") == "requested":
             child = next((c for c in self._children_raw if c["id"] == record.get("child_id")), None)
             name = (child or {}).get("display_name") or self.tr("Assignee")
-            amount = fmt_money(float(record.get("amount") or 0))
+            amount = fmt_acorns_words(float(record.get("amount") or 0), self.settings.language)
             self.notifications.show_withdrawal_request(
                 self.tr("Withdrawal request"),
                 self.tr("%1 asks to withdraw %2").replace("%1", name).replace("%2", amount),
@@ -2003,7 +2032,7 @@ class Backend(QObject):
 
         amount = details.get("amount", details.get("earned"))
         if amount is not None:
-            bits.append(fmt_money(float(amount)))
+            bits.append(fmt_acorns_words(float(amount), self.settings.language))
         method = details.get("method")
         if method:
             bits.append(self.tr("to card") if method == "card" else self.tr("cash"))

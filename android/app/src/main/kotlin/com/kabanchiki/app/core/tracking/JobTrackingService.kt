@@ -13,7 +13,8 @@ import com.kabanchiki.app.R
 import com.kabanchiki.app.core.data.JobsRepository
 import com.kabanchiki.app.core.data.TimeSync
 import com.kabanchiki.app.core.model.JobStatsDto
-import com.kabanchiki.app.core.model.formatMoney
+import com.kabanchiki.app.core.designsystem.acornWords
+import com.kabanchiki.app.core.model.liveAcorns
 import com.kabanchiki.app.core.model.parseInstant
 import com.kabanchiki.app.core.push.NotificationChannels
 import dagger.hilt.android.AndroidEntryPoint
@@ -96,9 +97,9 @@ class JobTrackingService : Service() {
                 (timeSync.nowServer() - snapshot).inWholeSeconds.coerceAtLeast(0)
             } else 0L
             val totalSeconds = stat.totalSeconds + extra
-            val earned = floor((stat.earnedSeconds + extra) / 3600.0 * stat.hourlyRate * 100) / 100.0
+            val earned = liveAcorns(stat.accruedAcornSeconds, extra, stat.hourlyRate)
             builder
-                .setContentText(getString(R.string.job_earned_now) + ": " + formatMoney(earned))
+                .setContentText(getString(R.string.job_earned_now) + ": " + acornWords(this, earned))
                 .setUsesChronometer(true)
                 .setWhen(System.currentTimeMillis() - totalSeconds * 1000)
         }

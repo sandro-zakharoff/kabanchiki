@@ -124,8 +124,8 @@ class TaskTrackingService : Service() {
         )
         // For hourly-paid tasks show live earnings; otherwise the fixed reward.
         val contentText = if (task != null && task.rewardType == "hourly") {
-            val earned = kotlin.math.floor(elapsedMs / 3600000.0 * task.rewardAmount * 100) / 100.0
-            getString(R.string.task_earned) + ": " + com.kabanchiki.app.core.model.formatMoney(earned)
+            val earned = (elapsedMs * task.rewardAmount / 3600000L).toInt()
+            getString(R.string.task_earned) + ": " + com.kabanchiki.app.core.designsystem.acornWords(this, earned)
         } else {
             getString(R.string.tracking_in_progress)
         }

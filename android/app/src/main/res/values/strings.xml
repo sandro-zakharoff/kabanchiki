@@ -70,6 +70,8 @@
     <string name="job_title">Hourly work</string>
     <string name="job_empty">No hourly work assigned yet</string>
     <string name="job_rate">%1$s / hour</string>
+    <!-- Trails the acorn mark on a rate, e.g. "60 <mark> / hour". -->
+    <string name="job_rate_suffix">/ hour</string>
     <string name="job_min_withdrawal">Minimum to withdraw: %1$s</string>
     <string name="job_total_time">Total time</string>
     <string name="job_earned_now">Earned</string>
@@ -79,11 +81,11 @@
     <string name="job_withdraw">Withdraw %1$s</string>
     <string name="job_withdraw_pending">Waiting for approval…</string>
     <string name="job_withdraw_below_min">Below the minimum (%1$s)</string>
-    <string name="job_withdraw_open">Withdraw funds</string>
-    <string name="withdraw_title">Withdraw funds</string>
+    <string name="job_withdraw_open">Withdraw acorns</string>
+    <string name="withdraw_title">Withdraw acorns</string>
     <string name="withdraw_balance">Balance</string>
     <string name="withdraw_min">Minimum</string>
-    <string name="withdraw_amount">Amount (₴)</string>
+    <string name="withdraw_amount">Amount in acorns</string>
     <string name="withdraw_all">Withdraw all (%1$s)</string>
     <string name="withdraw_confirm">Request withdrawal</string>
     <string name="withdraw_below_min">At least the minimum (%1$s)</string>
@@ -152,6 +154,7 @@
 
     <!-- Balance screen -->
     <string name="balance_title">Balance</string>
+    <string name="balance_load_failed">Could not load the balance. Pull to refresh.</string>
     <string name="balance_available">Available balance</string>
     <string name="balance_withdraw">Request a withdrawal</string>
     <string name="balance_min_hint">Minimum withdrawal is %1$s</string>
@@ -187,14 +190,14 @@
     <string name="sound_section_hint">Pick a sound for each kind of notification.</string>
     <string name="sound_pick_hint">Tap a sound to hear it.</string>
     <string name="sound_preview">Preview</string>
-    <string name="sound_classic">Classic</string>
-    <string name="sound_aurora">Aurora</string>
-    <string name="sound_chime">Chime</string>
-    <string name="sound_ripple">Ripple</string>
-    <string name="sound_beacon">Beacon</string>
+    <string name="sound_classic">Main</string>
+    <string name="sound_aurora">Light</string>
+    <string name="sound_chime">Chill</string>
+    <string name="sound_ripple">Smooth</string>
+    <string name="sound_beacon">God</string>
     <string name="sound_cat_tasks_desc">New tasks, deadlines, rework</string>
     <string name="sound_cat_jobs_desc">Hourly work updates</string>
-    <string name="sound_cat_payouts_desc">Money, approvals, bonuses</string>
+    <string name="sound_cat_payouts_desc">Acorns, approvals, bonuses</string>
     <string name="sound_cat_system_desc">App updates and connection</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_save">Save</string>
@@ -212,7 +215,7 @@
     <string name="notif_job_started_body">%1$s — the timer is running, go-go-go!</string>
     <string name="notif_job_stopped_title">Work stopped ⏸️</string>
     <string name="notif_job_stopped_body">%1$s — the timer is paused</string>
-    <string name="notif_withdrawal_approved_title">Money received! ✅</string>
+    <string name="notif_withdrawal_approved_title">Acorns received! ✅</string>
     <string name="notif_withdrawal_approved_body">The withdrawal of %1$s was approved</string>
     <string name="notif_withdrawal_declined_title">Withdrawal declined ❌</string>
     <string name="notif_withdrawal_declined_body">The withdrawal of %1$s was declined</string>
@@ -226,4 +229,11 @@
     <string name="profile_avatar_add">Add photo</string>
     <string name="profile_avatar_change">Change photo</string>
     <string name="profile_avatar_remove">Remove</string>
+
+    <!-- The currency, declined. Used wherever an icon cannot go: notifications,
+         dialog prose, anything inside a sentence. %s is the grouped number. -->
+    <plurals name="acorns">
+        <item quantity="one">%s acorn</item>
+        <item quantity="other">%s acorns</item>
+    </plurals>
 </resources>

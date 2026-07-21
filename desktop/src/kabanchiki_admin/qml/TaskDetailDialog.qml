@@ -25,7 +25,8 @@ AppDialog {
             proofText: model.proofText, proofPhoto: model.proofPhoto, difficulty: model.difficulty,
             diffColor: model.diffColor, requirements: model.requirements, status: model.status,
             proofTextContent: model.proofTextContent, proofPhotoUrl: model.proofPhotoUrl,
-            totalText: model.totalText, earnedText: model.earnedText, createdAtText: model.createdAtText,
+            totalText: model.totalText, earnedText: model.earnedText, earnedAmount: model.earnedAmount,
+            createdAtText: model.createdAtText,
             completedAtText: model.completedAtText, declineReason: model.declineReason,
             completionMode: model.completionMode, createdBy: model.createdBy,
             deadlineText: model.deadlineText, deadlineState: model.deadlineState,
@@ -87,7 +88,12 @@ AppDialog {
                     filled: true
                 }
                 DifficultyBadge { level: root.task ? root.task.difficulty : 1 }
-                Chip { text: root.task ? root.task.rewardText : ""; chipColor: Theme.accentDark }
+                Chip {
+                    text: root.task ? root.task.rewardText : ""
+                    acorn: true
+                    suffix: root.task && root.task.rewardType === "hourly" ? qsTr("/ h") : ""
+                    chipColor: Theme.accentDark
+                }
                 Chip {
                     visible: root.task && root.task.completionMode === "simple"
                     text: qsTr("no timer"); chipColor: Theme.info
@@ -117,7 +123,7 @@ AppDialog {
                     Text { text: "✓"; font.pixelSize: Theme.fontSizeLg; color: Theme.success }
                     Text {
                         Layout.fillWidth: true
-                        text: qsTr("Credited to the balance: %1").arg(root.task ? root.task.earnedText : "")
+                        text: qsTr("Credited to the balance: %1").arg(root.task ? backend.acornWords(root.task.earnedAmount) : "")
                         font.pixelSize: Theme.fontSizeMd; font.weight: Font.DemiBold
                         color: Theme.textPrimary
                         wrapMode: Text.WordWrap
@@ -198,7 +204,7 @@ AppDialog {
                         { l: qsTr("Created by"), v: root.task.createdBy || "", show: (root.task.createdBy || "").length > 0, accent: false },
                         { l: qsTr("Finished"),  v: root.task.completedAtText, show: root.task.completedAtText.length > 0, accent: false },
                         { l: qsTr("Time spent"),v: root.task.totalText,       show: root.task.totalText !== "0:00:00",   accent: false },
-                        { l: qsTr("Earned"),    v: root.task.earnedText,      show: root.task.earnedText.length > 0,     accent: true }
+                        { l: qsTr("Earned"),    v: backend.acornWords(root.task.earnedAmount), show: root.task.earnedText.length > 0, accent: true }
                     ] : []
                     delegate: RowLayout {
                         required property var modelData

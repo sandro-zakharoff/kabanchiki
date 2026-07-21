@@ -120,7 +120,7 @@ Item {
                                 Text {
                                     text: model.currentTask.length > 0
                                         ? qsTr("▶ %1").arg(model.currentTask)
-                                        : qsTr("%1 active · balance %2").arg(model.activeCount).arg(model.balanceText)
+                                        : qsTr("%1 active · balance %2").arg(model.activeCount).arg(backend.acornWords(model.balance))
                                     font.pixelSize: Theme.fontSizeXs
                                     color: model.currentTask.length > 0 ? Theme.success : Theme.textSecondary
                                     elide: Text.ElideRight

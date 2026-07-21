@@ -184,6 +184,8 @@ fun KStatTile(
     value: String,
     modifier: Modifier = Modifier,
     valueColor: Color = KabColors.textPrimary,
+    /** When set, the value is drawn as an amount of acorns (number + mark). */
+    acorns: Int? = null,
 ) {
     Column(
         modifier = modifier
@@ -201,13 +203,22 @@ fun KStatTile(
             maxLines = 1,
         )
         Box(Modifier.height(4.dp))
-        Text(
-            value,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = valueColor,
-            maxLines = 1,
-        )
+        if (acorns != null) {
+            KAcorns(
+                amount = acorns,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = valueColor,
+            )
+        } else {
+            Text(
+                value,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = valueColor,
+                maxLines = 1,
+            )
+        }
     }
 }
 
@@ -292,6 +303,9 @@ fun KChip(
     color: Color,
     modifier: Modifier = Modifier,
     filled: Boolean = false,
+    /** When set, the pill shows an amount of acorns instead of `text`. */
+    acorns: Int? = null,
+    suffix: String? = null,
 ) {
     val bg by animateColorAsState(
         targetValue = if (filled) color else color.copy(alpha = 0.14f),
@@ -305,12 +319,24 @@ fun KChip(
             .padding(horizontal = 10.dp, vertical = 4.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = if (filled) Color.White else color,
-        )
+        val contentColor = if (filled) Color.White else color
+        if (acorns != null) {
+            KAcorns(
+                amount = acorns,
+                fontSize = 11.sp,
+                color = contentColor,
+                suffix = suffix,
+                // On a filled pill the brown mark would disappear — tint it.
+                tint = if (filled) contentColor else null,
+            )
+        } else {
+            Text(
+                text,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = contentColor,
+            )
+        }
     }
 }
 

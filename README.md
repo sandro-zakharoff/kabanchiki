@@ -2,8 +2,9 @@
 
 A family task-and-reward system. Parents (owners) hand out tasks and hourly jobs
 from a Windows app or a Telegram Mini App; children (assignees) complete them in
-an Android app and earn money tracked to the kopiyka. Everything syncs in real
-time through Supabase, with push notifications and server-authoritative timers.
+an Android app and earn acorns — the app's own currency, always whole.
+Everything syncs in real time through Supabase, with push notifications and
+server-authoritative timers.
 
 The apps ship in English and Ukrainian.
 

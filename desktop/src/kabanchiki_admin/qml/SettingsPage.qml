@@ -263,7 +263,7 @@ Item {
             Section {
                 id: balanceSection
                 heading: qsTr("Balance")
-                caption: qsTr("Global money rules for every assignee. Only owners can change them.")
+                caption: qsTr("Global acorn rules for every assignee. Only owners can change them.")
 
                 function seed() {
                     minField.text = String(backend.minWithdrawal)
@@ -280,25 +280,25 @@ Item {
                     Layout.fillWidth: true
                     spacing: Theme.spacingMd
                     Labeled {
-                        label: qsTr("Minimum withdrawal, ₴")
+                        label: qsTr("Minimum withdrawal, acorns")
                         Layout.preferredWidth: 200
                         AppTextField {
                             id: minField
                             Layout.fillWidth: true
                             enabled: balanceSection.editable
-                            placeholderText: "0.00"
-                            validator: DoubleValidator { bottom: 0; decimals: 2; notation: DoubleValidator.StandardNotation }
+                            placeholderText: "0"
+                            validator: IntValidator { bottom: 0 }
                         }
                     }
                     Labeled {
-                        label: qsTr("Auto-approve below, ₴ (0 = off)")
+                        label: qsTr("Auto-approve below, acorns (0 = off)")
                         Layout.preferredWidth: 200
                         AppTextField {
                             id: autoField
                             Layout.fillWidth: true
                             enabled: balanceSection.editable
-                            placeholderText: "0.00"
-                            validator: DoubleValidator { bottom: 0; decimals: 2; notation: DoubleValidator.StandardNotation }
+                            placeholderText: "0"
+                            validator: IntValidator { bottom: 0 }
                         }
                     }
                     Item { Layout.fillWidth: true }
@@ -324,9 +324,9 @@ Item {
                         text: qsTr("Save")
                         enabled: balanceSection.editable
                         onClicked: backend.setBalanceSettings(
-                            parseFloat(minField.text.replace(",", ".")) || 0,
+                            parseInt(minField.text, 10) || 0,
                             enabledBox.checked,
-                            parseFloat(autoField.text.replace(",", ".")) || 0,
+                            parseInt(autoField.text, 10) || 0,
                             receiptBox.checked)
                     }
                 }

@@ -13,7 +13,7 @@ AppDialog {
     property int sign: 1   // +1 bonus, -1 penalty
 
     function amountValue() {
-        var v = parseFloat(amountField.text.replace(",", "."))
+        var v = parseInt(amountField.text, 10)
         return isNaN(v) ? 0 : v
     }
     function canSave() {
@@ -80,12 +80,12 @@ AppDialog {
             }
         }
 
-        Text { text: qsTr("Amount, ₴"); font.pixelSize: Theme.fontSizeSm; font.weight: Font.DemiBold; color: Theme.textSecondary }
+        Text { text: qsTr("Amount, acorns"); font.pixelSize: Theme.fontSizeSm; font.weight: Font.DemiBold; color: Theme.textSecondary }
         AppTextField {
             id: amountField
             Layout.fillWidth: true
-            placeholderText: "0.00"
-            validator: DoubleValidator { bottom: 0; decimals: 2; notation: DoubleValidator.StandardNotation }
+            placeholderText: "0"
+            validator: IntValidator { bottom: 0 }
         }
 
         RowLayout {

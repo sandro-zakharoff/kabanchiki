@@ -42,7 +42,7 @@ import com.kabanchiki.app.core.model.TaskDto
 import com.kabanchiki.app.core.model.TaskStatus
 import com.kabanchiki.app.core.model.formatDate
 import com.kabanchiki.app.core.model.formatDeadline
-import com.kabanchiki.app.core.model.formatMoney
+import com.kabanchiki.app.core.designsystem.KAcorns
 import com.kabanchiki.app.core.model.parseInstant
 
 @Composable
@@ -64,12 +64,6 @@ fun taskStatusChip(task: TaskDto): Pair<String, androidx.compose.ui.graphics.Col
     } else {
         statusChip(status)
     }
-}
-
-@Composable
-fun rewardText(task: TaskDto): String {
-    val money = formatMoney(task.rewardAmount)
-    return if (task.rewardType == "hourly") stringResource(R.string.task_reward_hourly, money) else money
 }
 
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
@@ -199,8 +193,9 @@ private fun TaskCard(task: TaskDto, onClick: () -> Unit, onQuickComplete: () -> 
                 }
                 Spacer(Modifier.width(10.dp))
                 Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(
-                        rewardText(task),
+                    KAcorns(
+                        amount = task.rewardAmount,
+                        suffix = if (task.rewardType == "hourly") stringResource(R.string.job_rate_suffix) else null,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
                         color = KabColors.success,

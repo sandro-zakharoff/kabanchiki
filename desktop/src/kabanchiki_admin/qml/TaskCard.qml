@@ -74,7 +74,7 @@ Card {
         }
 
         DifficultyBadge { level: model.difficulty; showLabel: false }
-        Chip { text: model.rewardText; chipColor: Theme.accentDark }
+        Chip { text: model.rewardText; acorn: true; suffix: model.rewardType === "hourly" ? qsTr("/ h") : ""; chipColor: Theme.accentDark }
         Chip { text: root.statusInfo.label; chipColor: root.statusInfo.color }
     }
 

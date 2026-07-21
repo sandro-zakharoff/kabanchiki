@@ -23,7 +23,7 @@ AppDialog {
         var fields = {
             title: titleField.text.trim(),
             description: descArea.text,
-            hourly_rate: parseFloat(rateField.text.replace(",", "."))
+            hourly_rate: parseInt(rateField.text, 10)
         }
         if (root.editJobId.length > 0) {
             backend.updateJob(root.editJobId, fields, root.selectedIds())
@@ -137,12 +137,12 @@ AppDialog {
 
         ColumnLayout {
             spacing: Theme.spacingXs
-            Text { text: qsTr("Rate, ₴/hour"); font.pixelSize: Theme.fontSizeSm; font.weight: Font.DemiBold; color: Theme.textSecondary }
+            Text { text: qsTr("Rate, acorns/hour"); font.pixelSize: Theme.fontSizeSm; font.weight: Font.DemiBold; color: Theme.textSecondary }
             AppTextField {
                 id: rateField
                 Layout.preferredWidth: 160
-                placeholderText: "0.00"
-                validator: DoubleValidator { bottom: 0; decimals: 2; notation: DoubleValidator.StandardNotation }
+                placeholderText: "0"
+                validator: IntValidator { bottom: 0 }
             }
             Text {
                 text: qsTr("Earnings go to the assignee's personal balance automatically.")

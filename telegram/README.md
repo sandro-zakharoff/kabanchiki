@@ -13,7 +13,7 @@ Supabase Realtime.
   вашими значеннями вручну або генерується workflow'ом Pages з репозиторних Variables
   `KABANCHIKI_SUPABASE_URL` / `KABANCHIKI_SUPABASE_ANON_KEY`. Секрети сюди не додаються.
 - `js/config.js` — runtime-derived endpoints used by the client.
-- `js/format.js` — гроші/час/статуси (дзеркалить desktop `models.py`).
+- `js/format.js` — жолуді/час/статуси (дзеркалить desktop `models.py`).
 - `js/api.js` — Supabase-клієнт, вхід через `tg-auth`, усі запити/мутації.
 - `js/app.js` — контролер: авторизація, realtime, рендер, дії.
 

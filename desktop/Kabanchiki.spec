@@ -19,7 +19,10 @@ a = Analysis(
     pathex=['src'],
     binaries=[],
     datas=datas,
-    hiddenimports=[],
+    # The acorn mark is an SVG. Nothing imports QtSvg in Python — QML loads it
+    # through the image plugin — so PyInstaller cannot see the dependency and
+    # the mark would silently vanish from the frozen build without this.
+    hiddenimports=['PySide6.QtSvg'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

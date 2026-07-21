@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import com.kabanchiki.app.core.location.LocationPermissions
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -37,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -49,24 +49,26 @@ import com.kabanchiki.app.core.data.AuthRepository
 import com.kabanchiki.app.core.data.JobsRepository
 import com.kabanchiki.app.core.data.LocalePrefs
 import com.kabanchiki.app.core.data.TasksRepository
-import com.kabanchiki.app.core.location.LocationPrefs
-import com.kabanchiki.app.core.location.LocationScheduler
+import com.kabanchiki.app.core.designsystem.KAcorns
 import com.kabanchiki.app.core.designsystem.KAvatar
 import com.kabanchiki.app.core.designsystem.KButton
 import com.kabanchiki.app.core.designsystem.KButtonVariant
 import com.kabanchiki.app.core.designsystem.KCard
 import com.kabanchiki.app.core.designsystem.KChip
 import com.kabanchiki.app.core.designsystem.KabColors
+import com.kabanchiki.app.core.designsystem.acornWords
+import com.kabanchiki.app.core.location.LocationPermissions
+import com.kabanchiki.app.core.location.LocationPrefs
+import com.kabanchiki.app.core.location.LocationScheduler
 import com.kabanchiki.app.core.model.ProfileDto
 import com.kabanchiki.app.core.model.formatDate
-import com.kabanchiki.app.core.model.formatMoney
 import com.kabanchiki.app.core.model.parseInstant
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -266,14 +268,15 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
         KCard(Modifier.fillMaxWidth()) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(stringResource(R.string.balance_available), style = MaterialTheme.typography.labelSmall)
-                Text(
-                    formatMoney(balance),
-                    style = MaterialTheme.typography.headlineLarge,
+                KAcorns(
+                    amount = balance,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
                     color = KabColors.accent,
                 )
                 if (bonusTotal > 0) {
                     Text(
-                        stringResource(R.string.profile_bonuses_total, formatMoney(bonusTotal)),
+                        stringResource(R.string.profile_bonuses_total, acornWords(bonusTotal)),
                         style = MaterialTheme.typography.bodySmall,
                         color = KabColors.success,
                     )
@@ -303,9 +306,11 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
                                     style = MaterialTheme.typography.bodySmall,
                                 )
                             }
-                            Text(
-                                "+" + formatMoney(bonus.amount),
-                                style = MaterialTheme.typography.titleMedium,
+                            KAcorns(
+                                amount = bonus.amount,
+                                signed = true,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
                                 color = KabColors.success,
                             )
                         }

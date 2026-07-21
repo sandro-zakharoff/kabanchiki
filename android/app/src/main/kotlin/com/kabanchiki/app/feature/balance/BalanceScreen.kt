@@ -51,7 +51,8 @@ import com.kabanchiki.app.core.model.JobStatsDto
 import com.kabanchiki.app.core.model.LedgerEntryDto
 import com.kabanchiki.app.core.model.WithdrawalDto
 import com.kabanchiki.app.core.model.formatDateTime
-import com.kabanchiki.app.core.model.formatMoney
+import com.kabanchiki.app.core.designsystem.KAcorns
+import com.kabanchiki.app.core.designsystem.acornWords
 import com.kabanchiki.app.core.model.parseInstant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -79,19 +80,25 @@ class BalanceViewModel @Inject constructor(
     private val _refreshing = MutableStateFlow(false)
     val refreshing: StateFlow<Boolean> = _refreshing.asStateFlow()
 
+    // A failed load must never be indistinguishable from "you have nothing".
+    // Without this the screen shows a confident 0 with no history, which reads
+    // as lost money rather than a load that did not happen.
+    private val _loadFailed = MutableStateFlow(false)
+    val loadFailed: StateFlow<Boolean> = _loadFailed.asStateFlow()
+
     fun refresh() {
         viewModelScope.launch {
             _refreshing.value = true
-            runCatching { balance.refresh(); jobs.refresh() }
+            _loadFailed.value = runCatching { balance.refresh(); jobs.refresh() }.isFailure
             _refreshing.value = false
         }
     }
 
     /** Live balance: ledger sum + uncredited job accrual (with the live tail). */
-    fun liveBalance(): Double =
+    fun liveBalance(): Int =
         com.kabanchiki.app.core.model.liveBalance(ledger.value, stats.value, timeSync)
 
-    fun withdraw(amount: Double?) = action { balance.requestWithdrawal(amount) }
+    fun withdraw(amount: Int?) = action { balance.requestWithdrawal(amount) }
     fun cancel(id: String) = action { balance.cancelWithdrawal(id) }
     fun confirm(id: String) = action { balance.confirmWithdrawal(id) }
     fun decline(id: String) = action { balance.declineWithdrawal(id) }
@@ -114,6 +121,7 @@ fun BalanceScreen(viewModel: BalanceViewModel = hiltViewModel()) {
     val stats by viewModel.stats.collectAsState()
     val busy by viewModel.busy.collectAsState()
     val refreshing by viewModel.refreshing.collectAsState()
+    val loadFailed by viewModel.loadFailed.collectAsState()
 
     LaunchedEffect(Unit) { viewModel.refresh() }
 
@@ -159,14 +167,31 @@ fun BalanceScreen(viewModel: BalanceViewModel = hiltViewModel()) {
                                 style = MaterialTheme.typography.labelMedium,
                                 color = KabColors.textSecondary,
                             )
-                            Text(
-                                formatMoney(balance),
-                                fontSize = 40.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = KabColors.accent,
-                            )
+                            if (loadFailed) {
+                                // Say the balance is unknown rather than show a 0
+                                // that looks like an empty account.
+                                Text(
+                                    "—",
+                                    fontSize = 40.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = KabColors.textSecondary,
+                                )
+                                Text(
+                                    stringResource(R.string.balance_load_failed),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = KabColors.danger,
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                )
+                            } else {
+                                KAcorns(
+                                    amount = balance,
+                                    fontSize = 40.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = KabColors.accent,
+                                )
+                            }
                             Spacer(Modifier.height(4.dp))
-                            if (config.withdrawalsEnabled) {
+                            if (config.withdrawalsEnabled && !loadFailed) {
                                 KButton(
                                     text = stringResource(R.string.balance_withdraw),
                                     onClick = { showWithdraw = true },
@@ -175,7 +200,7 @@ fun BalanceScreen(viewModel: BalanceViewModel = hiltViewModel()) {
                                 )
                                 if (balance < config.minWithdrawal) {
                                     Text(
-                                        stringResource(R.string.balance_min_hint, formatMoney(config.minWithdrawal)),
+                                        stringResource(R.string.balance_min_hint, acornWords(config.minWithdrawal)),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = KabColors.textSecondary,
                                     )
@@ -196,7 +221,7 @@ fun BalanceScreen(viewModel: BalanceViewModel = hiltViewModel()) {
                     KCard(Modifier.fillMaxWidth()) {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             Text(
-                                stringResource(R.string.balance_confirm_cash, formatMoney(w.amount)),
+                                stringResource(R.string.balance_confirm_cash, acornWords(w.amount)),
                                 style = MaterialTheme.typography.titleMedium,
                             )
                             if (!w.comment.isNullOrBlank()) {
@@ -278,7 +303,7 @@ private fun RequestRow(w: WithdrawalDto, busy: Boolean, onCancel: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Column(Modifier.weight(1f)) {
-                Text(formatMoney(w.amount), style = MaterialTheme.typography.titleMedium)
+                KAcorns(amount = w.amount, fontSize = 16.sp, fontWeight = FontWeight.Medium)
                 Text(
                     formatDateTime(parseInstant(w.requestedAt)),
                     style = MaterialTheme.typography.bodySmall,
@@ -329,11 +354,12 @@ private fun LedgerRow(e: LedgerEntryDto) {
                 color = KabColors.textSecondary,
             )
         }
-        Text(
-            (if (positive) "+" else "") + formatMoney(e.amount),
-            style = MaterialTheme.typography.titleMedium,
-            color = if (positive) KabColors.success else KabColors.danger,
+        KAcorns(
+            amount = e.amount,
+            signed = true,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
+            color = if (positive) KabColors.success else KabColors.danger,
         )
     }
 }
@@ -351,21 +377,24 @@ private fun kindTitle(kind: String): String = when (kind) {
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 private fun WithdrawSheet(
-    balance: Double,
-    minWithdrawal: Double,
+    balance: Int,
+    minWithdrawal: Int,
     busy: Boolean,
     onDismiss: () -> Unit,
-    onConfirm: (Double?) -> Unit,
+    onConfirm: (Int?) -> Unit,
 ) {
-    var text by remember { mutableStateOf(formatMoney(balance).removeSuffix(" ₴")) }
-    val amount = text.trim().replace(',', '.').toDoubleOrNull()
+    // Acorns are indivisible, so the field holds digits and nothing else: a
+    // number keyboard, and every non-digit dropped on the way in. Comparisons
+    // are then exact and need no epsilon.
+    var text by remember { mutableStateOf(balance.toString()) }
+    val amount = text.toIntOrNull()
     val error = when {
         text.isBlank() || amount == null -> null
-        amount < minWithdrawal -> stringResource(R.string.withdraw_below_min, formatMoney(minWithdrawal))
-        amount > balance + 0.001 -> stringResource(R.string.withdraw_above_balance, formatMoney(balance))
+        amount < minWithdrawal -> stringResource(R.string.withdraw_below_min, acornWords(minWithdrawal))
+        amount > balance -> stringResource(R.string.withdraw_above_balance, acornWords(balance))
         else -> null
     }
-    val valid = amount != null && amount >= minWithdrawal && amount <= balance + 0.001
+    val valid = amount != null && amount >= minWithdrawal && amount <= balance
 
     androidx.compose.material3.ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -379,27 +408,27 @@ private fun WithdrawSheet(
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 Column {
                     Text(stringResource(R.string.withdraw_balance), style = MaterialTheme.typography.labelSmall)
-                    Text(formatMoney(balance), style = MaterialTheme.typography.titleMedium, color = KabColors.success)
+                    KAcorns(amount = balance, fontSize = 16.sp, color = KabColors.success)
                 }
                 Column {
                     Text(stringResource(R.string.withdraw_min), style = MaterialTheme.typography.labelSmall)
-                    Text(formatMoney(minWithdrawal), style = MaterialTheme.typography.titleMedium)
+                    KAcorns(amount = minWithdrawal, fontSize = 16.sp)
                 }
             }
             androidx.compose.material3.OutlinedTextField(
                 value = text,
-                onValueChange = { text = it },
+                onValueChange = { input -> text = input.filter { it.isDigit() }.take(9) },
                 label = { Text(stringResource(R.string.withdraw_amount)) },
                 singleLine = true,
                 isError = error != null,
                 supportingText = error?.let { { Text(it, color = KabColors.danger) } },
                 keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Decimal,
+                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Number,
                 ),
                 modifier = Modifier.fillMaxWidth(),
             )
             KButton(
-                text = stringResource(R.string.withdraw_all, formatMoney(balance)),
+                text = stringResource(R.string.withdraw_all, acornWords(balance)),
                 onClick = { onConfirm(null) },
                 variant = KButtonVariant.Secondary,
                 enabled = !busy,

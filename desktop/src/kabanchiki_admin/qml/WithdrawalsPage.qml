@@ -152,11 +152,11 @@ Item {
                                     color: Theme.textSecondary
                                 }
                             }
-                            Text {
+                            AcornAmount {
                                 text: model.amountText
-                                font.pixelSize: Theme.fontSizeXl
-                                font.weight: Font.Bold
-                                font.family: "Consolas"
+                                fontSize: Theme.fontSizeXl
+                                fontWeight: Font.Bold
+                                fontFamily: "Consolas"
                                 color: Theme.textPrimary
                             }
                         }
@@ -256,7 +256,7 @@ Item {
                                 visible: model.status === "approved"
                                 text: qsTr("Pay…")
                                 implicitHeight: 34
-                                onClicked: withdrawalPayRef.openFor(model.wId, model.childName, model.amountText)
+                                onClicked: withdrawalPayRef.openFor(model.wId, model.childName, backend.acornWords(model.amount))
                             }
                         }
                     }

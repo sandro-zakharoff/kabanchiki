@@ -33,12 +33,43 @@ def parse_ts(value: str | None) -> datetime | None:
     return dt.astimezone(UTC)
 
 
-def fmt_money(amount: float) -> str:
-    """1234567.5 -> '1 234 567.50 ₴'"""
-    sign = "-" if amount < 0 else ""
-    whole, frac = divmod(round(abs(amount) * 100), 100)
-    grouped = f"{whole:,}".replace(",", " ")
-    return f"{sign}{grouped}.{frac:02d} ₴"
+# The acorn is indivisible: there are no fractions of one anywhere in the app.
+# The mark itself is an icon (see AcornAmount.qml), so the formatter returns the
+# bare number and lets the UI place the icon beside it — a glyph glued into the
+# middle of a string could never be aligned to the text baseline properly.
+ACORN_UNIT_FORMS = {
+    # one (1, 21, 31…), few (2-4, 22-24…), many (0, 5-20, 25-30…)
+    "uk": ("жолудь", "жолуді", "жолудів"),
+    "en": ("acorn", "acorns", "acorns"),
+}
+
+
+def acorn_unit(count: int, language: str = "uk") -> str:
+    """The unit in the form `count` requires: 1 жолудь, 2 жолуді, 5 жолудів."""
+    one, few, many = ACORN_UNIT_FORMS.get(language, ACORN_UNIT_FORMS["uk"])
+    n = abs(int(count))
+    if n % 100 // 10 == 1:  # the teens all take the 'many' form
+        return many
+    last = n % 10
+    if last == 1:
+        return one
+    if 2 <= last <= 4:
+        return few
+    return many
+
+
+def fmt_acorns(amount: float) -> str:
+    """1234567 -> '1 234 567' — the number only; the acorn mark is an icon."""
+    whole = int(round(amount))
+    sign = "-" if whole < 0 else ""
+    grouped = f"{abs(whole):,}".replace(",", " ")
+    return f"{sign}{grouped}"
+
+
+def fmt_acorns_words(amount: float, language: str = "uk") -> str:
+    """'5 жолудів' — for places that cannot draw an icon (toasts, journal)."""
+    whole = int(round(amount))
+    return f"{fmt_acorns(whole)} {acorn_unit(whole, language)}"
 
 
 def fmt_duration(total_seconds: int) -> str:
@@ -132,5 +163,13 @@ def total_seconds(sessions: Iterable[Session], now: datetime) -> int:
     return int(total)
 
 
-def balance_for(seconds: int, hourly_rate: float) -> float:
-    return round(seconds / 3600.0 * hourly_rate, 2)
+def live_acorns(accrued_acorn_seconds: int, extra_seconds: float, hourly_rate: int) -> int:
+    """Whole acorns for a running job, ticked forward from the server snapshot.
+
+    Mirrors settle_job_member(): the exact earning is carried as acorn-seconds
+    (seconds x rate, both integers) and only whole acorns are ever shown, so the
+    number ticking here and the number the server credits can never disagree —
+    and the balance does not jump when the settle cron lands.
+    """
+    total = int(accrued_acorn_seconds) + int(extra_seconds) * int(hourly_rate)
+    return max(0, total) // 3600

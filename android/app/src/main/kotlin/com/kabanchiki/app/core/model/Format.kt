@@ -6,16 +6,33 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.abs
-import kotlin.math.roundToLong
 
-/** 1234567.5 -> "1 234 567.50 ₴" (same format as the desktop app). */
-fun formatMoney(amount: Double): String {
+/**
+ * 1234567 -> "1 234 567" — the number only (same as the desktop app).
+ *
+ * Acorns are indivisible, so there is never a fractional part, and the acorn
+ * mark is an icon drawn beside the number (see KAcorns) rather than a character
+ * glued onto the string: an image cannot be aligned to the baseline from inside
+ * a String. For places that cannot draw an icon — notifications, the bot — use
+ * the `acorns` plural resource instead, which gives the declined word.
+ */
+fun formatAcorns(amount: Int): String {
     val sign = if (amount < 0) "-" else ""
-    val cents = abs(amount * 100).roundToLong()
-    val whole = cents / 100
-    val frac = cents % 100
-    val grouped = whole.toString().reversed().chunked(3).joinToString(" ").reversed()
-    return "$sign$grouped.${frac.toString().padStart(2, '0')} ₴"
+    val grouped = abs(amount).toString().reversed().chunked(3).joinToString(" ").reversed()
+    return "$sign$grouped"
+}
+
+/**
+ * Whole acorns for a running job, ticked forward from the server snapshot.
+ *
+ * Mirrors settle_job_member(): the exact earning is carried as acorn-seconds
+ * (seconds x rate, both integers), so the ticking number and the number the
+ * server credits can never disagree — and the balance does not jump when the
+ * settle cron lands.
+ */
+fun liveAcorns(accruedAcornSeconds: Long, extraSeconds: Long, hourlyRate: Int): Int {
+    val total = accruedAcornSeconds + extraSeconds * hourlyRate
+    return (total.coerceAtLeast(0) / 3600).toInt()
 }
 
 /** 3725 -> "1:02:05" (hours keep growing, no day wrap). */

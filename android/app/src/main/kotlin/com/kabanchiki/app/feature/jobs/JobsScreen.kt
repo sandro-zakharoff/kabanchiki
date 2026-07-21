@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,14 +23,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kabanchiki.app.R
 import com.kabanchiki.app.core.data.JobsRepository
 import com.kabanchiki.app.core.data.TimeSync
+import com.kabanchiki.app.core.designsystem.KAcorns
 import com.kabanchiki.app.core.designsystem.KCard
 import com.kabanchiki.app.core.designsystem.KChip
 import com.kabanchiki.app.core.designsystem.KStatTile
@@ -38,16 +41,15 @@ import com.kabanchiki.app.core.designsystem.KabColors
 import com.kabanchiki.app.core.model.JobStatsDto
 import com.kabanchiki.app.core.model.formatDateTime
 import com.kabanchiki.app.core.model.formatDuration
-import com.kabanchiki.app.core.model.formatMoney
+import com.kabanchiki.app.core.model.liveAcorns
 import com.kabanchiki.app.core.model.parseInstant
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import kotlin.math.floor
 
 @HiltViewModel
 class JobsViewModel @Inject constructor(
@@ -70,7 +72,7 @@ class JobsViewModel @Inject constructor(
 }
 
 /** Live view of one job derived from the last server snapshot. */
-private data class LiveJob(val totalSeconds: Long, val earned: Double)
+private data class LiveJob(val totalSeconds: Long, val earned: Int)
 
 private fun liveOf(stat: JobStatsDto, timeSync: TimeSync): LiveJob {
     val snapshot = parseInstant(stat.snapshotAt)
@@ -78,8 +80,9 @@ private fun liveOf(stat: JobStatsDto, timeSync: TimeSync): LiveJob {
     val extra = if (running && snapshot != null) {
         (timeSync.nowServer() - snapshot).inWholeSeconds.coerceAtLeast(0)
     } else 0L
-    // earned_total already covers accrual up to the snapshot; add the live tail.
-    val earned = stat.earnedTotal + floor(extra / 3600.0 * stat.hourlyRate * 100) / 100.0
+    // Tick the exact acorn-seconds accumulator, exactly as the server does, so
+    // the number never drifts from what the next settlement credits.
+    val earned = liveAcorns(stat.accruedAcornSeconds, extra, stat.hourlyRate)
     return LiveJob(stat.totalSeconds + extra, earned)
 }
 
@@ -164,9 +167,12 @@ private fun JobCard(stat: JobStatsDto, live: LiveJob) {
                 Text(stat.description, style = MaterialTheme.typography.bodyMedium)
             }
 
-            Text(
-                stringResource(R.string.job_rate, formatMoney(stat.hourlyRate)),
-                style = MaterialTheme.typography.bodySmall,
+            KAcorns(
+                amount = stat.hourlyRate,
+                suffix = stringResource(R.string.job_rate_suffix),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Normal,
+                color = KabColors.textSecondary,
             )
 
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -178,7 +184,8 @@ private fun JobCard(stat: JobStatsDto, live: LiveJob) {
                 )
                 KStatTile(
                     label = stringResource(R.string.job_earned_now),
-                    value = formatMoney(live.earned),
+                    value = "",
+                    acorns = live.earned,
                     valueColor = KabColors.success,
                     modifier = Modifier.weight(1f),
                 )

@@ -98,7 +98,7 @@ Item {
                             Layout.fillWidth: true
                             spacing: 0
                             Text {
-                                text: qsTr("Withdrawal %1").arg(model.amountText)
+                                text: qsTr("Withdrawal %1").arg(backend.acornWords(model.amount))
                                 font.pixelSize: Theme.fontSizeSm
                                 font.weight: Font.DemiBold
                                 color: Theme.textPrimary
@@ -133,7 +133,7 @@ Item {
                             visible: model.status === "approved"
                             small: true
                             text: qsTr("Pay…")
-                            onClicked: withdrawalPayRef.openFor(model.wId, model.childName, model.amountText)
+                            onClicked: withdrawalPayRef.openFor(model.wId, model.childName, backend.acornWords(model.amount))
                         }
                     }
                 }
@@ -297,11 +297,11 @@ Item {
 
                     ColumnLayout {
                         spacing: 2
-                        Text {
+                        AcornAmount {
                             visible: model.amountText.length > 0
                             text: model.amountText
-                            font.pixelSize: Theme.fontSizeMd
-                            font.weight: Font.Bold
+                            fontSize: Theme.fontSizeMd
+                            fontWeight: Font.Bold
                             color: entryCard.meta.c
                             Layout.alignment: Qt.AlignRight
                         }
@@ -328,7 +328,7 @@ Item {
                         text: qsTr("Delete")
                         onClicked: confirmRef.openWith(
                             qsTr("Delete bonus"),
-                            qsTr("The bonus of %1 will be removed from the assignee's balance. Delete?").arg(model.amountText),
+                            qsTr("The bonus of %1 will be removed from the assignee's balance. Delete?").arg(backend.acornWords(model.bonusAmount)),
                             function() { backend.deleteBonus(model.refId) },
                             true)
                     }

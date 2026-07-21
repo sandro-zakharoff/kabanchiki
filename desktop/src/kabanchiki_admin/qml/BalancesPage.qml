@@ -25,11 +25,44 @@ Item {
         anchors.margins: Theme.spacingLg
         spacing: Theme.spacingMd
 
-        Text {
-            text: qsTr("Balances")
-            font.pixelSize: Theme.fontSizeXl
-            font.weight: Font.Bold
-            color: Theme.textPrimary
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: Theme.spacingSm
+
+            Text {
+                text: qsTr("Balances")
+                font.pixelSize: Theme.fontSizeXl
+                font.weight: Font.Bold
+                color: Theme.textPrimary
+            }
+            // What an acorn is worth, said once on the page where money lives.
+            Rectangle {
+                Layout.alignment: Qt.AlignVCenter
+                implicitHeight: 24
+                implicitWidth: rateRow.implicitWidth + 20
+                radius: 12
+                color: Qt.alpha(Theme.accentSoft, 0.35)
+
+                Row {
+                    id: rateRow
+                    anchors.centerIn: parent
+                    spacing: 4
+                    AcornAmount {
+                        text: "1"
+                        fontSize: Theme.fontSizeXs
+                        color: Theme.accentDark
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                    Text {
+                        text: qsTr("= 1 hryvnia")
+                        font.pixelSize: Theme.fontSizeXs
+                        font.weight: Font.DemiBold
+                        color: Theme.accentDark
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+            }
+            Item { Layout.fillWidth: true }
         }
 
         // ---------------------------------------- balance cards
@@ -86,11 +119,11 @@ Item {
                             }
                         }
 
-                        Text {
+                        AcornAmount {
                             text: model.balanceText
-                            font.pixelSize: Theme.fontSizeXxl
-                            font.weight: Font.Bold
-                            font.family: "Consolas"
+                            fontSize: Theme.fontSizeXxl
+                            fontWeight: Font.Bold
+                            fontFamily: "Consolas"
                             color: model.balance > 0 ? Theme.accent : Theme.textSecondary
                             Layout.topMargin: Theme.spacingXs
                         }
@@ -101,7 +134,7 @@ Item {
                             Layout.topMargin: Theme.spacingXs
                             implicitHeight: 34
                             enabled: model.balance > 0
-                            onClicked: payoutRef.openFor(model.childId, model.name, model.balance, model.balanceText)
+                            onClicked: payoutRef.openFor(model.childId, model.name, model.balance, backend.acornWords(model.balance))
                         }
                         RowLayout {
                             Layout.fillWidth: true
@@ -233,11 +266,11 @@ Item {
                                     Layout.fillWidth: true
                                 }
                             }
-                            Text {
+                            AcornAmount {
                                 text: model.amountText
-                                font.pixelSize: Theme.fontSizeMd
-                                font.weight: Font.Bold
-                                font.family: "Consolas"
+                                fontSize: Theme.fontSizeMd
+                                fontWeight: Font.Bold
+                                fontFamily: "Consolas"
                                 color: model.positive ? Theme.success : Theme.danger
                             }
                         }

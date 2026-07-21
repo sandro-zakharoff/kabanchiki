@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ListAlt
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -67,7 +68,7 @@ fun HomeScreen() {
         Tab("tasks", R.string.nav_tasks, Icons.AutoMirrored.Filled.ListAlt),
         Tab("job", R.string.nav_job, Icons.Filled.Timer),
         Tab("balance", R.string.nav_balance, Icons.Filled.AccountBalanceWallet),
-        Tab("profile", R.string.nav_profile, Icons.Filled.Person),
+        Tab("profile", R.string.nav_profile, Icons.Filled.Settings),
     )
 
     Scaffold(
@@ -187,14 +188,6 @@ private fun KBottomBar(
                         contentDescription = stringResource(tab.labelRes),
                         tint = tint,
                         modifier = Modifier.size(21.dp),
-                    )
-                    Text(
-                        stringResource(tab.labelRes),
-                        fontSize = 13.sp,
-                        fontWeight = if (active) FontWeight.Bold else FontWeight.Medium,
-                        color = tint,
-                        maxLines = 1,
-                        modifier = Modifier.padding(start = 7.dp),
                     )
                 }
             }

@@ -783,3 +783,18 @@ body[data-scheme="dark"] .toast { background: #3E3945; }
   transition: filter var(--t-fast), transform var(--t-fast);
 }
 .amt-all:active { transform: scale(0.94); filter: brightness(0.94); }
+
+/* ---------------------------------------------------------------- acorns
+   The acorn replaced the ₴ symbol. A mark that is an image cannot be glued
+   into a formatted string the way a character could, so it is laid out beside
+   the number: sized in `em` so it follows whatever type it sits in, and nudged
+   down a hair because the acorn's visual mass sits high in its own box. */
+.acn { display: inline-flex; align-items: center; gap: 0.3em; white-space: nowrap; }
+.acn-m {
+  width: 1.06em; height: 1.06em;
+  flex: 0 0 auto;
+  position: relative; top: 0.06em;
+}
+/* On dark fills the brown mark disappears — flatten it to the text colour.
+   brightness(0) crushes the artwork to black, invert(1) lifts it to white. */
+.acn-m.mono { filter: brightness(0) invert(1); }

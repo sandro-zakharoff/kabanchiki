@@ -49,7 +49,7 @@ data class TaskDto(
     val description: String = "",
     @SerialName("photo_path") val photoPath: String? = null,
     @SerialName("reward_type") val rewardType: String,
-    @SerialName("reward_amount") val rewardAmount: Double,
+    @SerialName("reward_amount") @Serializable(with = AcornSerializer::class) val rewardAmount: Int,
     @SerialName("completion_mode") val completionMode: String = "timer",
     val difficulty: Int = 1,
     val requirements: String = "",
@@ -60,7 +60,7 @@ data class TaskDto(
     @SerialName("proof_photo_path") val proofPhotoPath: String? = null,
     @SerialName("decline_reason") val declineReason: String? = null,
     @SerialName("total_seconds") val totalSeconds: Int = 0,
-    @SerialName("earned_amount") val earnedAmount: Double? = null,
+    @SerialName("earned_amount") @Serializable(with = AcornSerializer::class) val earnedAmount: Int? = null,
     @SerialName("created_at") val createdAt: String,
     @SerialName("started_at") val startedAt: String? = null,
     @SerialName("completed_at") val completedAt: String? = null,
@@ -81,13 +81,17 @@ data class JobStatsDto(
     @SerialName("child_id") val childId: String,
     val title: String,
     val description: String = "",
-    @SerialName("hourly_rate") val hourlyRate: Double,
+    @SerialName("hourly_rate") @Serializable(with = AcornSerializer::class) val hourlyRate: Int,
     val status: String,
-    @SerialName("credited_amount") val creditedAmount: Double = 0.0,
+    @SerialName("credited_amount") @Serializable(with = AcornSerializer::class) val creditedAmount: Int = 0,
     @SerialName("total_seconds") val totalSeconds: Long = 0,
     @SerialName("earned_seconds") val earnedSeconds: Long = 0,
     // Earned on this job so far (flows to the personal balance).
-    @SerialName("earned_total") val earnedTotal: Double = 0.0,
+    @SerialName("earned_total") @Serializable(with = AcornSerializer::class) val earnedTotal: Int = 0,
+    // Exact, un-rounded earning at snapshot time, in acorn-seconds (seconds x
+    // rate). Ticking this forward and flooring by 3600 is what settle_job_member
+    // does, so the live number never drifts from what the server will credit.
+    @SerialName("accrued_acorn_seconds") val accruedAcornSeconds: Long = 0,
     @SerialName("running_since") val runningSince: String? = null,
     @SerialName("last_stopped_at") val lastStoppedAt: String? = null,
     @SerialName("snapshot_at") val snapshotAt: String,
@@ -98,7 +102,7 @@ data class JobStatsDto(
 data class LedgerEntryDto(
     val id: Long,
     @SerialName("child_id") val childId: String,
-    val amount: Double,
+    @Serializable(with = AcornSerializer::class) val amount: Int,
     val kind: String, // task | job | bonus | adjustment | withdrawal | reversal
     @SerialName("source_type") val sourceType: String? = null,
     val note: String = "",
@@ -109,7 +113,7 @@ data class LedgerEntryDto(
 /** Global money settings the app needs (from app_config). */
 @Serializable
 data class BalanceConfigDto(
-    @SerialName("min_withdrawal") val minWithdrawal: Double = 0.0,
+    @SerialName("min_withdrawal") @Serializable(with = AcornSerializer::class) val minWithdrawal: Int = 0,
     @SerialName("withdrawals_enabled") val withdrawalsEnabled: Boolean = true,
 )
 
@@ -128,7 +132,7 @@ data class AppReleaseDto(
 data class BonusDto(
     val id: String,
     @SerialName("child_id") val childId: String,
-    val amount: Double,
+    @Serializable(with = AcornSerializer::class) val amount: Int,
     val note: String = "",
     @SerialName("created_at") val createdAt: String,
 )
@@ -137,7 +141,7 @@ data class BonusDto(
 data class WithdrawalDto(
     val id: String,
     @SerialName("child_id") val childId: String,
-    val amount: Double,
+    @Serializable(with = AcornSerializer::class) val amount: Int,
     val status: String, // requested | approved | paid | confirmed | rejected
     val method: String? = null, // card | cash
     val comment: String? = null,
