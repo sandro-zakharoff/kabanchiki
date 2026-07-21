@@ -61,7 +61,7 @@ export function acornsHtml(amount, { signed = false, mono = false } = {}) {
   const n = Math.round(Number(amount ?? 0));
   const sign = signed && n >= 0 ? "+" : "";
   return `<span class="acn">${sign}${acorns(n)}` +
-    `<img class="acn-m${mono ? " mono" : ""}" src="./assets/acorn.svg?v=217" alt="" aria-hidden="true"></span>`;
+    `<img class="acn-m${mono ? " mono" : ""}" src="./assets/acorn.svg?v=218" alt="" aria-hidden="true"></span>`;
 }
 
 export function duration(totalSeconds) {
