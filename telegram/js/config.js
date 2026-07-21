@@ -15,6 +15,7 @@ export const DRIVE_URL = `${SUPABASE_URL}/functions/v1/drive`;
 
 export const TASK_PHOTOS_BUCKET = "task-photos";
 export const PROOF_PHOTOS_BUCKET = "proof-photos";
+export const RECEIPTS_BUCKET = "receipts";
 export const AVATARS_BUCKET = "avatars";
 
 // Presence: a child seen within this window is treated as live-online.

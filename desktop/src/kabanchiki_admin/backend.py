@@ -1727,7 +1727,7 @@ class Backend(QObject):
             shared_infos: list[dict | None] = [None] * len(optimized)
             if self.storage.backend == "drive" and optimized:
                 for i, photo in enumerate(optimized):
-                    info = await self.storage.upload_task_photo(child_ids[0], photo)
+                    info = await self.storage.upload_photo(child_ids[0], photo)
                     if info["storage"] == "drive":
                         shared_infos[i] = info
 
@@ -1736,7 +1736,7 @@ class Backend(QObject):
                 row["child_id"] = child_id
                 task_id = await self.supabase.insert_task(row)
                 for i, photo in enumerate(optimized):
-                    info = shared_infos[i] or await self.storage.upload_task_photo(child_id, photo)
+                    info = shared_infos[i] or await self.storage.upload_photo(child_id, photo)
                     await self.supabase.insert_attachment(task_id, "task", info)
 
             self.toastRequested.emit(self.tr("Task created"), "success")
@@ -1803,7 +1803,7 @@ class Backend(QObject):
                 child_id = (task or {}).get("child_id") or ""
                 for p in added:
                     photo = await asyncio.to_thread(image_service.optimize_photo, p)
-                    info = await self.storage.upload_task_photo(child_id, photo)
+                    info = await self.storage.upload_photo(child_id, photo)
                     await self.supabase.insert_attachment(task_id, "task", info)
 
             self.toastRequested.emit(self.tr("Task updated"), "success")
@@ -1923,7 +1923,7 @@ class Backend(QObject):
         if receipt.lower().endswith(".pdf"):
             return await self.storage.upload_document(child_id, receipt)
         photo = await asyncio.to_thread(image_service.optimize_photo, receipt)
-        return await self.storage.upload_task_photo(child_id, photo)
+        return await self.storage.upload_photo(child_id, photo, kind="receipt")
 
     @asyncSlot(str, str, str)
     async def withdrawalPayCard(self, withdrawal_id: str, comment: str, receipt_file: str) -> None:  # noqa: N802

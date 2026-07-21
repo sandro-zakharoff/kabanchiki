@@ -6,7 +6,7 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/+esm";
 import {
   SUPABASE_URL, SUPABASE_ANON_KEY, TG_AUTH_URL, ADMIN_URL, DRIVE_URL,
-  TASK_PHOTOS_BUCKET, PROOF_PHOTOS_BUCKET, AVATARS_BUCKET,
+  TASK_PHOTOS_BUCKET, PROOF_PHOTOS_BUCKET, RECEIPTS_BUCKET, AVATARS_BUCKET,
 } from "./config.js?v=219";
 import { xhrUpload, blobToBase64 } from "./images.js?v=219";
 
@@ -205,7 +205,9 @@ export async function signedUrl(bucket, path, expires = 3600) {
   return url;
 }
 
-const BUCKET_BY_ROLE = { task: TASK_PHOTOS_BUCKET, proof: PROOF_PHOTOS_BUCKET };
+const BUCKET_BY_ROLE = {
+  task: TASK_PHOTOS_BUCKET, proof: PROOF_PHOTOS_BUCKET, receipt: RECEIPTS_BUCKET,
+};
 const driveThumb = (id, w) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
 
 /** Display URL for an attachment row; thumb=true prefers the small rendition. */
@@ -264,17 +266,20 @@ async function uploadToDrive(kind, blob, mime, ext, onProgress) {
 }
 
 /**
- * Upload one optimized photo (full + thumb) for a task photo gallery.
- * kind 'task'; folder = child id (Supabase read policy is folder-scoped).
+ * Upload one attachment (full + optional thumb). `kind` decides where it is
+ * filed — 'task' for the task gallery, 'receipt' for payout receipts — so a
+ * receipt does not end up among the task photos in either backend.
+ * Folder = child id (the Supabase read policy is folder-scoped).
  * Returns {storage, path, thumb_path, mime, size_bytes}.
  */
-export async function uploadTaskPhoto(childId, photo, onProgress) {
+export async function uploadAttachment(childId, photo, onProgress, kind = "task") {
   const { blob, mime, ext } = photo.full;
+  const bucket = kind === "receipt" ? RECEIPTS_BUCKET : TASK_PHOTOS_BUCKET;
   if (storageBackendValue === "drive") {
     try {
-      const id = await uploadToDrive("task", blob, mime, ext, (p) => onProgress?.(p * 0.85));
+      const id = await uploadToDrive(kind, blob, mime, ext, (p) => onProgress?.(p * 0.85));
       const thumbId = photo.thumb
-        ? await uploadToDrive("task", photo.thumb.blob, photo.thumb.mime, photo.thumb.ext,
+        ? await uploadToDrive(kind, photo.thumb.blob, photo.thumb.mime, photo.thumb.ext,
             (p) => onProgress?.(85 + p * 0.15))
         : null;
       return { storage: "drive", path: id, thumb_path: thumbId, mime, size_bytes: blob.size };
@@ -283,14 +288,19 @@ export async function uploadTaskPhoto(childId, photo, onProgress) {
     }
   }
   const base = `${childId}/${crypto.randomUUID()}`;
-  const path = await uploadToBucket(TASK_PHOTOS_BUCKET, `${base}.${ext}`, blob, mime,
+  const path = await uploadToBucket(bucket, `${base}.${ext}`, blob, mime,
     (p) => onProgress?.(p * 0.85));
   const thumbPath = photo.thumb
-    ? await uploadToBucket(TASK_PHOTOS_BUCKET, `${base}_t.${photo.thumb.ext}`,
+    ? await uploadToBucket(bucket, `${base}_t.${photo.thumb.ext}`,
         photo.thumb.blob, photo.thumb.mime, (p) => onProgress?.(85 + p * 0.15))
     : null;
   return { storage: "supabase", path, thumb_path: thumbPath, mime, size_bytes: blob.size };
 }
+
+export const uploadTaskPhoto = (childId, photo, onProgress) =>
+  uploadAttachment(childId, photo, onProgress, "task");
+export const uploadReceipt = (childId, photo, onProgress) =>
+  uploadAttachment(childId, photo, onProgress, "receipt");
 
 export const insertAttachment = (taskId, role, info) =>
   supabase.from("attachments").insert({

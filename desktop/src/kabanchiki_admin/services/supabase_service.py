@@ -27,6 +27,7 @@ EMAIL_DOMAIN = "kabanchiki.local"
 TASK_PHOTOS_BUCKET = "task-photos"
 PROOF_PHOTOS_BUCKET = "proof-photos"
 AVATARS_BUCKET = "avatars"
+RECEIPTS_BUCKET = "receipts"
 
 
 class SupabaseError(RuntimeError):

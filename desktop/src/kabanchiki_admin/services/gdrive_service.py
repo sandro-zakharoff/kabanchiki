@@ -41,7 +41,7 @@ SCOPE = "https://www.googleapis.com/auth/drive.file"
 KEYRING_SERVICE = "Kabanchiki"
 KEYRING_GDRIVE = "gdrive_tokens"
 
-FOLDER_NAMES = {"task": "tasks", "proof": "proofs", "avatar": "avatars"}
+FOLDER_NAMES = {"task": "tasks", "proof": "proofs", "avatar": "avatars", "receipt": "receipts"}
 
 
 class GDriveError(RuntimeError):
@@ -291,11 +291,19 @@ class GDriveService:
         # alive, so the desktop and the Edge Function share one Kabanchiki tree.
         folders = dict(self.tokens.folders or {})
         if folders.get("root") and await self._folder_alive(folders["root"]):
-            return folders
-        root = await self._create_folder("Kabanchiki")
-        folders = {"root": root}
-        for sub in FOLDER_NAMES.values():
-            folders[sub] = await self._create_folder(sub, root)
+            # A tree created by an older version is missing any folder added
+            # since, so fill the gaps instead of only ever creating the whole
+            # tree at once — otherwise the new kind has nowhere to upload to.
+            missing = [sub for sub in FOLDER_NAMES.values() if not folders.get(sub)]
+            if not missing:
+                return folders
+            for sub in missing:
+                folders[sub] = await self._create_folder(sub, folders["root"])
+        else:
+            root = await self._create_folder("Kabanchiki")
+            folders = {"root": root}
+            for sub in FOLDER_NAMES.values():
+                folders[sub] = await self._create_folder(sub, root)
         self.tokens.folders = folders
         store_tokens(self.tokens)
         if self._on_folders_created is not None:

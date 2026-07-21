@@ -22,13 +22,18 @@ from kabanchiki_admin.services.image_service import OptimizedImage, OptimizedPho
 from kabanchiki_admin.services.supabase_service import (
     AVATARS_BUCKET,
     PROOF_PHOTOS_BUCKET,
+    RECEIPTS_BUCKET,
     TASK_PHOTOS_BUCKET,
     SupabaseService,
 )
 
 log = logging.getLogger(__name__)
 
-BUCKET_BY_ROLE = {"task": TASK_PHOTOS_BUCKET, "proof": PROOF_PHOTOS_BUCKET}
+BUCKET_BY_ROLE = {
+    "task": TASK_PHOTOS_BUCKET,
+    "proof": PROOF_PHOTOS_BUCKET,
+    "receipt": RECEIPTS_BUCKET,
+}
 
 PDF_MIME = "application/pdf"
 
@@ -67,20 +72,26 @@ class StorageService:
 
     # ------------------------------------------------------------- uploads
 
-    async def upload_task_photo(self, child_id: str, photo: OptimizedPhoto) -> dict:
-        """Returns the attachment info dict {storage, path, thumb_path, ...}."""
+    async def upload_photo(self, child_id: str, photo: OptimizedPhoto, kind: str = "task") -> dict:
+        """Returns the attachment info dict {storage, path, thumb_path, ...}.
+
+        `kind` picks where the file belongs — "task" or "receipt" — so a
+        receipt photo is filed with the receipts rather than in the task
+        gallery the owner scrolls through.
+        """
+        bucket = RECEIPTS_BUCKET if kind == "receipt" else TASK_PHOTOS_BUCKET
         if self.backend == "drive":
             drive = self.drive()
             if drive is not None:
                 try:
                     file_id = await drive.upload(
-                        "task",
+                        kind,
                         f"{uuid.uuid4().hex}.{photo.full.ext}",
                         photo.full.mime,
                         photo.full.data,
                     )
                     thumb_id = await drive.upload(
-                        "task",
+                        kind,
                         f"{uuid.uuid4().hex}_t.{photo.thumb.ext}",
                         photo.thumb.mime,
                         photo.thumb.data,
@@ -96,10 +107,10 @@ class StorageService:
                     log.warning("drive upload failed, falling back to supabase", exc_info=True)
         base = f"{child_id}/{uuid.uuid4().hex}"
         path = await self.supabase.upload_bytes(
-            TASK_PHOTOS_BUCKET, f"{base}.{photo.full.ext}", photo.full.data, photo.full.mime
+            bucket, f"{base}.{photo.full.ext}", photo.full.data, photo.full.mime
         )
         thumb = await self.supabase.upload_bytes(
-            TASK_PHOTOS_BUCKET, f"{base}_t.{photo.thumb.ext}", photo.thumb.data, photo.thumb.mime
+            bucket, f"{base}_t.{photo.thumb.ext}", photo.thumb.data, photo.thumb.mime
         )
         return {
             "storage": "supabase",
@@ -128,7 +139,7 @@ class StorageService:
             if drive is not None:
                 try:
                     file_id = await drive.upload(
-                        "task", f"{uuid.uuid4().hex}.pdf", PDF_MIME, data
+                        "receipt", f"{uuid.uuid4().hex}.pdf", PDF_MIME, data
                     )
                     return {
                         "storage": "drive",
@@ -141,7 +152,7 @@ class StorageService:
                     log.warning("drive upload failed, falling back to supabase", exc_info=True)
 
         stored = await self.supabase.upload_bytes(
-            TASK_PHOTOS_BUCKET, f"{child_id}/{uuid.uuid4().hex}.pdf", data, PDF_MIME
+            RECEIPTS_BUCKET, f"{child_id}/{uuid.uuid4().hex}.pdf", data, PDF_MIME
         )
         return {
             "storage": "supabase",

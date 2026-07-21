@@ -1680,7 +1680,7 @@ async function attachPickedReceipt(withdrawalId, childId) {
       ? { blob: a.thumbBlob, mime: a.thumbBlob.type, ext: a.thumbBlob.type === "image/webp" ? "webp" : "jpg" }
       : null,
   };
-  const info = await api.uploadTaskPhoto(childId, photo,
+  const info = await api.uploadReceipt(childId, photo,
     (p) => receiptUploader.setProgress(a.key, p));
   await api.attachReceipt(withdrawalId, info);
 }

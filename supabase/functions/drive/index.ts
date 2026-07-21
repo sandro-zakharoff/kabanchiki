@@ -10,7 +10,7 @@
 //   delete  — parents only (best-effort cleanup of replaced/removed photos).
 //   status  — parents: live connection check (Drive about.get).
 //
-// Files are uploaded into Kabanchiki/{tasks,proofs,avatars} and link-shared
+// Files are uploaded into Kabanchiki/{tasks,proofs,avatars,receipts} and link-shared
 // (reader, anyone-with-link): displays go straight to Google's CDN thumbnail
 // endpoint without tokens, which caches well on every client. Privacy relies
 // on unguessable file ids + EXIF/GPS being stripped client-side before upload
@@ -100,6 +100,7 @@ const KIND_FOLDER: Record<string, string> = {
   task: "tasks",
   proof: "proofs",
   avatar: "avatars",
+  receipt: "receipts",
 };
 
 async function driveFetch(token: string, url: string, init: RequestInit = {}): Promise<Response> {
@@ -137,15 +138,22 @@ async function folderExists(token: string, id: string): Promise<boolean> {
   return !!data.id && !data.trashed;
 }
 
-// Kabanchiki/{tasks,proofs,avatars}; ids cached in app_secrets.gdrive_folders.
+// Kabanchiki/{tasks,proofs,avatars,receipts}; ids cached in app_secrets.gdrive_folders.
 async function ensureFolders(token: string, s: Secrets): Promise<Record<string, string>> {
   let folders = s.gdrive_folders ?? {};
-  if (folders.root && await folderExists(token, folders.root)) return folders;
+  const subs = Object.values(KIND_FOLDER);
 
-  const root = await createFolder(token, "Kabanchiki");
-  folders = { root };
-  for (const sub of ["tasks", "proofs", "avatars"]) {
-    folders[sub] = await createFolder(token, sub, root);
+  if (folders.root && await folderExists(token, folders.root)) {
+    // A tree created by an older version lacks any folder added since, so fill
+    // the gaps rather than only ever building the whole tree at once.
+    const missing = subs.filter((sub) => !folders[sub]);
+    if (missing.length === 0) return folders;
+    folders = { ...folders };
+    for (const sub of missing) folders[sub] = await createFolder(token, sub, folders.root);
+  } else {
+    const root = await createFolder(token, "Kabanchiki");
+    folders = { root };
+    for (const sub of subs) folders[sub] = await createFolder(token, sub, root);
   }
   await admin.from("app_secrets").update({ gdrive_folders: folders }).eq("id", true);
   return folders;
@@ -275,7 +283,9 @@ Deno.serve(async (req) => {
       const kind = String(payload.kind ?? "");
       if (!KIND_FOLDER[kind]) return json({ error: "bad_kind" }, 400);
       // Children may only push completion proofs and their own avatar.
-      if (!caller.isParent && kind === "task") return json({ error: "forbidden" }, 403);
+      if (!caller.isParent && (kind === "task" || kind === "receipt")) {
+        return json({ error: "forbidden" }, 403);
+      }
 
       const b64 = String(payload.data_base64 ?? "");
       if (!b64) return json({ error: "no_data" }, 400);
@@ -284,7 +294,11 @@ Deno.serve(async (req) => {
       if (bytes.length > MAX_UPLOAD_BYTES) return json({ error: "too_large" }, 413);
 
       const mime = String(payload.mime ?? "image/jpeg");
-      if (!/^image\/(jpeg|png|webp)$/.test(mime)) return json({ error: "bad_mime" }, 400);
+      // A receipt is often a bank PDF; everything else stays a picture.
+      const mimeOk = kind === "receipt"
+        ? /^(image\/(jpeg|png|webp)|application\/pdf)$/.test(mime)
+        : /^image\/(jpeg|png|webp)$/.test(mime);
+      if (!mimeOk) return json({ error: "bad_mime" }, 400);
       const filename = String(payload.filename ?? "photo.jpg").replace(/[^\w.\-]/g, "_");
 
       const s = await getSecrets();
